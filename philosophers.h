@@ -4,6 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <unistd.h>
+
+enum e_actions {
+    TAKE_FORK,
+    EAT,
+    SLEEP,
+    THINK,
+    DIE
+};
 
 typedef struct	c_args
 {
@@ -14,9 +23,12 @@ typedef struct	c_args
 	int 		must_eat_times;
 }				t_args;
 
-
-number_of_philosophers time_to_die
-time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-
 int	is_integer(char *s, int n);
+
+/*
+ * print.c
+ */
+void print_usage();
+void handle_error(char *message);
+void print_action(int phil_num, int action);
 #endif

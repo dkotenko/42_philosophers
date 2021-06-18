@@ -1,4 +1,4 @@
-#include "philosophers.h"
+#include "../philosophers.h"
 
 #define MAX 9223372036854775807
 
@@ -72,6 +72,8 @@ void	parse_arguments(t_args *args, char **av, int ac)
 	int i;
 	int n;
 
+    if (ac != 5 && ac != 6)
+        print_usage();
 	i = -1;
 	while (++i < ac - 1)
 	{
