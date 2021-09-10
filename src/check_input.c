@@ -1,4 +1,4 @@
-#include "../philosophers.h"
+#include "../includes/philosophers.h"
 
 #define MAX 9223372036854775807
 
@@ -79,14 +79,26 @@ void	parse_arguments(t_args *args, char **av, int ac)
 	{
 		n = ft_atoi(av[i]);
 		if (!is_integer(av[i], n) || n <= 0)
-			handle_error(string_builder("invalid integer: ", av[i]));  
+			handle_error_str("invalid integer: ", av[i]);
 	}
-	args->phil_num = av[1];
-	args->time_to_die = av[2];
-	args->time_to_eat = av[3];
-	args->time_to_sleep = av[4];
+	args->phil_num = ft_atoi(av[1]);
+	args->time_to_die = ft_atoi(av[2]);
+	args->time_to_eat = ft_atoi(av[3]);
+	args->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
-		args->must_eat_times = av[5];
+		args->must_eat_times = ft_atoi(av[5]);
 	else
 		args->must_eat_times = 0;
+}
+
+size_t		ft_strlen(const char *str)
+{
+    size_t	i;
+
+    i = 0;
+    if (!str)
+        return (i);
+    while (str[i])
+        i++;
+    return (i);
 }

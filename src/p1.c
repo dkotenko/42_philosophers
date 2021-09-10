@@ -1,4 +1,4 @@
-#include "../philosophers.h"
+#include "../includes/philosophers.h"
 
 int *get_forks(t_args *args)
 {
@@ -7,7 +7,7 @@ int *get_forks(t_args *args)
     forks = (int *)malloc(sizeof(int) * args->phil_num);
     if (!forks)
         handle_error("Malloc error\n");
-    return (malloc)
+    return (forks);
 }
 
 int main(int ac, char **av)
@@ -15,6 +15,6 @@ int main(int ac, char **av)
 	t_args args;
 
 	parse_arguments(&args, av, ac);
-	forks = get_forks(&args);
+	//int forks = get_forks(&args);
 	return (0);
 }

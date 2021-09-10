@@ -1,4 +1,4 @@
-#include "../philosophers.h"
+#include "../includes/philosophers.h"
 #include <sys/time.h>
 #include <stdio.h>
 
@@ -12,8 +12,8 @@ static long long current_timestamp() {
 
 void print_usage()
 {
-    printf("USAGE: ./philo_n  number_of_philosophers time_to_die\n"
-           "time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+    printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
+           " time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
     exit(0);
 }
 
@@ -23,9 +23,21 @@ void handle_error(char *message)
     exit(0);
 }
 
+void handle_error_int(char *message, int d)
+{
+    printf("Error: %s: %d", message, d);
+    exit(0);
+}
+
+void handle_error_str(char *message, char *s)
+{
+    printf("Error: %s: %s", message, s);
+    exit(0);
+}
+
 void print_action(int phil_num, int action)
 {
-    printf("%hh %d ", current_timestamp(), phil_num);
+    printf("%lld %d ", current_timestamp(), phil_num);
     if (action == TAKE_FORK)
         printf("has taken a fork\n");
     else if (action == EAT)
