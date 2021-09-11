@@ -1,83 +1,86 @@
-#include "../includes/philosophers.h"
-
-int *get_forks(t_args *args)
-{
-    int *forks;
-
-    forks = (int *)malloc(sizeof(int) * args->phil_num);
-    if (!forks)
-        handle_error("Malloc error\n");
-    return (forks);
-}
-
-void philosopher() {
-
-}
+#include "philosophers.h"
 
 int main(int ac, char **av)
 {
 	t_args args;
+    int i;
 
 	parse_arguments(&args, av, ac);
-    pthread_mutex_init (&food_lock, NULL);
-    for (i = 0; i < PHILOS; i++)
-        pthread_mutex_init (&fork[i], NULL);
-    for (i = 0; i < PHILOS; i++)
-        pthread_create (&philo[i], NULL, philosopher, (void *)i);
-    for (i = 0; i < PHILOS; i++)
-        pthread_join (philo[i], NULL);
-    return 0;
-	//int forks = get_forks(&args);
+    args.phils = (pthread_t *)ft_memalloc(sizeof(pthread_t) * (args.num + 1));
+    args.forks = (pthread_mutex_t *)ft_memalloc(sizeof(pthread_mutex_t) * 
+        (args.num + 1));
+    i = 0;
+    args.phils[i] = 0;
+    args.last_meal = get_current_time_ms();
+    printf("%lld\n", args.last_meal);
+    while (++i < args.num + 1)
+    {
+        args.id = i;
+        pthread_mutex_init (&args.forks[i], NULL);
+        pthread_create (&args.phils[i], NULL, philosopher, &args);
+        pthread_join (args.phils[i], NULL);
+    }
+    
 	return (0);
 }
 
-#include <pthread.h>
-
-#define FOOD 50
-
-pthread_mutex_t fork[PHILOS];
-pthread_t philo[PHILOS];
-pthread_mutex_t food_lock;
-int sleep_seconds = 0;
-
-
-void *philosopher(void *num)
+int get_fork_id(int id, int forks_number, int is_first_fork)
 {
-    int id;
-    int i; 
-    int left_fork;
-    int right_fork;
-
-    id = (int)num;
-    printf ("Philosopher %d is done thinking and now ready to eat.\n", id);
-    right_fork = id;
-    left_fork = id + 1;
-
-    /* Wrap around the forks. */
-    if (left_fork == PHILOS)
-        left_fork = 0;
-
-    while (f = food_on_table ()) {
-
-        /* Thanks to philosophers #1 who would like to take a nap
-         * before picking up the forks, the other philosophers
-         * may be able to eat their dishes and not deadlock.
-         */
-        if (id == 1)
-            sleep (sleep_seconds);
-
-        get_fork(id, right_fork, "right ");
-        get_fork(id, left_fork, "left");
-
-        printf("Philosopher %d: eating.\n", id);
-        usleep(DELAY * (FOOD - f + 1));
-        put_forks(left_fork, right_fork);
+    if (id % 2)
+    {
+        if (is_first_fork)
+            return ((id + 1) % (forks_number + 1));
+        else
+            return id;
     }
-
-    printf ("Philosopher %d is done eating.\n", id);
-    return (NULL);
+    else
+    {
+        if (is_first_fork)
+            return id;
+        else
+            return ((id + 1) % (forks_number + 1));
+    }
+    return (0);
 }
 
+void    check_death(t_args *args)
+{
+    if(args->last_meal + (long long)args->time_to_die < get_current_time_ms())
+    {
+        printf("%lld %lld\n", args->last_meal, get_current_time_ms());
+        print_action(args->id, DEAD, 0);
+        pthread_exit(0);
+    }
+}
+
+void    *philosopher(void *arg)
+{
+    int first_fork;
+    int second_fork;
+    t_args *args;
+
+    args = (t_args *)arg;
+    printf("%d\n", args->id);
+    first_fork = get_fork_id(args->id, args->num, 1);
+    second_fork = get_fork_id(args->id, args->num, 0);
+    while (args->must_eat_times)
+    {
+        check_death(args);
+        if (!is_forks_taken(args->id, first_fork, second_fork, args->forks))
+            continue;
+        print_action(args->id, EAT, 0);
+        usleep(args->time_to_eat);
+        put_forks(first_fork, second_fork, args->forks);
+        args->must_eat_times--;
+        print_action(args->id, SLEEP, 0);
+        usleep (args->time_to_sleep);
+        print_action(args->id, THINK, 0);
+    }
+    print_action(args->id, DONE, 0);
+    return (0);
+}
+
+/*
 int food_on_table ()
 {
     static int food = FOOD;
@@ -91,15 +94,32 @@ int food_on_table ()
     pthread_mutex_unlock (&food_lock);
     return myfood;
 }
+*/
 
-void get_fork (int phil, int c, char *hand)
+int is_forks_taken(int id, int first_fork, int second_fork,
+    pthread_mutex_t *forks)
 {
-    pthread_mutex_lock (&fork[c]);
-    printf ("Philosopher %d: got %s fork %d\n", phil, hand, c);
+    int first_result;
+    int second_result;
+
+    first_result = pthread_mutex_lock(&forks[first_fork]);
+    if (!first_result)
+    {
+        second_result = pthread_mutex_lock(&forks[second_fork]);
+        if (!second_result)
+        {
+            print_action(id, TAKE_FORK, first_fork);
+            print_action(id, TAKE_FORK, second_fork);
+            return 1;
+        }
+        else
+            pthread_mutex_unlock(&forks[first_fork]);
+    }
+    return 0;
 }
 
-void put_forks (int c1, int c2)
+void put_forks (int f1, int f2, pthread_mutex_t *forks)
 {
-    pthread_mutex_unlock (&fork[c1]);
-    pthread_mutex_unlock (&fork[c2]);
+    pthread_mutex_unlock (&forks[f1]);
+    pthread_mutex_unlock (&forks[f2]);
 }

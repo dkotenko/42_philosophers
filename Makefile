@@ -1,6 +1,8 @@
-SRCS =		check_input.c \
-            print.c
-
+SRCS =		parse_arguments.c \
+            print.c \
+			ft.c \
+			handle_errors.c
+			
 SRCS_P1 = $(SRCS)
 SRCS_P1 += p1.c
 SRCS_P2 = $(SRCS)

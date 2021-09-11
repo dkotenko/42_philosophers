@@ -1,4 +1,4 @@
-#include "../includes/philosophers.h"
+#include "philosophers.h"
 
 #define MAX 9223372036854775807
 
@@ -61,12 +61,6 @@ int	is_integer(char *s, int n)
 	return (1);
 }
 
-/*
-4 [5] args
-number_of_philosophers time_to_die
-time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-*/
-
 void	parse_arguments(t_args *args, char **av, int ac)
 {
 	int i;
@@ -75,32 +69,20 @@ void	parse_arguments(t_args *args, char **av, int ac)
     if (ac != 5 && ac != 6){
         print_usage();
     }
-	i = -1;
-	while (++i < ac - 1)
+	i = ac;
+	while (--i > 0)
 	{
 		n = ft_atoi(av[i]);
-		if (!is_integer(av[i], n) || n <= 0)
+		if (!is_integer(av[i], n) || n < 0)
 			handle_error_str("invalid integer: ", av[i]);
 	}
-	args->phil_num = ft_atoi(av[1]);
+	args->num = ft_atoi(av[1]);
 	args->time_to_die = ft_atoi(av[2]);
 	args->time_to_eat = ft_atoi(av[3]);
 	args->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
 		args->must_eat_times = ft_atoi(av[5]);
 	else
-		args->must_eat_times = 0;
+		args->must_eat_times = 0x7FFFFFFF;
 	args->last_meal = 0;
-}
-
-size_t		ft_strlen(const char *str)
-{
-    size_t	i;
-
-    i = 0;
-    if (!str)
-        return (i);
-    while (str[i])
-        i++;
-    return (i);
 }

@@ -1,13 +1,22 @@
-#include "../includes/philosophers.h"
+#include "philosophers.h"
 #include <sys/time.h>
 #include <stdio.h>
 
-static long long current_timestamp() {
-    struct timeval te;
-    gettimeofday(&te, NULL); // get current time
-    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
-    // printf("milliseconds: %lld\n", milliseconds);
-    return milliseconds;
+void print_action(int phil_num, int action, int fork_id)
+{
+    printf("%lld %d ", get_current_time_ms(), phil_num);
+    if (action == TAKE_FORK)
+        printf("has taken a fork %d\n", fork_id);
+    else if (action == EAT)
+        printf("is eating\n");
+    else if (action == SLEEP)
+        printf("is sleeping\n");
+    else if (action == THINK)
+        printf("is thinking\n");
+    else if (action == DEAD)
+        printf("died\n");
+    else if (action == DONE)
+        printf("is done and alive. Congratulations!\n");
 }
 
 void print_usage()
@@ -17,36 +26,5 @@ void print_usage()
     exit(0);
 }
 
-void handle_error(char *message)
-{
-    printf("Error: %s", message);
-    exit(0);
-}
 
-void handle_error_int(char *message, int d)
-{
-    printf("Error: %s: %d", message, d);
-    exit(0);
-}
-
-void handle_error_str(char *message, char *s)
-{
-    printf("Error: %s: %s", message, s);
-    exit(0);
-}
-
-void print_action(int phil_num, int action)
-{
-    printf("%lld %d ", current_timestamp(), phil_num);
-    if (action == TAKE_FORK)
-        printf("has taken a fork\n");
-    else if (action == EAT)
-        printf("is eating\n");
-    else if (action == SLEEP)
-        printf("is sleeping\n");
-    else if (action == THINK)
-        printf("is thinking\n");
-    else if (action == DIE)
-        printf("died\n");
-}
 
