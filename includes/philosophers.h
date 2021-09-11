@@ -26,6 +26,7 @@ typedef struct	c_args
     int 		time_to_eat;
     int 		time_to_sleep;
     int 		must_eat_times;
+    long long   last_meal;
 }				t_args;
 
 int	is_integer(char *s, int n);

@@ -72,8 +72,9 @@ void	parse_arguments(t_args *args, char **av, int ac)
 	int i;
 	int n;
 
-    if (ac != 5 && ac != 6)
+    if (ac != 5 && ac != 6){
         print_usage();
+    }
 	i = -1;
 	while (++i < ac - 1)
 	{
@@ -89,6 +90,7 @@ void	parse_arguments(t_args *args, char **av, int ac)
 		args->must_eat_times = ft_atoi(av[5]);
 	else
 		args->must_eat_times = 0;
+	args->last_meal = 0;
 }
 
 size_t		ft_strlen(const char *str)
