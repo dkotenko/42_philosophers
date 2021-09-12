@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
+/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
 #define MAX 9223372036854775807
@@ -63,12 +75,13 @@ int	is_integer(char *s, int n)
 
 void	parse_arguments(t_args *args, char **av, int ac)
 {
-	int i;
-	int n;
+	int	i;
+	int	n;
 
-    if (ac != 5 && ac != 6){
-        print_usage();
-    }
+	if (ac != 5 && ac != 6)
+	{
+		print_usage();
+	}
 	i = ac;
 	while (--i > 0)
 	{
@@ -78,8 +91,8 @@ void	parse_arguments(t_args *args, char **av, int ac)
 	}
 	args->num = ft_atoi(av[1]);
 	args->time_to_die = ft_atoi(av[2]);
-	args->time_to_eat = ft_atoi(av[3]);
-	args->time_to_sleep = ft_atoi(av[4]);
+	args->time_to_eat = ft_atoi(av[3]) * 1000;
+	args->time_to_sleep = ft_atoi(av[4]) * 1000;
 	if (ac == 6)
 		args->must_eat_times = ft_atoi(av[5]);
 	else

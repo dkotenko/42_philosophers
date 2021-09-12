@@ -47,7 +47,7 @@ typedef struct c_args
 	sem_t		*lock;
 	sem_t		*forks;
 	sem_t		*print;
-	pthread_t	*phils;
+	pid_t		*phils;
 }					t_args;
 
 int			is_integer(char *s, int n);

@@ -1,22 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   p2.c                                               :+:      :+:    :+:   */
+/*   p3.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2021/09/12 16:19:40 by clala            ###   ########.fr       */
+/*   Updated: 2021/09/12 18:04:08 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	init_args_n_arr(t_args *args, t_args *arr)
+void	wait_n_exit(t_args *args)
+{
+	int	status;
+	int	pid;
+
+	while (args->num-- > 0)
+		pid = wait(&status);
+	exit(0);
+}
+
+void	init_args_n_arr(t_args *args)
 {
 	int	i;
 
-	args->phils = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
+	args->phils = (pid_t *)ft_memalloc(sizeof(pid_t) * \
 			(args->num + 1));
 	sem_unlink("forks");
 	args->forks = sem_open("forks", O_CREAT, S_IRWXU, args->num);
@@ -26,34 +36,32 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 	args->print = sem_open("print", O_CREAT, S_IRWXU, 1);
 	args->last_meal = get_current_time_ms();
 	i = 0;
-	while (++i < args->num + 1)
-	{
-		ft_memcpy(&arr[i], args, sizeof(t_args));
-	}
 }
 
 int	main(int ac, char **av)
 {
 	t_args	args;
 	int		i;
-	t_args	*arr;
 
 	parse_arguments(&args, av, ac);
-	arr = (t_args *)ft_memalloc(sizeof(t_args) * (args.num + 1));
-	init_args_n_arr(&args, arr);
+	init_args_n_arr(&args);
 	i = 0;
 	while (++i < args.num + 1)
 	{
-		arr[i].id = i;
-		pthread_create(&args.phils[i], NULL, philosopher, &arr[i]);
+		args.id = i;
+		args.phils[i] = fork();
+		if (args.phils[i] < 0)
+		{
+			perror("fork");
+			abort();
+		}
+		else if (args.phils[i] == 0)
+		{
+			philosopher(&args);
+			exit(0);
+		}
 	}
-	i = 0;
-	while (++i < args.num + 1)
-	{
-		pthread_join(args.phils[i], NULL);
-	}
-	exit(0);
-	return (0);
+	wait_n_exit(&args);
 }
 
 void	check_death(t_args *args)

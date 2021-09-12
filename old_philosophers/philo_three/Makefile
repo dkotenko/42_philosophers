@@ -28,9 +28,9 @@ OBJS_P2 = $(addprefix $(OBJS_DIR_P2)/, $(ALL_OBJS_P2))
 OBJS_P3 = $(addprefix $(OBJS_DIR_P3)/, $(ALL_OBJS_P3))
 
 
-NAME_P1 = p1
-NAME_P2 = p2
-NAME_P3 = p3
+NAME_P1 = philo_one
+NAME_P2 = philo_two
+NAME_P3 = philo_three
 
 INCLUDES_DIR = includes
 INCLUDES =	$(INCLUDES_DIR)/philosophers.h
@@ -39,22 +39,16 @@ FLAGS =	-Wall -Wextra -Werror
 
 CC = gcc
 
-all: $(OBJS_DIR_P1) $(NAME_P1) #$(NAME_P2) $(NAME_P3)
+all: $(OBJS_DIR_P3) $(NAME_P3)
 
-$(NAME_P1):	$(OBJS_P1)
-	$(CC) $(OBJS_P1) $(FLAGS) -lpthread -o $@
+$(NAME_P3):	$(OBJS_P3)
+	$(CC) $(OBJS_P3) $(FLAGS) -lpthread -o $@
 
-$(OBJS_DIR_P1):
-	/bin/mkdir -p $(OBJS_DIR_P1)
+$(OBJS_DIR_P3):
+	/bin/mkdir -p $(OBJS_DIR_P3)
 
-$(OBJS_DIR_P1)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR_P1)
+$(OBJS_DIR_P3)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR_P3)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -c $< -o $@
-
-$(NAME_P2):	$(INCLUDES) $(SRCS)
-	$(CC) $(SRCS) $(FLAGS) -o $@
-
-$(NAME_P3):	$(INCLUDES) $(SRCS)
-	$(CC) $(SRCS) $(FLAGS) -o $@
 
 clean:
 	@rm -rf obj_*
