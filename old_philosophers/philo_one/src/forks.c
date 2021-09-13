@@ -61,3 +61,8 @@ void	put_forks(int f1, int f2, pthread_mutex_t *forks)
 	pthread_mutex_unlock(&forks[f1]);
 	pthread_mutex_unlock(&forks[f2]);
 }
+
+void	usleep_ms(long long ms)
+{
+	usleep(ms * 1000);
+}

@@ -90,12 +90,12 @@ void	*philosopher(void *arg)
 		print_action(args->print, args->id, TAKE_FORK, 2);
 		print_action(args->print, args->id, EAT, 0);
 		args->last_meal = get_current_time_ms();
-		usleep(args->time_to_eat);
+		usleep_ms(args->time_to_eat);
 		args->must_eat_times--;
 		sem_post(args->forks);
 		sem_post(args->forks);
 		print_action(args->print, args->id, SLEEP, 0);
-		usleep (args->time_to_sleep);
+		usleep_ms (args->time_to_sleep);
 		print_action(args->print, args->id, THINK, 0);
 	}
 	print_action(args->print, args->id, DONE, 0);

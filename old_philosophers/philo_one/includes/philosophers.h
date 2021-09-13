@@ -36,9 +36,9 @@ enum e_actions {
 typedef struct c_args
 {
 	int				id;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
 	int				must_eat_times;
 	long long		last_meal;
 	int				num;
@@ -85,4 +85,5 @@ void		*philosopher(void *num);
 void		put_forks(int f1, int f2, pthread_mutex_t *forks);
 int			is_forks_taken(t_args *args, int first_fork, int second_fork);
 int			get_fork_id(int id, int forks_number, int is_first_fork);
+void		usleep_ms(long long ms);
 #endif
