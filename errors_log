@@ -1,1 +1,3 @@
 [philo_one-Test #1]: Given 4 310 200 100 arguments to philo_one, a philosopher should die !
+[philo_one-Test #4]: Given 4 410 200 200 10 arguments to philo_one, philo_one should only be stopped if each philosopher ate at least 10 times !
+[philo_one-Test #5]: Given 2 60 60 60 arguments to philo_one, the time difference of each death shouldn't be bigger than 10ms !

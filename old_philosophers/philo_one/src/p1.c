@@ -62,13 +62,14 @@ void	check_death(t_args *args)
 
 	death_time = args->last_meal + args->time_to_die;
 	curr = get_current_time_ms();
-
 	if (death_time <= curr)
 	{
-		if (death_time <= curr + args->time_to_eat)
-		{
-			usleep_ms(curr + args->time_to_eat - death_time);
-		}
+		print_action(args->printf_mutex, args->id, DEAD, 0);
+		pthread_exit(0);
+	}
+	else if (death_time <= curr + args->time_to_eat)
+	{
+		usleep_ms(curr + args->time_to_eat - death_time);
 		print_action(args->printf_mutex, args->id, DEAD, 0);
 		pthread_exit(0);
 	}
@@ -84,10 +85,13 @@ void	check_death_with_forks(t_args *args, int first_fork, int second_fork)
 	if (death_time <= curr)
 	{
 		put_forks(first_fork, second_fork, args->forks);
-		if (death_time <= curr + args->time_to_eat)
-		{
-			usleep_ms(curr + args->time_to_eat - death_time);
-		}
+		print_action(args->printf_mutex, args->id, DEAD, 0);
+		pthread_exit(0);
+	}
+	else if (death_time <= curr + args->time_to_eat)
+	{
+		put_forks(first_fork, second_fork, args->forks);
+		usleep_ms(curr + args->time_to_eat - death_time);
 		print_action(args->printf_mutex, args->id, DEAD, 0);
 		pthread_exit(0);
 	}
@@ -107,11 +111,9 @@ void	*philosopher(void *arg)
 		check_death(args);
 		if (!is_forks_taken(args, first_fork, second_fork))
 			continue ;
-		//printf("IS DEAD: %d\n", get_current_time_ms() - args->time_to_die > args->last_meal);
 		check_death_with_forks(args, first_fork, second_fork);
 		print_action(args->printf_mutex, args->id, EAT, 0);
 		usleep_ms(args->time_to_eat);
-		//printf("IS DEAD: %d\n", get_current_time_ms() - args->time_to_die > args->last_meal);
 		args->last_meal = get_current_time_ms();
 		put_forks(first_fork, second_fork, args->forks);
 		args->must_eat_times--;
@@ -119,6 +121,7 @@ void	*philosopher(void *arg)
 		usleep_ms (args->time_to_sleep);
 		print_action(args->printf_mutex, args->id, THINK, 0);
 	}
+	check_death(args);
 	print_action(args->printf_mutex, args->id, DONE, 0);
 	return (0);
 }
