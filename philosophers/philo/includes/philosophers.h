@@ -19,10 +19,6 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <stdarg.h>
-# include <semaphore.h>
-# include <fcntl.h>
-# include <sys/types.h>
-# include <sys/wait.h>
 
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
@@ -39,28 +35,25 @@ enum e_actions {
 
 typedef struct c_args
 {
-	int			id;
-	long long	time_to_die;
-	long long	time_to_eat;
-	long long	time_to_sleep;
-	int			must_eat_times;
-	long long	last_meal;
-	int			num;
-	sem_t		*lock;
-	sem_t		*forks;
-	sem_t		*print;
-	pid_t		*phils;
+	int				id;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
+	int				must_eat_times;
+	long long		last_meal;
+	int				num;
+	pthread_t		*phils;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	*printf_mutex;
 }					t_args;
 
 int			is_integer(char *s, int n);
 void		parse_arguments(t_args *args, char **av, int ac);
-
 /*
  * print.c
  */
 void		print_usage(void);
 int			sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...);
-void		usleep_ms(long long ms);
 
 /*
  * handle_errors.c
@@ -68,7 +61,7 @@ void		usleep_ms(long long ms);
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(sem_t *print, int phil_num, int action,
+void		print_action(pthread_mutex_t *m, int phil_num, int action,
 				int fork_id);
 void		print_usage(void);
 
@@ -85,6 +78,12 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
  * main.c
  */
 void		*philosopher(void *num);
-void		wait_n_exit(t_args *args);
 
+/*
+ * forks.c
+ */
+void		put_forks(int f1, int f2, pthread_mutex_t *forks);
+int			is_forks_taken(t_args *args, int first_fork, int second_fork);
+int			get_fork_id(int id, int forks_number, int is_first_fork);
+void		usleep_ms(long long ms);
 #endif

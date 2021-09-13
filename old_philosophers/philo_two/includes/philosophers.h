@@ -38,9 +38,9 @@ enum e_actions {
 typedef struct c_args
 {
 	int			id;
-	int			time_to_die;
-	int			time_to_eat;
-	int			time_to_sleep;
+	long long	time_to_die;
+	long long	time_to_eat;
+	long long	time_to_sleep;
 	int			must_eat_times;
 	long long	last_meal;
 	int			num;
@@ -81,5 +81,6 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
  * main.c
  */
 void		*philosopher(void *num);
+void		usleep_ms(long long ms);
 
 #endif

@@ -14,7 +14,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-static void	print_action_more(sem_t *print, int phil_num, int action)
+static void	print_action_more(int phil_num, int action)
 {
 	if (action == THINK)
 	{
@@ -31,7 +31,6 @@ static void	print_action_more(sem_t *print, int phil_num, int action)
 		printf("%lld %d is done and alive. Congratulations!\n",
 			get_current_time_ms(), phil_num);
 	}
-	sem_post(print);
 }
 
 void	print_action(sem_t *print, int phil_num, int action, int fork_id)
@@ -53,7 +52,7 @@ void	print_action(sem_t *print, int phil_num, int action, int fork_id)
 			get_current_time_ms(), phil_num);
 	}
 	else
-		print_action_more(print, phil_num, action);
+		print_action_more(phil_num, action);
 	sem_post(print);
 }
 
@@ -75,4 +74,9 @@ int	sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...)
 	pthread_mutex_unlock(printf_mutex);
 	va_end(args);
 	return (1);
+}
+
+void	usleep_ms(long long ms)
+{
+	usleep(ms * 1000);
 }

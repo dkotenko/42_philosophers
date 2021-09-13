@@ -29,12 +29,3 @@ void	handle_error_str(char *message, char *s)
 	printf("%sError: %s: %s%s", RED, message, s, RESET);
 	exit(0);
 }
-
-void	wait_n_exit(t_args *args)
-{
-	int	status;
-
-	while (args->num-- > 0)
-		wait(&status);
-	exit(0);
-}

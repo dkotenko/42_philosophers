@@ -91,8 +91,8 @@ void	parse_arguments(t_args *args, char **av, int ac)
 	}
 	args->num = ft_atoi(av[1]);
 	args->time_to_die = ft_atoi(av[2]);
-	args->time_to_eat = ft_atoi(av[3]) * 1000;
-	args->time_to_sleep = ft_atoi(av[4]) * 1000;
+	args->time_to_eat = ft_atoi(av[3]);
+	args->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
 		args->must_eat_times = ft_atoi(av[5]);
 	else
