@@ -23,6 +23,7 @@
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
+# define PBUF_SIZE 640
 
 enum e_actions {
 	TAKE_FORK,
@@ -33,7 +34,7 @@ enum e_actions {
 	DONE
 };
 
-typedef struct c_args
+typedef struct s_args
 {
 	int				id;
 	long long		time_to_die;
@@ -44,7 +45,6 @@ typedef struct c_args
 	int				num;
 	pthread_t		*phils;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	*printf_mutex;
 }					t_args;
 
 int			is_integer(char *s, int n);
@@ -53,7 +53,6 @@ void		parse_arguments(t_args *args, char **av, int ac);
  * print.c
  */
 void		print_usage(void);
-int			sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...);
 
 /*
  * handle_errors.c
@@ -61,9 +60,10 @@ int			sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...);
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(pthread_mutex_t *m, int phil_num, int action,
+void		print_action(t_args *args, long long time, int action,
 				int fork_id);
 void		print_usage(void);
+void		exit_thread(void);
 
 /*
  * ft.c

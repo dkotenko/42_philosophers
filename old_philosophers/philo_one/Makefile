@@ -2,7 +2,8 @@ SRCS =		parse_arguments.c \
             print.c \
 			ft.c \
 			handle_errors.c \
-			forks.c
+			forks.c \
+			philosopher.c
 			
 SRCS_P1 = $(SRCS)
 SRCS_P1 += p1.c

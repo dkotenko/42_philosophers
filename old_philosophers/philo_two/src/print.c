@@ -14,45 +14,45 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-static void	print_action_more(int phil_num, int action)
+static void	print_action_more(int phil_num, int action, long long time)
 {
 	if (action == THINK)
 	{
 		printf("%lld %d is thinking\n",
-			get_current_time_ms(), phil_num);
+			time, phil_num);
 	}
 	else if (action == DEAD)
 	{
 		printf("%lld %d died\n",
-			get_current_time_ms(), phil_num);
+			time, phil_num);
 	}
 	else if (action == DONE)
 	{
 		printf("%lld %d is done and alive. Congratulations!\n",
-			get_current_time_ms(), phil_num);
+			time, phil_num);
 	}
 }
 
-void	print_action(sem_t *print, int phil_num, int action, int fork_id)
+void	print_action(sem_t *print, int phil_num, int action, long long time)
 {
 	sem_wait(print);
 	if (action == TAKE_FORK)
 	{
-		printf("%lld %d has taken a fork %d\n",
-			get_current_time_ms(), phil_num, fork_id);
+		printf("%lld %d has taken a fork\n",
+			time, phil_num);
 	}
 	else if (action == EAT)
 	{
 		printf("%lld %d is eating\n",
-			get_current_time_ms(), phil_num);
+			time, phil_num);
 	}
 	else if (action == SLEEP)
 	{
 		printf("%lld %d is sleeping\n",
-			get_current_time_ms(), phil_num);
+			time, phil_num);
 	}
 	else
-		print_action_more(phil_num, action);
+		print_action_more(phil_num, action, time);
 	sem_post(print);
 }
 
@@ -62,18 +62,6 @@ void	print_usage(void)
 		   " time_to_eat time_to_sleep \
 		   [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
 	exit(0);
-}
-
-int	sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...)
-{
-	va_list	args;
-
-	va_start(args, format);
-	pthread_mutex_lock(printf_mutex);
-	vprintf(format, args);
-	pthread_mutex_unlock(printf_mutex);
-	va_end(args);
-	return (1);
 }
 
 void	usleep_ms(long long ms)

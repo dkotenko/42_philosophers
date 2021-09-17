@@ -41,6 +41,7 @@ typedef struct c_args
 	long long	time_to_die;
 	long long	time_to_eat;
 	long long	time_to_sleep;
+	long long	time_to_think;
 	int			must_eat_times;
 	long long	last_meal;
 	int			num;
@@ -56,7 +57,6 @@ void		parse_arguments(t_args *args, char **av, int ac);
  * print.c
  */
 void		print_usage(void);
-int			sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...);
 
 /*
  * handle_errors.c
@@ -65,7 +65,7 @@ void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
 void		print_action(sem_t *print, int phil_num, int action,
-				int fork_id);
+				long long time);
 void		print_usage(void);
 
 /*

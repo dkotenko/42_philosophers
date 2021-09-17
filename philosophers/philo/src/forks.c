@@ -46,8 +46,8 @@ int	is_forks_taken(t_args *args, int first_fork, int second_fork)
 		second_result = pthread_mutex_lock(&args->forks[second_fork]);
 		if (!second_result)
 		{
-			print_action(args->printf_mutex, args->id, TAKE_FORK, first_fork);
-			print_action(args->printf_mutex, args->id, TAKE_FORK, second_fork);
+			print_action(args, args->id, TAKE_FORK, first_fork);
+			print_action(args, args->id, TAKE_FORK, second_fork);
 			return (1);
 		}
 		else

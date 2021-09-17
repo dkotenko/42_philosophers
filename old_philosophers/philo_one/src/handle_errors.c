@@ -14,18 +14,23 @@
 
 void	handle_error(char *message)
 {
-	printf("%sError: %s%s", RED, message, RESET);
+	printf("%sError: %s%s\n", RED, message, RESET);
 	exit(0);
 }
 
 void	handle_error_int(char *message, int d)
 {
-	printf("%sError: %s: %d%s", RED, message, d, RESET);
+	printf("%sError: %s: %d%s\n", RED, message, d, RESET);
 	exit(0);
 }
 
 void	handle_error_str(char *message, char *s)
 {
-	printf("%sError: %s: %s%s", RED, message, s, RESET);
+	printf("%sError: %s: %s%s\n", RED, message, s, RESET);
 	exit(0);
+}
+
+void	exit_thread(void)
+{
+	pthread_exit(0);
 }
