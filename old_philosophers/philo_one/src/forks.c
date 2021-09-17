@@ -64,5 +64,10 @@ void	put_forks(int f1, int f2, pthread_mutex_t *forks)
 
 void	usleep_ms(long long ms)
 {
-	usleep(ms * 1000);
+	long long	curr;
+
+	curr = get_current_time_ms();
+	while (get_current_time_ms() != curr + ms)
+		;
+	//usleep(ms * 1000LL);
 }

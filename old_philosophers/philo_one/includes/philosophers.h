@@ -64,6 +64,7 @@ void		print_action(t_args *args, long long time, int action,
 				int fork_id);
 void		print_usage(void);
 void		exit_thread(void);
+long long	llmin(long long a, long long b);
 
 /*
  * ft.c
