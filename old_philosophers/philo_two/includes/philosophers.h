@@ -25,6 +25,7 @@
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
+# define EPSILON 10
 
 enum e_actions {
 	TAKE_FORK,
@@ -82,5 +83,6 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
  */
 void		*philosopher(void *num);
 void		usleep_ms(long long ms);
+long long	llmin(long long a, long long b);
 
 #endif

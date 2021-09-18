@@ -66,14 +66,11 @@ void	print_usage(void)
 	exit(0);
 }
 
-int	sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...)
+void	usleep_ms(long long ms)
 {
-	va_list	args;
+	long long	curr;
 
-	va_start(args, format);
-	pthread_mutex_lock(printf_mutex);
-	vprintf(format, args);
-	pthread_mutex_unlock(printf_mutex);
-	va_end(args);
-	return (1);
+	curr = get_current_time_ms();
+	while (get_current_time_ms() < curr + ms)
+		;
 }

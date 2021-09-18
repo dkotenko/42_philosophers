@@ -53,7 +53,6 @@ void		parse_arguments(t_args *args, char **av, int ac);
  * print.c
  */
 void		print_usage(void);
-int			sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...);
 
 /*
  * handle_errors.c

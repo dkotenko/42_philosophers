@@ -59,8 +59,8 @@ void		parse_arguments(t_args *args, char **av, int ac);
  * print.c
  */
 void		print_usage(void);
-int			sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...);
 void		usleep_ms(long long ms);
+long long	llmin(long long a, long long b);
 
 /*
  * handle_errors.c
@@ -86,5 +86,6 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
  */
 void		*philosopher(void *num);
 void		wait_n_exit(t_args *args);
+void		usleep_ms(long long ms);
 
 #endif

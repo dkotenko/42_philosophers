@@ -19,32 +19,9 @@ void	check_death(t_args *args)
 
 	death_time = args->last_meal + args->time_to_die;
 	curr = get_current_time_ms();
+	printf("%lld\n", death_time - curr);
 	if (death_time <= curr)
 	{
-		print_action(args->print, args->id, DEAD, curr);
-		pthread_exit(0);
-	}
-}
-
-void	check_death_with_forks(t_args *args)
-{
-	long long	curr;
-	long long	death_time;
-
-	death_time = args->last_meal + args->time_to_die;
-	curr = get_current_time_ms();
-	if (death_time <= curr)
-	{
-		sem_post(args->forks);
-		sem_post(args->forks);
-		print_action(args->print, args->id, DEAD, curr);
-		pthread_exit(0);
-	}
-	else if (death_time <= curr + args->time_to_eat)
-	{
-		usleep_ms(curr + args->time_to_eat - death_time);
-		sem_post(args->forks);
-		sem_post(args->forks);
 		print_action(args->print, args->id, DEAD, curr);
 		pthread_exit(0);
 	}
@@ -55,32 +32,40 @@ void	do_sleep(t_args *args)
 	long long	curr;
 	long long	death_time;
 
-	print_action(args->print, args->id, SLEEP, get_current_time_ms());
-	death_time = args->last_meal + args->time_to_die;
+	death_time = args->last_meal + args->time_to_die - 1;
 	curr = get_current_time_ms();
-	if (death_time <= curr)
-	{
-		print_action(args->print, args->id, DEAD, curr);
-		pthread_exit(0);
-	}
-	else if (death_time <= curr + args->time_to_eat)
-	{
-		usleep_ms(curr + args->time_to_sleep - death_time);
-		print_action(args->print, args->id, DEAD, curr);
-		pthread_exit(0);
-	}
-	usleep_ms(args->time_to_sleep);
+	print_action(args->print, args->id, SLEEP, get_current_time_ms());
+	usleep_ms(llmin(death_time - curr, args->time_to_sleep));
+	check_death(args);
 }
 
 void	do_eat(t_args *args)
 {
-	print_action(args->print, args->id, EAT, get_current_time_ms());
-	check_death_with_forks(args);
-	usleep_ms(args->time_to_eat);
-	args->last_meal = get_current_time_ms();
+	long long	curr;
+	long long	death_time;
+
+	curr = get_current_time_ms();
+	args->last_meal = curr;
+	death_time = args->last_meal + args->time_to_die - 1;
+	print_action(args->print, args->id, EAT, curr);
+	usleep_ms(llmin(death_time - curr, args->time_to_eat));
 	sem_post(args->forks);
 	sem_post(args->forks);
+	check_death(args);
 	args->must_eat_times--;
+}
+
+void	do_think(t_args *args)
+{
+	long long	curr;
+	long long	death_time;
+
+	death_time = args->last_meal + args->time_to_die - 1;
+	curr = get_current_time_ms();
+	print_action(args->print, args->id, THINK, curr);
+	//printf("%lld\n", llmin(death_time - curr, args->time_to_think));
+	usleep_ms(llmin(death_time - curr, args->time_to_think));
+	check_death(args);
 }
 
 void	*philosopher(void *arg)
@@ -99,8 +84,8 @@ void	*philosopher(void *arg)
 		sem_post(args->lock);
 		do_eat(args);
 		do_sleep(args);
-		print_action(args->print, args->id, THINK, get_current_time_ms());
-		usleep_ms (args->time_to_think);
+		do_think(args);
+		//print_action(args->print, args->id, THINK, get_current_time_ms());
 	}
 	check_death(args);
 	print_action(args->print, args->id, DONE, 0);

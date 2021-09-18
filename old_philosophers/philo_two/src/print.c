@@ -66,5 +66,16 @@ void	print_usage(void)
 
 void	usleep_ms(long long ms)
 {
-	usleep(ms * 1000);
+	long long	curr;
+
+	curr = get_current_time_ms();
+	while (get_current_time_ms() < curr + ms)
+		;
+}
+
+long long	llmin(long long a, long long b)
+{
+	if (a < b)
+		return (a);
+	return (b);
 }

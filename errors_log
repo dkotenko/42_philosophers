@@ -8,3 +8,7 @@
 [philo_one-Test #2]: Given 4 410 200 200 arguments to philo_one, no philosopher should die !
 [philo_one-Test #1]: Given 4 310 200 100 arguments to philo_one, a philosopher should die !
 [philo_one-Test #2]: Given 4 410 200 200 arguments to philo_one, no philosopher should die !
+[philo_one-Test #5]: Given 2 60 60 60 arguments to philo_one, a philosopher should die !
+[philo_two-Test #1]: Given 4 310 200 100 arguments to philo_two, a philosopher should die !
+[philo_two-Test #5]: Given 2 60 60 60 arguments to philo_two, a philosopher should die !
+[philo_three-Test #1]: Given 4 310 200 100 arguments to philo_three, a philosopher should die !

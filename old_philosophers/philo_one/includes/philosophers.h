@@ -45,6 +45,7 @@ typedef struct s_args
 	int				num;
 	pthread_t		*phils;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*print;
 }					t_args;
 
 int			is_integer(char *s, int n);

@@ -19,11 +19,6 @@ void	print_action_more(long long time, int id, int action)
 		printf("%lld %d is thinking\n",
 			time, id);
 	}
-	else if (action == SLEEP)
-	{
-		printf("%lld %d is sleeping\n",
-			time, id);
-	}
 	else if (action == DEAD)
 	{
 		printf("%lld %d died\n",
@@ -38,6 +33,7 @@ void	print_action_more(long long time, int id, int action)
 
 void	print_action(t_args *args, long long time, int action, int fork_id)
 {
+	pthread_mutex_lock(args->print);
 	if (action == TAKE_FORK)
 	{
 		printf("%lld %d has taken a fork %d\n",
@@ -48,10 +44,16 @@ void	print_action(t_args *args, long long time, int action, int fork_id)
 		printf("%lld %d is eating\n",
 			time, args->id);
 	}
+	else if (action == SLEEP)
+	{
+		printf("%lld %d is sleeping\n",
+			time, args->id);
+	}
 	else
 	{
 		print_action_more(time, args->id, action);
 	}
+	pthread_mutex_unlock(args->print);
 }
 
 void	print_usage(void)

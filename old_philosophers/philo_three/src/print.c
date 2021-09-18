@@ -64,19 +64,18 @@ void	print_usage(void)
 	exit(0);
 }
 
-int	sync_printf(pthread_mutex_t *printf_mutex, const char *format, ...)
-{
-	va_list	args;
-
-	va_start(args, format);
-	pthread_mutex_lock(printf_mutex);
-	vprintf(format, args);
-	pthread_mutex_unlock(printf_mutex);
-	va_end(args);
-	return (1);
-}
-
 void	usleep_ms(long long ms)
 {
-	usleep(ms * 1000);
+	long long	curr;
+
+	curr = get_current_time_ms();
+	while (get_current_time_ms() < curr + ms)
+		;
+}
+
+long long	llmin(long long a, long long b)
+{
+	if (a < b)
+		return (a);
+	return (b);
 }

@@ -18,6 +18,9 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 
 	args->phils = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(args->num + 1));
+	args->time_to_think = args->time_to_die - args->time_to_eat - args->time_to_sleep;
+	if (args->time_to_think < 0)
+		args->time_to_think = 0;
 	sem_unlink("forks");
 	args->forks = sem_open("forks", O_CREAT, S_IRWXU, args->num);
 	sem_unlink("lock");
@@ -25,8 +28,6 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 	sem_unlink("print");
 	args->print = sem_open("print", O_CREAT, S_IRWXU, 1);
 	args->last_meal = get_current_time_ms();
-	args->time_to_think = (args->time_to_die - args->time_to_eat \
-		- args->time_to_sleep) / 2;
 	i = 0;
 	while (++i < args->num + 1)
 	{

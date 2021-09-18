@@ -36,15 +36,12 @@ void	do_sleep(t_args *args)
 	print_action(args, curr, SLEEP, 0);
 	usleep_ms(llmin(death_time - curr, args->time_to_sleep));
 	check_death(args);
-	
 }
 
 long long	llmin(long long a, long long b)
 {
 	if (a < b)
-	{
 		return (a);
-	}
 	return (b);
 }
 
@@ -57,12 +54,10 @@ void	do_eat(t_args *args, int first_fork, int second_fork)
 	args->last_meal = curr;
 	death_time = args->last_meal + args->time_to_die - 1;
 	print_action(args, curr, EAT, 0);
-	
 	usleep_ms(llmin(death_time - curr, args->time_to_eat));
 	put_forks(first_fork, second_fork, args->forks);
 	check_death(args);
 	args->must_eat_times--;
-	
 }
 
 void	*philosopher(void *arg)
@@ -82,7 +77,6 @@ void	*philosopher(void *arg)
 			printf("deadlock\n");
 			continue ;
 		}
-			
 		do_eat(args, first_fork, second_fork);
 		do_sleep(args);
 		print_action(args, get_current_time_ms(), THINK, 0);
