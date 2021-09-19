@@ -61,12 +61,3 @@ void	put_forks(int f1, int f2, pthread_mutex_t *forks)
 	pthread_mutex_unlock(&forks[f1]);
 	pthread_mutex_unlock(&forks[f2]);
 }
-
-void	usleep_ms(long long ms)
-{
-	long long	curr;
-
-	curr = get_current_time_ms();
-	while (get_current_time_ms() < curr + ms)
-		;
-}

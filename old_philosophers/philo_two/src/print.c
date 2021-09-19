@@ -73,6 +73,17 @@ void	usleep_ms(long long ms)
 		;
 }
 
+void	usleep_ms_death(t_args *args, long long ms)
+{
+	long long	curr;
+
+	curr = get_current_time_ms();
+	while (get_current_time_ms() < curr + ms)
+	{
+		check_death(args);
+	}
+}
+
 long long	llmin(long long a, long long b)
 {
 	if (a < b)

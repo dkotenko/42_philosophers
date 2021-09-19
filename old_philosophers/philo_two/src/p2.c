@@ -18,6 +18,10 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 
 	args->phils = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(args->num + 1));
+	args->last = (long long *)ft_memalloc(sizeof(long long) * \
+			(args->num + 1));
+	args->die = (char *)ft_memalloc(sizeof(char) * \
+			(args->num + 1));
 	args->time_to_think = args->time_to_die - args->time_to_eat - args->time_to_sleep;
 	if (args->time_to_think < 0)
 		args->time_to_think = 0;
@@ -35,11 +39,40 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 	}
 }
 
+void	*killer(void *arg)
+{
+	int	i;
+	t_args	args;
+	long long curr;
+	int	kills;
+
+	args = (t_args *)arg;
+	while (1)
+	{
+		i = 0;
+		curr = get_current_time_ms();
+		while (++i < args->num + 1)
+		{
+			if (args->last[i] <= curr)
+			{
+				args->die[i] = 1;
+				kills++;
+				args->last[i] = LLONG_MAX;
+			}
+		}
+		if (kills == args->num)
+			break ;
+	}
+	pthread_exit(0);
+	return (0);
+}
+
 int	main(int ac, char **av)
 {
 	t_args	args;
 	int		i;
 	t_args	*arr;
+	pthread_t	killer;
 
 	parse_arguments(&args, av, ac);
 	arr = (t_args *)ft_memalloc(sizeof(t_args) * (args.num + 1));
@@ -50,11 +83,13 @@ int	main(int ac, char **av)
 		arr[i].id = i;
 		pthread_create(&args.phils[i], NULL, philosopher, &arr[i]);
 	}
+	pthread_create(&killer, NULL, killer, &args);
 	i = 0;
 	while (++i < args.num + 1)
 	{
 		pthread_join(args.phils[i], NULL);
 	}
+	pthread_join(killer, NULL);
 	exit(0);
 	return (0);
 }

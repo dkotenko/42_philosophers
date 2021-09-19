@@ -14,17 +14,24 @@
 
 void	check_death(t_args *args)
 {
+	if (args->die[args->id])
+	{
+		print_action(args->print, args->id, DEAD, curr);
+		pthread_exit(0);
+	}
+	/*
 	long long	curr;
 	long long	death_time;
 
 	death_time = args->last_meal + args->time_to_die;
 	curr = get_current_time_ms();
-	printf("%lld\n", death_time - curr);
+	printf("%d %lld\n", args->id, death_time - curr);
 	if (death_time <= curr)
 	{
 		print_action(args->print, args->id, DEAD, curr);
 		pthread_exit(0);
 	}
+	*/
 }
 
 void	do_sleep(t_args *args)
@@ -32,7 +39,7 @@ void	do_sleep(t_args *args)
 	long long	curr;
 	long long	death_time;
 
-	death_time = args->last_meal + args->time_to_die - 1;
+	death_time = args->last_meal + args->time_to_die;
 	curr = get_current_time_ms();
 	print_action(args->print, args->id, SLEEP, get_current_time_ms());
 	usleep_ms(llmin(death_time - curr, args->time_to_sleep));
@@ -45,8 +52,9 @@ void	do_eat(t_args *args)
 	long long	death_time;
 
 	curr = get_current_time_ms();
+	args->last[args->id] = curr;
 	args->last_meal = curr;
-	death_time = args->last_meal + args->time_to_die - 1;
+	death_time = args->last_meal + args->time_to_die;
 	print_action(args->print, args->id, EAT, curr);
 	usleep_ms(llmin(death_time - curr, args->time_to_eat));
 	sem_post(args->forks);
@@ -55,18 +63,20 @@ void	do_eat(t_args *args)
 	args->must_eat_times--;
 }
 
+/*
 void	do_think(t_args *args)
 {
 	long long	curr;
 	long long	death_time;
 
-	death_time = args->last_meal + args->time_to_die - 1;
+	death_time = args->last_meal + args->time_to_die;
 	curr = get_current_time_ms();
-	print_action(args->print, args->id, THINK, curr);
-	//printf("%lld\n", llmin(death_time - curr, args->time_to_think));
-	usleep_ms(llmin(death_time - curr, args->time_to_think));
-	check_death(args);
+	
+	//printf("%lld think time\n", llmin(death_time - curr, args->time_to_think));
+	//usleep_ms(llmin(death_time - curr, args->time_to_think));
+	//check_death(args);
 }
+*/
 
 void	*philosopher(void *arg)
 {
@@ -84,7 +94,8 @@ void	*philosopher(void *arg)
 		sem_post(args->lock);
 		do_eat(args);
 		do_sleep(args);
-		do_think(args);
+		print_action(args->print, args->id, THINK, curr);
+		//do_think(args);
 		//print_action(args->print, args->id, THINK, get_current_time_ms());
 	}
 	check_death(args);

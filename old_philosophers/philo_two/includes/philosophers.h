@@ -50,6 +50,8 @@ typedef struct c_args
 	sem_t		*forks;
 	sem_t		*print;
 	pthread_t	*phils;
+	long long	*last;
+	char		*die;
 }					t_args;
 
 int			is_integer(char *s, int n);
@@ -84,5 +86,7 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
 void		*philosopher(void *num);
 void		usleep_ms(long long ms);
 long long	llmin(long long a, long long b);
+void		check_death(t_args *args);
+void		usleep_ms_death(t_args *args, long long ms);
 
 #endif
