@@ -1,4 +1,4 @@
-SRCS =		parse_arguments.c \
+SRCS =		parse_const.c \
             print.c \
 			ft.c \
 			handle_errors.c \

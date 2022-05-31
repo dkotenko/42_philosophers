@@ -43,9 +43,16 @@ typedef struct s_const {
 	int				p_num;
 } t_const;
 
-typedef struct c_args
+typedef struct s_mon_info
 {
-	t_const			c;
+	int				*is_alive;
+	int				*can_eat;
+	int				*is_fork_clean;
+}					t_mon;
+
+typedef struct s_args
+{
+	
 	int				id;
 	int				is_alive;
 	int				left_fork;
@@ -55,13 +62,12 @@ typedef struct c_args
 	pthread_mutex_t	*printf_mutex;
 }					t_args;
 
-typedef struct c_mon_info
+typedef struct	s_data
 {
-	int				p_num;
-	int				*is_alive;
-	int				*can_eat;
-	int				*is_fork_clean;
-}					t_mon_info;
+	t_const		c;
+	t_mon	m;
+	t_args		p;
+}				t_data;
 
 typedef struct s_queue {
 	int *data;  // указатель на данные
@@ -76,7 +82,7 @@ void		t_queue_add (t_queue *q, int a);
 int			t_queue_get (t_queue *q);
 
 int			is_integer(char *s, int n);
-void		parse_arguments(t_args *args, char **av, int ac);
+void		parse_const(t_args *args, char **av, int ac);
 /*
  * print.c
  */
@@ -109,7 +115,7 @@ void		*philosopher(void *num);
 /*
  * forks.c
  */
-void		put_forks(int f1, int f2, pthread_mutex_t *forks);
+void		put_forks(int f1, int f2, t_mon *monitor);
 int			is_forks_taken(t_args *args, int first_fork, int second_fork);
 int			get_fork_id(int id, int forks_number, int is_first_fork);
 void		usleep_ms(long long ms);

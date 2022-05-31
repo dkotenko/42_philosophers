@@ -30,7 +30,7 @@ void	*philosopher(void *arg)
 		check_death(args);
 		if (!is_forks_taken(args, first_fork, second_fork))
 			continue ;
-		check_death_with_forks(args, first_fork, second_fork);
+		check_death(args);
 		print_action(args->printf_mutex, args->id, EAT, 0);
 		usleep_ms(args->c.time_to_eat);
 		args->last_meal = get_current_time_ms();

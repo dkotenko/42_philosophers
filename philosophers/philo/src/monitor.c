@@ -24,22 +24,22 @@ void    populate_queue(t_queue *q)
 
 void    monitor(void *monitor_info)
 {
-    t_mon_info *info;
+    t_mon *info;
     int i;
     int j;
     int eat_started_num;
     int id;
 
-    info = (t_mon_info *)monitor_info;
+    info = (t_mon *)monitor_info;
     t_queue *q = t_queue_init(info->p_num);
     populate_queue(q);
 
-    while (!is_all_status(info->info->status, DEAD, info->p_num) && \
+    while (!is_all_status(info->status, DEAD, info->p_num) && \
     !is_all_status(info->status, DONE, info->p_num)) {
         eat_started_num = 0;
         i = 0;
         while (++j < info->p_num + 1 && eat_started_num <= info->p_num / 2 ) {
-            i = q->data[j]
+            i = q->data[j];
             if (info->p_arr[q->data[i]]->status == THINK) {
                 if (info->is_fork_clean[info->p_arr[i]->first_fork] &&
                     info->is_fork_clean[info->p_arr[i]->second_fork]) {

@@ -37,29 +37,20 @@ int	get_fork_id(int id, int forks_number, int is_first_fork)
 
 int	is_forks_taken(t_args *args, int first_fork, int second_fork)
 {
-	int	first_result;
-	int	second_result;
-
-	first_result = pthread_mutex_lock(&args->forks[first_fork]);
-	if (!first_result)
+	if (args->monitor->is_fork_clean[first_fork] && \
+		args->monitor->is_fork_clean[second_fork])
 	{
-		second_result = pthread_mutex_lock(&args->forks[second_fork]);
-		if (!second_result)
-		{
-			print_action(args->printf_mutex, args->id, TAKE_FORK, first_fork);
-			print_action(args->printf_mutex, args->id, TAKE_FORK, second_fork);
-			return (1);
-		}
-		else
-			pthread_mutex_unlock(&args->forks[first_fork]);
+		print_action(args->printf_mutex, args->id, TAKE_FORK, first_fork);
+		print_action(args->printf_mutex, args->id, TAKE_FORK, second_fork);
+		return (1);
 	}
 	return (0);
 }
 
-void	put_forks(int f1, int f2, pthread_mutex_t *forks)
+void	put_forks(int f1, int f2, t_mon *monitor)
 {
-	pthread_mutex_unlock(&forks[f1]);
-	pthread_mutex_unlock(&forks[f2]);
+	monitor->is_fork_clean[f1] = 1;
+	monitor->is_fork_clean[f2] = 1;
 }
 
 void	usleep_ms(long long ms)
