@@ -89,13 +89,13 @@ void	parse_arguments(t_args *args, char **av, int ac)
 		if (!is_integer(av[i], n) || n < 0)
 			handle_error_str("invalid integer: ", av[i]);
 	}
-	args->num = ft_atoi(av[1]);
-	args->time_to_die = ft_atoi(av[2]);
-	args->time_to_eat = ft_atoi(av[3]);
-	args->time_to_sleep = ft_atoi(av[4]);
+	args->c.p_num = ft_atoi(av[1]);
+	args->c.time_to_die = ft_atoi(av[2]);
+	args->c.time_to_eat = ft_atoi(av[3]);
+	args->c.time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
-		args->must_eat_times = ft_atoi(av[5]);
+		args->c.must_eat_times = ft_atoi(av[5]);
 	else
-		args->must_eat_times = 0x7FFFFFFF;
+		args->c.must_eat_times = 0x7FFFFFFF;
 	args->last_meal = 0;
 }

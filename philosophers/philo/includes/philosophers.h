@@ -29,23 +29,51 @@ enum e_actions {
 	EAT,
 	SLEEP,
 	THINK,
+	ALIVE,
 	DEAD,
-	DONE
+	DONE,
+	E_ACTIONS_NUM
 };
 
-typedef struct c_args
-{
-	int				id;
+typedef struct s_const {
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
 	int				must_eat_times;
+	int				p_num;
+} t_const;
+
+typedef struct c_args
+{
+	t_const			c;
+	int				id;
+	int				is_alive;
+	int				left_fork;
+	int				right_fork;
+	int				status;
 	long long		last_meal;
-	int				num;
-	pthread_t		*phils;
-	pthread_mutex_t	*forks;
 	pthread_mutex_t	*printf_mutex;
 }					t_args;
+
+typedef struct c_mon_info
+{
+	int				p_num;
+	int				*is_alive;
+	int				*can_eat;
+	int				*is_fork_clean;
+}					t_mon_info;
+
+typedef struct s_queue {
+	int *data;  // указатель на данные
+	int low;        // указатель на нижнюю границу
+	int high;       // указатель на верхнюю границу
+	int count;      // количество элементов в очереди
+	int max;        // максимальное количество элементов
+}					t_queue;
+
+t_queue		*t_queue_init (size_t size);
+void		t_queue_add (t_queue *q, int a);
+int			t_queue_get (t_queue *q);
 
 int			is_integer(char *s, int n);
 void		parse_arguments(t_args *args, char **av, int ac);

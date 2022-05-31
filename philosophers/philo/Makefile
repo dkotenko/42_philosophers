@@ -2,10 +2,13 @@ SRCS =		parse_arguments.c \
             print.c \
 			ft.c \
 			handle_errors.c \
-			forks.c
+			forks.c \
+			queue.c \
+			monitor.c \
+			philosopher.c
 			
 SRCS_P1 = $(SRCS)
-SRCS_P1 += p1.c
+SRCS_P1 += main.c
 SRCS_P2 = $(SRCS)
 SRCS_P2 += p2.c
 SRCS_P3 = $(SRCS)

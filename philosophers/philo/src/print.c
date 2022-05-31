@@ -61,12 +61,12 @@ void	print_action(pthread_mutex_t *m, int phil_num, int action, int fork_id)
 void	print_usage(void)
 {
 	printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
-		   " time_to_eat time_to_sleep \
-		   [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
+		   " time_to_eat time_to_sleep" \
+   " [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
 	exit(0);
 }
 
-void	usleep_ms(long long ms)
+void	usleep_ms_until(long long ms)
 {
 	long long	curr;
 

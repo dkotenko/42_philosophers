@@ -15,9 +15,9 @@
 void	init_args_n_arr(t_args *args)
 {
 	args->phils = (pid_t *)ft_memalloc(sizeof(pid_t) * \
-			(args->num + 1));
+			(args->c.p_num + 1));
 	sem_unlink("forks");
-	args->forks = sem_open("forks", O_CREAT, S_IRWXU, args->num);
+	args->forks = sem_open("forks", O_CREAT, S_IRWXU, args->c.p_num);
 	sem_unlink("lock");
 	args->lock = sem_open("lock", O_CREAT, S_IRWXU, 1);
 	sem_unlink("print");
@@ -56,16 +56,16 @@ void	check_death(t_args *args)
 	long long	curr;
 	long long	death_time;
 
-	death_time = args->last_meal + args->time_to_die;
+	death_time = args->last_meal + args->c.time_to_die;
 	curr = get_current_time_ms();
 	if (death_time <= curr)
 	{
 		print_action(args->print, args->id, DEAD, 0);
 		pthread_exit(0);
 	}
-	else if (death_time <= curr + args->time_to_eat)
+	else if (death_time <= curr + args->c.time_to_eat)
 	{
-		usleep_ms(curr + args->time_to_eat - death_time);
+		usleep_ms(curr + args->c.time_to_eat - death_time);
 		print_action(args->print, args->id, DEAD, 0);
 		pthread_exit(0);
 	}
@@ -76,7 +76,7 @@ void	check_death_with_forks(t_args *args)
 	long long	curr;
 	long long	death_time;
 
-	death_time = args->last_meal + args->time_to_die;
+	death_time = args->last_meal + args->c.time_to_die;
 	curr = get_current_time_ms();
 	if (death_time <= curr)
 	{
@@ -85,11 +85,11 @@ void	check_death_with_forks(t_args *args)
 		print_action(args->print, args->id, DEAD, 0);
 		pthread_exit(0);
 	}
-	else if (death_time <= curr + args->time_to_eat)
+	else if (death_time <= curr + args->c.time_to_eat)
 	{
 		sem_post(args->forks);
 		sem_post(args->forks);
-		usleep_ms(curr + args->time_to_eat - death_time);
+		usleep_ms(curr + args->c.time_to_eat - death_time);
 		print_action(args->print, args->id, DEAD, 0);
 		pthread_exit(0);
 	}
@@ -100,7 +100,7 @@ void	*philosopher(void *arg)
 	t_args	*args;
 
 	args = (t_args *)arg;
-	while (args->must_eat_times)
+	while (args->c.must_eat_times)
 	{	
 		check_death(args);
 		sem_wait(args->lock);
@@ -111,13 +111,13 @@ void	*philosopher(void *arg)
 		sem_post(args->lock);
 		check_death_with_forks(args);
 		print_action(args->print, args->id, EAT, 0);
-		usleep_ms(args->time_to_eat);
+		usleep_ms(args->c.time_to_eat);
 		args->last_meal = get_current_time_ms();
-		args->must_eat_times--;
+		args->c.must_eat_times--;
 		sem_post(args->forks);
 		sem_post(args->forks);
 		print_action(args->print, args->id, SLEEP, 0);
-		usleep_ms (args->time_to_sleep);
+		usleep_ms (args->c.time_to_sleep);
 		print_action(args->print, args->id, THINK, 0);
 	}
 	print_action(args->print, args->id, DONE, 0);

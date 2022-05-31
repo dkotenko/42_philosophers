@@ -34,7 +34,7 @@ void	wait_n_exit(t_args *args)
 {
 	int	status;
 
-	while (args->num-- > 0)
+	while (args->c.p_num-- > 0)
 		wait(&status);
 	exit(0);
 }
