@@ -41,7 +41,7 @@ typedef struct s_const {
 	long long		time_to_sleep;
 	int				must_eat_times;
 	int				p_num;
-} t_const;
+} 					t_const;
 
 typedef struct s_mon_info
 {
@@ -50,24 +50,25 @@ typedef struct s_mon_info
 	int				*is_fork_clean;
 }					t_mon;
 
-typedef struct s_args
+typedef struct s_phi
 {
-	
 	int				id;
 	int				is_alive;
 	int				left_fork;
 	int				right_fork;
 	int				status;
 	long long		last_meal;
-	pthread_mutex_t	*printf_mutex;
-}					t_args;
+}					t_phi;
 
 typedef struct	s_data
 {
-	t_const		c;
-	t_mon		m;
-	t_args		p;
-}				t_data;
+	t_const			*c;
+	t_mon			*mon;
+	t_phi			*phi;
+	pthread_mutex_t	*printf_mutex;
+	pthread_t		*pthread_mon;
+	pthread_t		*pthread_phi;
+}					t_data;
 
 typedef struct s_queue {
 	int *data;  // указатель на данные

@@ -12,65 +12,56 @@
 
 #include "philosophers.h"
 
-void	init_args_n_arr(t_args *args, t_args *arr)
+void	init_data(t_data *data)
 {
-	int	i;
-
-	args->phils = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
+	data->phi = (t_phi *)ft_memalloc(sizeof(t_phi) * (data->c->p_num + 1));
+	data->pthread_phi = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(args->c.p_num + 1));
 	args->printf_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
-	i = 0;
-	while (++i < args->c.p_num + 1)
-	{
-		ft_memcpy(&arr[i], args, sizeof(t_args));
-	}
 }
 
 void	init_monitor(t_data *data)
 {
 	t_mon *info;
 
-	info = (t_mon *)ft_memalloc(sizeof(t_mon));
+	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
 	info->is_alive = (int *)ft_memalloc(data->c.p_num + 1);
 	info->can_eat = (int *)ft_memalloc(data->c.p_num + 1);
 	info->is_fork_clean = (int *)ft_memalloc(data->c.p_num + 1);
-	data->m = info;
-	pthread_create(info, NULL, monitor, info);
 }
 
-void	init_philosophers(t_args *args, t_args *arr)
+void	init_threads(t_args *args, t_args *arr)
 {
 	int		i;
 	
+	pthread_create(info, NULL, monitor, data);
 	i = 0;
-	while (++i < args.num + 1)
+	while (++i < data->c->p_num + 1)
 	{
 		arr[i].id = i;
-		pthread_mutex_init(&args.forks[i], NULL);
 		arr[i].last_meal = get_current_time_ms();
 		pthread_create(&args.phils[i], NULL, philosopher, &arr[i]);
 	}
-	i = 0;
-	pthread_join(monitor, NULL);
-	while (++i < args.num + 1)
-	{
-		pthread_join(args.phils[i], NULL);
-	}
+	
 }
 
 int		main(int ac, char **av)
 {
 	t_data	data;
-	t_args	*p_arr;
-	t_mon	*m;
-	t_const	c;
+	int		i;
 
-	parse_const(&data.c, av, ac);
-	p_arr = (t_args *)ft_memalloc(sizeof(t_args) * (args.num + 1));
-	init_args_n_arr(&args, p_arr);
-	init_monitor(&args);
-	init_philosophers(&args, p_arr);
+	parse_const(&data, av, ac);
+	init_args_n_arr(&data);
+	init_monitor(&data);
+	init_philosophers(&data);
+	i = 0;
+	pthread_join(monitor, NULL);
+	while (++i < data->c->p_num + 1)
+	{
+		pthread_join(args.phils[i], NULL);
+	}
+	
 	exit(0);
 	return (0);
 }
