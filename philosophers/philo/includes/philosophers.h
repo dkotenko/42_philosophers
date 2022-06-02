@@ -65,7 +65,7 @@ typedef struct s_args
 typedef struct	s_data
 {
 	t_const		c;
-	t_mon	m;
+	t_mon		m;
 	t_args		p;
 }				t_data;
 
@@ -82,7 +82,7 @@ void		t_queue_add (t_queue *q, int a);
 int			t_queue_get (t_queue *q);
 
 int			is_integer(char *s, int n);
-void		parse_const(t_args *args, char **av, int ac);
+void		parse_const(t_const *t_const, char **av, int ac)
 /*
  * print.c
  */

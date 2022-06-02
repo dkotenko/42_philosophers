@@ -73,7 +73,7 @@ int	is_integer(char *s, int n)
 	return (1);
 }
 
-void	parse_const(t_args *args, char **av, int ac)
+void	parse_const(t_const *t_const, char **av, int ac)
 {
 	int	i;
 	int	n;

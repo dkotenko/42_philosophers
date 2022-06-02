@@ -18,8 +18,6 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 
 	args->phils = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(args->c.p_num + 1));
-	args->forks = (pthread_mutex_t *)ft_memalloc(sizeof(pthread_mutex_t) * \
-			(args->c.p_num + 1));
 	args->printf_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	i = 0;
@@ -29,11 +27,15 @@ void	init_args_n_arr(t_args *args, t_args *arr)
 	}
 }
 
-void	init_monitor(t_args *args)
+void	init_monitor(t_data *data)
 {
 	t_mon *info;
 
 	info = (t_mon *)ft_memalloc(sizeof(t_mon));
+	info->is_alive = (int *)ft_memalloc(data->c.p_num + 1);
+	info->can_eat = (int *)ft_memalloc(data->c.p_num + 1);
+	info->is_fork_clean = (int *)ft_memalloc(data->c.p_num + 1);
+	data->m = info;
 	pthread_create(info, NULL, monitor, info);
 }
 
@@ -59,16 +61,16 @@ void	init_philosophers(t_args *args, t_args *arr)
 
 int		main(int ac, char **av)
 {
-	t_data	*data;
-	t_args	*arr;
+	t_data	data;
+	t_args	*p_arr;
 	t_mon	*m;
-	t_args	args;
+	t_const	c;
 
-	parse_const(&args, av, ac);
-	arr = (t_args *)ft_memalloc(sizeof(t_args) * (args.num + 1));
-	init_args_n_arr(&args, arr);
+	parse_const(&data.c, av, ac);
+	p_arr = (t_args *)ft_memalloc(sizeof(t_args) * (args.num + 1));
+	init_args_n_arr(&args, p_arr);
 	init_monitor(&args);
-	init_philosophers(&args, arr);
+	init_philosophers(&args, p_arr);
 	exit(0);
 	return (0);
 }

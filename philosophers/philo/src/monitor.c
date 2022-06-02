@@ -48,7 +48,6 @@ void    monitor(void *monitor_info)
                         eat_started_num++;
                         //info->is_fork_clean[info->p_arr[i]->first_fork] = 0;
                         //info->is_fork_clean[info->p_arr[i]->second_fork] = 0;
-                    }
                 }
             } else if (info->p_arr[i]->status == EAT) {
                 if (info->can_eat[i]) {
