@@ -2,7 +2,8 @@
 
 int		is_dead(t_data *data, t_phi *me)
 {
-	return (me->last_meal + data->c->time_to_die <= get_current_time_ms());
+	return (me->last_meal + data->c->time_to_die <= get_current_time_ms() \
+		|| me->status == DEAD);
 }
 
 int		had_a_meal(t_data *data, t_phi *me)
@@ -10,9 +11,11 @@ int		had_a_meal(t_data *data, t_phi *me)
 	long long diff;
 
 	print_action(data->printf_mutex, me->id, EAT, 0);
-	diff = get_current_time_ms() - me->last_meal - data->c->time_to_eat;
+	diff = get_current_time_ms() - me->last_meal - data->c->time_to_die;
 	if (diff >= 0) {
 		usleep_ms(diff);
+		put_forks(me->left_fork, me->right_fork, data->mon);
+		me->status = DEAD;	
 		return (0);
 	} else {
 		usleep_ms(data->c->time_to_eat);
@@ -28,7 +31,7 @@ int		had_a_nap(t_data *data, t_phi *me)
 	long long diff;
 
 	print_action(data->printf_mutex, me->id, SLEEP, 0);
-	diff = get_current_time_ms() - me->last_meal - data->c->time_to_sleep;
+	diff = get_current_time_ms() - me->last_meal - data->c->time_to_die;
 	if (diff >= 0) {
 		usleep_ms(diff);
 		return (0);
@@ -61,13 +64,11 @@ void	*philosopher(void *data_pointer)
 	me = &data->phi[data->my_id];
 	me->id = data->my_id;
 	me->status = THINK;
-	
 	while (me->must_eat_times && me->status != DEAD)
 	{
 		if (is_dead(data, me)) {
 			break;
-		}
-			
+		}	
 		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id)) {
 			continue;
 		}
