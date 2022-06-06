@@ -27,16 +27,6 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-long long	get_current_time_ms(void)
-{
-	struct timeval	te;
-	long long		milliseconds;
-
-	gettimeofday(&te, NULL);
-	milliseconds = te.tv_sec * 1000LL + te.tv_usec / 1000;
-	return (milliseconds);
-}
-
 void	*ft_memalloc(size_t size)
 {
 	void	*a;

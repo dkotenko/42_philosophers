@@ -1,15 +1,12 @@
-SRCS =		parse_const.c \
+SRCS =		parse_arguments.c \
             print.c \
 			ft.c \
 			handle_errors.c \
 			forks.c \
-			queue.c \
-			monitor.c \
-			philosopher.c \
-			time.c
+			philosopher.c
 			
 SRCS_P1 = $(SRCS)
-SRCS_P1 += main.c
+SRCS_P1 += p1.c
 SRCS_P2 = $(SRCS)
 SRCS_P2 += p2.c
 SRCS_P3 = $(SRCS)
@@ -33,7 +30,7 @@ OBJS_P2 = $(addprefix $(OBJS_DIR_P2)/, $(ALL_OBJS_P2))
 OBJS_P3 = $(addprefix $(OBJS_DIR_P3)/, $(ALL_OBJS_P3))
 
 
-NAME_P1 = philo
+NAME_P1 = philo_one
 NAME_P2 = philo_two
 NAME_P3 = philo_three
 

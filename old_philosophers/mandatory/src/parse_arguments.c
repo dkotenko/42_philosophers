@@ -73,7 +73,7 @@ int	is_integer(char *s, int n)
 	return (1);
 }
 
-void	parse_const(t_data *data, char **av, int ac)
+void	parse_arguments(t_p *args, char **av, int ac)
 {
 	int	i;
 	int	n;
@@ -89,13 +89,13 @@ void	parse_const(t_data *data, char **av, int ac)
 		if (!is_integer(av[i], n) || n < 0)
 			handle_error_str("invalid integer: ", av[i]);
 	}
-	data->c = (t_const *)ft_memalloc(sizeof(t_const));
-	data->c->p_num = ft_atoi(av[1]);
-	data->c->time_to_die = (long long)ft_atoi(av[2]);
-	data->c->time_to_eat = (long long)ft_atoi(av[3]);
-	data->c->time_to_sleep = (long long)ft_atoi(av[4]);
+	args->num = ft_atoi(av[1]);
+	args->time_to_die = (long long)ft_atoi(av[2]);
+	args->time_to_eat = (long long)ft_atoi(av[3]);
+	args->time_to_sleep = (long long)ft_atoi(av[4]);
 	if (ac == 6)
-		data->c->must_eat_times = ft_atoi(av[5]);
+		args->must_eat_times = ft_atoi(av[5]);
 	else
-		data->c->must_eat_times = 0x7FFFFFFF;
+		args->must_eat_times = 0x7FFFFFFF;
+	args->last_meal = 0;
 }

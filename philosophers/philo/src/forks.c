@@ -35,13 +35,13 @@ int	get_fork_id(int id, int forks_number, int is_first_fork)
 	return (fork_id);
 }
 
-int	is_forks_taken(t_args *args, int first_fork, int second_fork)
+int	is_forks_taken(t_data *data, int first_fork, int second_fork, int p_id)
 {
-	if (args->monitor->is_fork_clean[first_fork] && \
-		args->monitor->is_fork_clean[second_fork])
-	{
-		print_action(args->printf_mutex, args->id, TAKE_FORK, first_fork);
-		print_action(args->printf_mutex, args->id, TAKE_FORK, second_fork);
+	if (data->mon->can_take_fork[first_fork] == p_id && \
+		data->mon->can_take_fork[second_fork] == p_id)
+	{	
+		print_action(data->printf_mutex, p_id, TAKE_FORK, first_fork);
+		print_action(data->printf_mutex, p_id, TAKE_FORK, second_fork);
 		return (1);
 	}
 	return (0);
@@ -49,11 +49,6 @@ int	is_forks_taken(t_args *args, int first_fork, int second_fork)
 
 void	put_forks(int f1, int f2, t_mon *monitor)
 {
-	monitor->is_fork_clean[f1] = 1;
-	monitor->is_fork_clean[f2] = 1;
-}
-
-void	usleep_ms(long long ms)
-{
-	usleep(ms * 1000);
+	monitor->can_take_fork[f1] = 0;
+	monitor->can_take_fork[f2] = 0;
 }

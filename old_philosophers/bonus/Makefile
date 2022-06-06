@@ -1,15 +1,10 @@
-SRCS =		parse_const.c \
+SRCS =		parse_arguments.c \
             print.c \
 			ft.c \
-			handle_errors.c \
-			forks.c \
-			queue.c \
-			monitor.c \
-			philosopher.c \
-			time.c
+			handle_errors.c
 			
 SRCS_P1 = $(SRCS)
-SRCS_P1 += main.c
+SRCS_P1 += p1.c
 SRCS_P2 = $(SRCS)
 SRCS_P2 += p2.c
 SRCS_P3 = $(SRCS)
@@ -33,7 +28,7 @@ OBJS_P2 = $(addprefix $(OBJS_DIR_P2)/, $(ALL_OBJS_P2))
 OBJS_P3 = $(addprefix $(OBJS_DIR_P3)/, $(ALL_OBJS_P3))
 
 
-NAME_P1 = philo
+NAME_P1 = philo_one
 NAME_P2 = philo_two
 NAME_P3 = philo_three
 
@@ -44,15 +39,15 @@ FLAGS =	-Wall -Wextra -Werror
 
 CC = gcc
 
-all: $(OBJS_DIR_P1) $(NAME_P1)
+all: $(OBJS_DIR_P3) $(NAME_P3)
 
-$(NAME_P1):	$(OBJS_P1)
-	$(CC) $(OBJS_P1) $(FLAGS) -lpthread -o $@
+$(NAME_P3):	$(OBJS_P3)
+	$(CC) $(OBJS_P3) $(FLAGS) -lpthread -o $@
 
-$(OBJS_DIR_P1):
-	/bin/mkdir -p $(OBJS_DIR_P1)
+$(OBJS_DIR_P3):
+	/bin/mkdir -p $(OBJS_DIR_P3)
 
-$(OBJS_DIR_P1)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR_P1)
+$(OBJS_DIR_P3)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR_P3)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -c $< -o $@
 
 clean:

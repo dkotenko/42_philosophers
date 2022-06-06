@@ -65,12 +65,3 @@ void	print_usage(void)
    " [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
 	exit(0);
 }
-
-void	usleep_ms_until(long long ms)
-{
-	long long	curr;
-
-	curr = get_current_time_ms();
-	while (get_current_time_ms() < curr + ms)
-		;
-}

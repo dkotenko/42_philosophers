@@ -24,6 +24,8 @@
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
 
+# define here() printf("here\n")
+
 enum e_actions {
 	TAKE_FORK,
 	EAT,
@@ -47,7 +49,8 @@ typedef struct s_mon_info
 {
 	int				*is_alive;
 	int				*can_eat;
-	int				*is_fork_clean;
+	int				*can_take_fork;
+	int				done_num;
 }					t_mon;
 
 typedef struct s_phi
@@ -57,6 +60,7 @@ typedef struct s_phi
 	int				left_fork;
 	int				right_fork;
 	int				status;
+	int				must_eat_times;
 	long long		last_meal;
 }					t_phi;
 
@@ -65,9 +69,11 @@ typedef struct	s_data
 	t_const			*c;
 	t_mon			*mon;
 	t_phi			*phi;
+	pthread_mutex_t	*done_mutex;
 	pthread_mutex_t	*printf_mutex;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
+	int				my_id;
 }					t_data;
 
 typedef struct s_queue {
@@ -83,7 +89,8 @@ void		t_queue_add (t_queue *q, int a);
 int			t_queue_get (t_queue *q);
 
 int			is_integer(char *s, int n);
-void		parse_const(t_const *t_const, char **av, int ac)
+int			is_forks_taken(t_data *data, int first_fork, \
+	int second_fork, int p_id);
 /*
  * print.c
  */
@@ -97,7 +104,6 @@ void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
 void		print_action(pthread_mutex_t *m, int phil_num, int action,
 				int fork_id);
-void		print_usage(void);
 
 /*
  * ft.c
@@ -114,10 +120,20 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
 void		*philosopher(void *num);
 
 /*
+ * monitor.c
+ */
+
+void    	*monitor(void *data_pointer);
+
+/*
  * forks.c
  */
 void		put_forks(int f1, int f2, t_mon *monitor);
-int			is_forks_taken(t_args *args, int first_fork, int second_fork);
 int			get_fork_id(int id, int forks_number, int is_first_fork);
 void		usleep_ms(long long ms);
+
+/*
+ * parse_const.c
+ */
+void	parse_const(t_data *data, char **av, int ac);
 #endif

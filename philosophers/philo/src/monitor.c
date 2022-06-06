@@ -10,51 +10,57 @@ int is_all_status(int *states, int state, int p_num)
     return (1);
 }
 
-void    populate_queue(t_queue *q)
+void    print_queue(t_queue *q)
 {
     int i;
 
     i = 0;
-    while (i < q->count)
-    {
-        q->data[i] = i + 1;
+    while (i < q->count) {
+        printf("%d ", q->data[i++]);
+    }
+    printf("\n");
+}
+
+void    populate_queue(t_queue *q, int size)
+{
+    int i;
+
+    i = 0;
+    while (i < size)
+    {   
+        t_queue_add(q, i + 1);
         i++;
     }
 }
 
-void    monitor(void *monitor_info)
+void    *monitor(void *data_pointer)
 {
-    t_mon *info;
+    t_data *data;
     int i;
     int j;
     int eat_started_num;
-    int id;
 
-    info = (t_mon *)monitor_info;
-    t_queue *q = t_queue_init(info->p_num);
-    populate_queue(q);
+    data = (t_data *)data_pointer;
+    t_queue *q = t_queue_init(data->c->p_num);
+    populate_queue(q, data->c->p_num);
 
-    while (!is_all_status(info->status, DEAD, info->p_num) && \
-    !is_all_status(info->status, DONE, info->p_num)) {
+    while (data->mon->done_num < data->c->p_num) {
+        //print_queue(q);
         eat_started_num = 0;
-        i = 0;
-        while (++j < info->p_num + 1 && eat_started_num <= info->p_num / 2 ) {
+        j = 0;
+        while (++j < data->c->p_num + 1 && eat_started_num <= data->c->p_num / 2 ) {
             i = q->data[j];
-            if (info->p_arr[q->data[i]]->status == THINK) {
-                if (info->is_fork_clean[info->p_arr[i]->first_fork] &&
-                    info->is_fork_clean[info->p_arr[i]->second_fork]) {
-                        info->can_eat[i] = 1;
+            if (data->phi[i].status == THINK) {
+                if (data->mon->can_take_fork[data->phi[i].left_fork] == 0 &&
+                    data->mon->can_take_fork[data->phi[i].right_fork] == 0) {
+                        
+                        data->mon->can_take_fork[data->phi[i].left_fork] = data->phi[i].id;
+                        data->mon->can_take_fork[data->phi[i].right_fork] = data->phi[i].id;
                         t_queue_add(q, t_queue_get(q));
                         eat_started_num++;
-                        //info->is_fork_clean[info->p_arr[i]->first_fork] = 0;
-                        //info->is_fork_clean[info->p_arr[i]->second_fork] = 0;
-                }
-            } else if (info->p_arr[i]->status == EAT) {
-                if (info->can_eat[i]) {
-                    info->can_eat[i] = 0;
                 }
             }
         }
-        
     }
+    return (0);
 }
