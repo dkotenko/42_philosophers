@@ -1,4 +1,5 @@
 #include "philosophers.h"
+#include <limits.h>
 
 int		is_dead(t_data *data, t_phi *me)
 {
@@ -50,6 +51,7 @@ void	set_final_status(t_data *data, t_phi *me)
 		me->status = DONE;
 		print_action(data->printf_mutex, me->id, DONE, 0);
 	}
+	me->last_meal = LLONG_MAX;
 	pthread_mutex_lock(data->done_mutex);
 	data->mon->done_num++;
 	pthread_mutex_unlock(data->done_mutex);

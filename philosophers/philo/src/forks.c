@@ -14,25 +14,14 @@
 
 int	get_fork_id(int id, int forks_number, int is_first_fork)
 {
-	int	fork_id;
-
-	if (id % 2)
-	{
-		if (is_first_fork)
-			fork_id = id + 1;
-		else
-			fork_id = id;
+	if (is_first_fork) {
+		return id;
+	} else {
+		if (id == forks_number) {
+			return (1);
+		}
+		return id + 1;
 	}
-	else
-	{
-		if (is_first_fork)
-			fork_id = id;
-		else
-			fork_id = id + 1;
-	}
-	if (fork_id > forks_number)
-		fork_id -= forks_number;
-	return (fork_id);
 }
 
 int	is_forks_taken(t_data *data, int first_fork, int second_fork, int p_id)
@@ -51,4 +40,10 @@ void	put_forks(int f1, int f2, t_mon *monitor)
 {
 	monitor->can_take_fork[f1] = 0;
 	monitor->can_take_fork[f2] = 0;
+}
+
+void	take_forks(int f1, int f2, int id, t_mon *monitor)
+{
+	monitor->can_take_fork[f1] = id;
+	monitor->can_take_fork[f2] = id;
 }

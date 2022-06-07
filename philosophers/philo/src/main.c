@@ -27,10 +27,10 @@ void	init_data(t_data *data)
 void	init_monitor(t_data *data)
 {
 	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
-	data->mon->is_alive = (int *)ft_memalloc(sizeof(int) * data->c->p_num + 1);
-	data->mon->can_eat = (int *)ft_memalloc(sizeof(int) * data->c->p_num + 1);
+	data->mon->is_alive = (int *)ft_memalloc(sizeof(int) * (data->c->p_num + 1));
+	data->mon->can_eat = (int *)ft_memalloc(sizeof(int) * (data->c->p_num + 1));
 	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) *\
-	 data->c->p_num + 1);
+	 (data->c->p_num + 1));
 	pthread_create(data->pthread_mon, NULL, monitor, data);
 }
 
@@ -76,6 +76,7 @@ int		main(int ac, char **av)
 	{
 		pthread_join(data.pthread_phi[i], NULL);
 	}
+	
 	exit(0);
 	return (0);
 }
