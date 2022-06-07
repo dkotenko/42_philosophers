@@ -51,6 +51,7 @@ typedef struct s_mon_info
 	int				*can_eat;
 	int				*can_take_fork;
 	int				done_num;
+	int				dead_num;
 }					t_mon;
 
 typedef struct s_phi
@@ -70,6 +71,7 @@ typedef struct	s_data
 	t_mon			*mon;
 	t_phi			*phi;
 	pthread_mutex_t	*done_mutex;
+	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*printf_mutex;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;

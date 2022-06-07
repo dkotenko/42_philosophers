@@ -40,7 +40,7 @@ NAME_P3 = philo_three
 INCLUDES_DIR = includes
 INCLUDES =	$(INCLUDES_DIR)/philosophers.h
 
-FLAGS =	-Wall -Wextra -Werror
+FLAGS =	-Wall -Wextra -Werror -pg
 
 CC = gcc
 

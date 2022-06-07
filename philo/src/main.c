@@ -22,6 +22,8 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->done_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
+	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t));
 }
 
 void	init_monitor(t_data *data)
@@ -70,13 +72,14 @@ int		main(int ac, char **av)
 	i = 0;
 	pthread_mutex_init(data.printf_mutex, NULL);
 	pthread_mutex_init(data.done_mutex, NULL);
+	pthread_mutex_init(data.dead_mutex, NULL);
 	pthread_join(*data.pthread_mon, NULL);
 	
 	while (++i < data.c->p_num + 1)
 	{
 		pthread_join(data.pthread_phi[i], NULL);
 	}
-	
+	printf("Result: %d / %d alive\n", data.c->p_num - data.mon->dead_num, data.c->p_num);
 	exit(0);
 	return (0);
 }

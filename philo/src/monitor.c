@@ -81,12 +81,15 @@ void    *monitor(void *data_pointer)
     int i;
     int j;
     int *arr;
+    int started_meal;
     
     data = (t_data *)data_pointer;
     arr = init_arr(data);
+    long long counter = 0;
     while (data->mon->done_num < data->c->p_num) {
         j = -1;
-        while (++j < data->c->p_num / 2 ) {
+        started_meal = 0;
+        while (++j < data->c->p_num && started_meal < data->c->p_num / 2 ) {
             i = arr[j];
             //printf("%d %d\n", data->mon->can_take_fork[1],data->mon->can_take_fork[2]);
             if (data->phi[i].status == THINK) {
@@ -95,11 +98,15 @@ void    *monitor(void *data_pointer)
                         take_forks(data->phi[i].left_fork,\
                          data->phi[i].right_fork, i, data->mon);
                         data->phi[i].status = EAT;
+                        started_meal++;
                 }
             }
         }
+        if (counter++ == 100) {
+            bubble_sort(arr, data->c->p_num, data->phi);
+        }
         //quicksort(arr, data->c->p_num, data->phi);
-        bubble_sort(arr, data->c->p_num, data->phi);
+        
     }
     return (0);
 }

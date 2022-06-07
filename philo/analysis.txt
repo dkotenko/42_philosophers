@@ -1,0 +1,306 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ns/call  ns/call  name    
+ 89.59      2.91     2.91                             monitor
+  5.23      3.08     0.17 26312122     6.46     6.46  get_current_time_ms
+  2.16      3.15     0.07 26311829     2.66     9.13  is_dead
+  2.16      3.22     0.07                             philosopher
+  0.92      3.25     0.03 26311824     1.14     1.14  is_forks_taken
+  0.00      3.25     0.00      190     0.00     6.46  print_action
+  0.00      3.25     0.00       68     0.00     0.00  usleep_ms
+  0.00      3.25     0.00       41     0.00    17.19  had_a_meal
+  0.00      3.25     0.00       40     0.00     6.46  print_action_more
+  0.00      3.25     0.00       27     0.00    12.93  had_a_nap
+  0.00      3.25     0.00       27     0.00     0.00  put_forks
+  0.00      3.25     0.00       27     0.00     0.00  take_forks
+  0.00      3.25     0.00       13     0.00     0.00  ft_memset
+  0.00      3.25     0.00       12     0.00     0.00  ft_memalloc
+  0.00      3.25     0.00       10     0.00     0.00  ft_atoi
+  0.00      3.25     0.00       10     0.00     0.00  get_fork_id
+  0.00      3.25     0.00        5     0.00     0.00  ft_ilen
+  0.00      3.25     0.00        5     0.00     0.00  ft_isdigit
+  0.00      3.25     0.00        5     0.00     0.00  ft_memcpy
+  0.00      3.25     0.00        5     0.00     0.00  ft_strlen
+  0.00      3.25     0.00        5     0.00     0.00  is_integer
+  0.00      3.25     0.00        5     0.00    15.59  set_final_status
+  0.00      3.25     0.00        1     0.00     0.00  init_data
+  0.00      3.25     0.00        1     0.00     0.00  init_monitor
+  0.00      3.25     0.00        1     0.00    32.32  init_philosophers
+  0.00      3.25     0.00        1     0.00     0.00  parse_const
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.31% of 3.25 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     89.5    2.91    0.00                 monitor [1]
+                0.00    0.00      27/27          take_forks [15]
+-----------------------------------------------
+                                                 <spontaneous>
+[2]     10.5    0.07    0.27                 philosopher [2]
+                0.07    0.17 26311824/26311829     is_dead [3]
+                0.03    0.00 26311824/26311824     is_forks_taken [5]
+                0.00    0.00      41/41          had_a_meal [7]
+                0.00    0.00      27/27          had_a_nap [8]
+                0.00    0.00      35/190         print_action [6]
+                0.00    0.00       5/5           set_final_status [10]
+-----------------------------------------------
+                0.00    0.00       5/26311829     set_final_status [10]
+                0.07    0.17 26311824/26311829     philosopher [2]
+[3]      7.4    0.07    0.17 26311829         is_dead [3]
+                0.17    0.00 26311832/26312122     get_current_time_ms [4]
+-----------------------------------------------
+                0.00    0.00       5/26312122     init_philosophers [11]
+                0.00    0.00      27/26312122     had_a_nap [8]
+                0.00    0.00      40/26312122     print_action_more [9]
+                0.00    0.00      68/26312122     had_a_meal [7]
+                0.00    0.00     150/26312122     print_action [6]
+                0.17    0.00 26311832/26312122     is_dead [3]
+[4]      5.2    0.17    0.00 26312122         get_current_time_ms [4]
+-----------------------------------------------
+                0.03    0.00 26311824/26311824     philosopher [2]
+[5]      0.9    0.03    0.00 26311824         is_forks_taken [5]
+                0.00    0.00      82/190         print_action [6]
+-----------------------------------------------
+                0.00    0.00       5/190         set_final_status [10]
+                0.00    0.00      27/190         had_a_nap [8]
+                0.00    0.00      35/190         philosopher [2]
+                0.00    0.00      41/190         had_a_meal [7]
+                0.00    0.00      82/190         is_forks_taken [5]
+[6]      0.0    0.00    0.00     190         print_action [6]
+                0.00    0.00     150/26312122     get_current_time_ms [4]
+                0.00    0.00      40/40          print_action_more [9]
+-----------------------------------------------
+                0.00    0.00      41/41          philosopher [2]
+[7]      0.0    0.00    0.00      41         had_a_meal [7]
+                0.00    0.00      68/26312122     get_current_time_ms [4]
+                0.00    0.00      41/190         print_action [6]
+                0.00    0.00      41/68          usleep_ms [13]
+                0.00    0.00      27/27          put_forks [14]
+-----------------------------------------------
+                0.00    0.00      27/27          philosopher [2]
+[8]      0.0    0.00    0.00      27         had_a_nap [8]
+                0.00    0.00      27/26312122     get_current_time_ms [4]
+                0.00    0.00      27/190         print_action [6]
+                0.00    0.00      27/68          usleep_ms [13]
+-----------------------------------------------
+                0.00    0.00      40/40          print_action [6]
+[9]      0.0    0.00    0.00      40         print_action_more [9]
+                0.00    0.00      40/26312122     get_current_time_ms [4]
+-----------------------------------------------
+                0.00    0.00       5/5           philosopher [2]
+[10]     0.0    0.00    0.00       5         set_final_status [10]
+                0.00    0.00       5/26311829     is_dead [3]
+                0.00    0.00       5/190         print_action [6]
+-----------------------------------------------
+                0.00    0.00       1/1           main [12]
+[11]     0.0    0.00    0.00       1         init_philosophers [11]
+                0.00    0.00       5/26312122     get_current_time_ms [4]
+                0.00    0.00      10/10          get_fork_id [19]
+                0.00    0.00       5/5           ft_memcpy [22]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     0.0    0.00    0.00                 main [12]
+                0.00    0.00       1/1           init_philosophers [11]
+                0.00    0.00       1/13          ft_memset [16]
+                0.00    0.00       1/1           init_data [25]
+                0.00    0.00       1/1           parse_const [27]
+                0.00    0.00       1/1           init_monitor [26]
+                0.00    0.00       1/12          ft_memalloc [17]
+-----------------------------------------------
+                0.00    0.00      27/68          had_a_nap [8]
+                0.00    0.00      41/68          had_a_meal [7]
+[13]     0.0    0.00    0.00      68         usleep_ms [13]
+-----------------------------------------------
+                0.00    0.00      27/27          had_a_meal [7]
+[14]     0.0    0.00    0.00      27         put_forks [14]
+-----------------------------------------------
+                0.00    0.00      27/27          monitor [1]
+[15]     0.0    0.00    0.00      27         take_forks [15]
+-----------------------------------------------
+                0.00    0.00       1/13          main [12]
+                0.00    0.00      12/13          ft_memalloc [17]
+[16]     0.0    0.00    0.00      13         ft_memset [16]
+-----------------------------------------------
+                0.00    0.00       1/12          parse_const [27]
+                0.00    0.00       1/12          main [12]
+                0.00    0.00       4/12          init_monitor [26]
+                0.00    0.00       6/12          init_data [25]
+[17]     0.0    0.00    0.00      12         ft_memalloc [17]
+                0.00    0.00      12/13          ft_memset [16]
+-----------------------------------------------
+                0.00    0.00      10/10          parse_const [27]
+[18]     0.0    0.00    0.00      10         ft_atoi [18]
+-----------------------------------------------
+                0.00    0.00      10/10          init_philosophers [11]
+[19]     0.0    0.00    0.00      10         get_fork_id [19]
+-----------------------------------------------
+                0.00    0.00       5/5           is_integer [24]
+[20]     0.0    0.00    0.00       5         ft_ilen [20]
+-----------------------------------------------
+                0.00    0.00       5/5           is_integer [24]
+[21]     0.0    0.00    0.00       5         ft_isdigit [21]
+-----------------------------------------------
+                0.00    0.00       5/5           init_philosophers [11]
+[22]     0.0    0.00    0.00       5         ft_memcpy [22]
+-----------------------------------------------
+                0.00    0.00       5/5           is_integer [24]
+[23]     0.0    0.00    0.00       5         ft_strlen [23]
+-----------------------------------------------
+                0.00    0.00       5/5           parse_const [27]
+[24]     0.0    0.00    0.00       5         is_integer [24]
+                0.00    0.00       5/5           ft_strlen [23]
+                0.00    0.00       5/5           ft_isdigit [21]
+                0.00    0.00       5/5           ft_ilen [20]
+-----------------------------------------------
+                0.00    0.00       1/1           main [12]
+[25]     0.0    0.00    0.00       1         init_data [25]
+                0.00    0.00       6/12          ft_memalloc [17]
+-----------------------------------------------
+                0.00    0.00       1/1           main [12]
+[26]     0.0    0.00    0.00       1         init_monitor [26]
+                0.00    0.00       4/12          ft_memalloc [17]
+-----------------------------------------------
+                0.00    0.00       1/1           main [12]
+[27]     0.0    0.00    0.00       1         parse_const [27]
+                0.00    0.00      10/10          ft_atoi [18]
+                0.00    0.00       5/5           is_integer [24]
+                0.00    0.00       1/12          ft_memalloc [17]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [18] ft_atoi                 [7] had_a_meal             [27] parse_const
+  [20] ft_ilen                 [8] had_a_nap               [2] philosopher
+  [21] ft_isdigit             [25] init_data               [6] print_action
+  [17] ft_memalloc            [26] init_monitor            [9] print_action_more
+  [22] ft_memcpy              [11] init_philosophers      [14] put_forks
+  [16] ft_memset               [3] is_dead                [10] set_final_status
+  [23] ft_strlen               [5] is_forks_taken         [15] take_forks
+   [4] get_current_time_ms    [24] is_integer             [13] usleep_ms
+  [19] get_fork_id             [1] monitor
