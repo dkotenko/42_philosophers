@@ -75,6 +75,18 @@ void    bubble_sort(int *arr, int size, t_phi *phi)
     }
 }
 
+void    set_meal_started(t_data *data, int val)
+{
+    pthread_mutex_lock(data->meal_mutex);
+    data->mon->meal_started = val;
+    pthread_mutex_unlock(data->meal_mutex);
+}
+
+void    book_fork()
+{
+    
+}
+
 void    *monitor(void *data_pointer)
 {
     t_data *data;
@@ -85,11 +97,17 @@ void    *monitor(void *data_pointer)
     
     data = (t_data *)data_pointer;
     arr = init_arr(data);
-    long long counter = 0;
     while (data->mon->done_num < data->c->p_num) {
+        if (data->mon->meal_started) {
+            bubble_sort(arr, data->c->p_num, data->phi);
+            set_meal_started(data, 0);
+        }
         j = -1;
         started_meal = 0;
         while (++j < data->c->p_num && started_meal < data->c->p_num / 2 ) {
+            if (data->mon->meal_started) {
+                break ;
+            }
             i = arr[j];
             //printf("%d %d\n", data->mon->can_take_fork[1],data->mon->can_take_fork[2]);
             if (data->phi[i].status == THINK) {
@@ -102,11 +120,8 @@ void    *monitor(void *data_pointer)
                 }
             }
         }
-        if (counter++ == 100) {
-            bubble_sort(arr, data->c->p_num, data->phi);
-        }
-        //quicksort(arr, data->c->p_num, data->phi);
         
     }
+        //quicksort(arr, data->c->p_num, data->phi);
     return (0);
 }

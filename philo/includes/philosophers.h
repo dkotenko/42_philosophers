@@ -52,6 +52,7 @@ typedef struct s_mon_info
 	int				*can_take_fork;
 	int				done_num;
 	int				dead_num;
+	int				meal_started;
 }					t_mon;
 
 typedef struct s_phi
@@ -73,6 +74,7 @@ typedef struct	s_data
 	pthread_mutex_t	*done_mutex;
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*printf_mutex;
+	pthread_mutex_t	*meal_mutex;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
 	int				my_id;
@@ -120,7 +122,7 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
  * main.c
  */
 void		*philosopher(void *num);
-
+void    set_meal_started(t_data *data, int val);
 /*
  * monitor.c
  */

@@ -24,6 +24,8 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
+	data->meal_mutex = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t));
 }
 
 void	init_monitor(t_data *data)
@@ -73,6 +75,7 @@ int		main(int ac, char **av)
 	pthread_mutex_init(data.printf_mutex, NULL);
 	pthread_mutex_init(data.done_mutex, NULL);
 	pthread_mutex_init(data.dead_mutex, NULL);
+	pthread_mutex_init(data.meal_mutex, NULL);
 	pthread_join(*data.pthread_mon, NULL);
 	
 	while (++i < data.c->p_num + 1)

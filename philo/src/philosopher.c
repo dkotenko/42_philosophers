@@ -13,6 +13,8 @@ int		had_a_meal(t_data *data, t_phi *me)
 
 	print_action(data->printf_mutex, me->id, EAT, 0);
 	diff = get_current_time_ms() - me->last_meal - data->c->time_to_die;
+	me->last_meal = get_current_time_ms();
+	set_meal_started(data, 1);
 	if (diff >= 0) {
 		usleep_ms(diff);
 		put_forks(me->left_fork, me->right_fork, data->mon);
@@ -21,7 +23,7 @@ int		had_a_meal(t_data *data, t_phi *me)
 	} else {
 		usleep_ms(data->c->time_to_eat);
 	}
-	me->last_meal = get_current_time_ms();
+	
 	put_forks(me->left_fork, me->right_fork, data->mon);
 	me->must_eat_times--;
 	return (1);
