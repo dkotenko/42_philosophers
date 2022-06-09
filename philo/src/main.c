@@ -26,7 +26,9 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->meal_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
-	data->forks_mutex = (pthread_mutex_t *)ft_memalloc(
+	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
+	data->printf_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
 }
 
@@ -63,10 +65,18 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 
 void	init_mutexes(t_data *data)
 {
+	int	i;
+
 	pthread_mutex_init(data->printf_mutex, NULL);
 	pthread_mutex_init(data->done_mutex, NULL);
 	pthread_mutex_init(data->dead_mutex, NULL);
 	pthread_mutex_init(data->meal_mutex, NULL);
+	i = 0;
+	while (++i < data->c->p_num + 1) {
+		pthread_mutex_init(&data->forks_mutexes[i], NULL);
+		pthread_mutex_init(&data->printf_mutexes[i], NULL);
+	}
+
 }
 
 int		main(int ac, char **av)

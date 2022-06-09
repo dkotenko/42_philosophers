@@ -75,7 +75,8 @@ typedef struct	s_data
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*printf_mutex;
 	pthread_mutex_t	*meal_mutex;
-	pthread_mutex_t *forks_mutex;
+	pthread_mutex_t *forks_mutexes;
+	pthread_mutex_t *printf_mutexes;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
 	int				my_id;

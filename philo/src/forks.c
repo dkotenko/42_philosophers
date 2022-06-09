@@ -38,12 +38,21 @@ int	is_forks_taken(t_data *data, int left_fork, int right_fork, int p_id)
 
 int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 {
-	(void)p_id;
-	if (!pthread_mutex_lock(&data->forks_mutex[left_fork])) {
-		if (!pthread_mutex_lock(&data->forks_mutex[right_fork])) {
-			return (1);
-		} else {
-			pthread_mutex_unlock(&data->forks_mutex[left_fork]);
+	if (p_id < data->c->p_num) {
+		if (!pthread_mutex_lock(&data->forks_mutexes[left_fork])) {
+			if (!pthread_mutex_lock(&data->forks_mutexes[right_fork])) {
+				return (1);
+			} else {
+				pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
+			}
+		}
+	} else {
+		if (!pthread_mutex_lock(&data->forks_mutexes[right_fork])) {
+			if (!pthread_mutex_lock(&data->forks_mutexes[left_fork])) {
+				return (1);
+			} else {
+				pthread_mutex_unlock(&data->forks_mutexes[right_fork]);
+			}
 		}
 	}
 	return (0);
@@ -51,13 +60,8 @@ int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 
 void	put_forks(int left_fork, int right_fork, t_data *data)
 {
-	pthread_mutex_unlock(&data->forks_mutex[left_fork]);
-	pthread_mutex_unlock(&data->forks_mutex[right_fork]);
-	/*
-	data->mon->can_take_fork[f1] = 0;
-	data->mon->can_take_fork[f2] = 0;
-	set_meal_ended(data, 1);
-	*/
+	pthread_mutex_unlock(&data->forks_mutexes[right_fork]);
+	pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
 }
 
 void	give_forks(int f1, int f2, int id, t_mon *monitor)
