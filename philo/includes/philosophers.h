@@ -52,7 +52,7 @@ typedef struct s_mon_info
 	int				*can_take_fork;
 	int				done_num;
 	int				dead_num;
-	int				meal_started;
+	int				meal_ended;
 }					t_mon;
 
 typedef struct s_phi
@@ -75,6 +75,7 @@ typedef struct	s_data
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*printf_mutex;
 	pthread_mutex_t	*meal_mutex;
+	pthread_mutex_t *forks_mutex;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
 	int				my_id;
@@ -93,8 +94,8 @@ void		t_queue_add (t_queue *q, int a);
 int			t_queue_get (t_queue *q);
 
 int			is_integer(char *s, int n);
-int			is_forks_taken(t_data *data, int first_fork, \
-	int second_fork, int p_id);
+int			is_forks_taken(t_data *data, int left_fork, \
+	int right_fork, int p_id);
 /*
  * print.c
  */
@@ -122,7 +123,7 @@ void		*ft_memcpy(void *dest, const void *src, size_t n);
  * main.c
  */
 void		*philosopher(void *num);
-void    set_meal_started(t_data *data, int val);
+void    set_meal_ended(t_data *data, int val);
 /*
  * monitor.c
  */
@@ -132,13 +133,14 @@ void    	*monitor(void *data_pointer);
 /*
  * forks.c
  */
-void		put_forks(int f1, int f2, t_mon *monitor);
-int			get_fork_id(int id, int forks_number, int is_first_fork);
+void		put_forks(int f1, int f2, t_data *data);
+int			get_fork_id(int id, int forks_number, int is_left_fork);
 void		usleep_ms(long long ms);
-void		take_forks(int f1, int f2, int id, t_mon *monitor);
+void		give_forks(int f1, int f2, int id, t_mon *monitor);
 
 /*
  * parse_const.c
  */
 void	parse_const(t_data *data, char **av, int ac);
+int		take_forks(t_data *data, int left_fork, int right_fork, int p_id);
 #endif

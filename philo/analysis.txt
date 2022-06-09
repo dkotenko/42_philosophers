@@ -9,12 +9,12 @@ Each sample counts as 0.01 seconds.
   0.53      3.77     0.02  9974477     2.01    10.03  is_dead
   0.00      3.77     0.00      156     0.00     8.02  print_action
   0.00      3.77     0.00       92     0.00     0.00  swap
-  0.00      3.77     0.00       57     0.00     0.00  set_meal_started
+  0.00      3.77     0.00       57     0.00     0.00  set_meal_ended
   0.00      3.77     0.00       51     0.00     0.00  usleep_ms
   0.00      3.77     0.00       39     0.00     8.02  print_action_more
   0.00      3.77     0.00       33     0.00    24.07  had_a_meal
   0.00      3.77     0.00       24     0.00     0.00  bubble_sort
-  0.00      3.77     0.00       19     0.00     0.00  take_forks
+  0.00      3.77     0.00       19     0.00     0.00  give_forks
   0.00      3.77     0.00       18     0.00    16.05  had_a_nap
   0.00      3.77     0.00       18     0.00     0.00  put_forks
   0.00      3.77     0.00       14     0.00     0.00  ft_memset
@@ -74,8 +74,8 @@ index % time    self  children    called     name
                                                  <spontaneous>
 [1]     95.8    3.61    0.00                 monitor [1]
                 0.00    0.00      24/24          bubble_sort [16]
-                0.00    0.00      24/57          set_meal_started [14]
-                0.00    0.00      19/19          take_forks [17]
+                0.00    0.00      24/57          set_meal_ended [14]
+                0.00    0.00      19/19          give_forks [17]
 -----------------------------------------------
                                                  <spontaneous>
 [2]      4.2    0.00    0.16                 philosopher [2]
@@ -116,7 +116,7 @@ index % time    self  children    called     name
 [7]      0.0    0.00    0.00      33         had_a_meal [7]
                 0.00    0.00      66/9974723     get_current_time_ms [4]
                 0.00    0.00      33/156         print_action [6]
-                0.00    0.00      33/57          set_meal_started [14]
+                0.00    0.00      33/57          set_meal_ended [14]
                 0.00    0.00      33/51          usleep_ms [15]
                 0.00    0.00      18/18          put_forks [18]
 -----------------------------------------------
@@ -155,7 +155,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00      24/57          monitor [1]
                 0.00    0.00      33/57          had_a_meal [7]
-[14]     0.0    0.00    0.00      57         set_meal_started [14]
+[14]     0.0    0.00    0.00      57         set_meal_ended [14]
 -----------------------------------------------
                 0.00    0.00      18/51          had_a_nap [9]
                 0.00    0.00      33/51          had_a_meal [7]
@@ -166,7 +166,7 @@ index % time    self  children    called     name
                 0.00    0.00      92/92          swap [13]
 -----------------------------------------------
                 0.00    0.00      19/19          monitor [1]
-[17]     0.0    0.00    0.00      19         take_forks [17]
+[17]     0.0    0.00    0.00      19         give_forks [17]
 -----------------------------------------------
                 0.00    0.00      18/18          had_a_meal [7]
 [18]     0.0    0.00    0.00      18         put_forks [18]
@@ -315,9 +315,9 @@ Index by function name
   [21] ft_atoi                 [9] had_a_nap               [8] print_action_more
   [23] ft_ilen                [28] init_data              [18] put_forks
   [24] ft_isdigit             [29] init_monitor           [10] set_final_status
-  [20] ft_memalloc            [11] init_philosophers      [14] set_meal_started
+  [20] ft_memalloc            [11] init_philosophers      [14] set_meal_ended
   [25] ft_memcpy               [3] is_dead                [13] swap
-  [19] ft_memset               [5] is_forks_taken         [17] take_forks
+  [19] ft_memset               [5] is_forks_taken         [17] give_forks
   [26] ft_strlen              [27] is_integer             [15] usleep_ms
    [4] get_current_time_ms     [1] monitor
   [22] get_fork_id            [30] parse_const

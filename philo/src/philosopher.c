@@ -14,17 +14,15 @@ int		had_a_meal(t_data *data, t_phi *me)
 	print_action(data->printf_mutex, me->id, EAT, 0);
 	diff = get_current_time_ms() - me->last_meal - data->c->time_to_die;
 	me->last_meal = get_current_time_ms();
-	set_meal_started(data, 1);
 	if (diff >= 0) {
 		usleep_ms(diff);
-		put_forks(me->left_fork, me->right_fork, data->mon);
-		me->status = DEAD;	
+		put_forks(me->left_fork, me->right_fork, data);
+		me->status = DEAD;
 		return (0);
 	} else {
 		usleep_ms(data->c->time_to_eat);
 	}
-	
-	put_forks(me->left_fork, me->right_fork, data->mon);
+	put_forks(me->left_fork, me->right_fork, data);
 	me->must_eat_times--;
 	return (1);
 }
@@ -47,6 +45,7 @@ int		had_a_nap(t_data *data, t_phi *me)
 void	set_final_status(t_data *data, t_phi *me)
 {
 	if (is_dead(data, me)) {
+		exit(0);
 		me->status = DEAD;
 		print_action(data->printf_mutex, me->id, DEAD, 0);
 		pthread_mutex_lock(data->dead_mutex);
@@ -75,10 +74,14 @@ void	*philosopher(void *data_pointer)
 	{
 		if (is_dead(data, me)) {
 			break;
-		}	
+		}
+		while (!take_forks(data, me->left_fork, me->right_fork, me->id))
+			;
+		/*
 		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id)) {
 			continue;
 		}
+		*/
 		if (!had_a_meal(data, me))
 			break;
 		if (!had_a_nap(data, me)) {

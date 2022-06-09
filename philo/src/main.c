@@ -26,6 +26,8 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->meal_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
+	data->forks_mutex = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
 }
 
 void	init_monitor(t_data *data)
@@ -59,6 +61,14 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 	}
 }
 
+void	init_mutexes(t_data *data)
+{
+	pthread_mutex_init(data->printf_mutex, NULL);
+	pthread_mutex_init(data->done_mutex, NULL);
+	pthread_mutex_init(data->dead_mutex, NULL);
+	pthread_mutex_init(data->meal_mutex, NULL);
+}
+
 int		main(int ac, char **av)
 {
 	t_data	data;
@@ -72,10 +82,8 @@ int		main(int ac, char **av)
 	data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 	init_philosophers(&data, data_arr);
 	i = 0;
-	pthread_mutex_init(data.printf_mutex, NULL);
-	pthread_mutex_init(data.done_mutex, NULL);
-	pthread_mutex_init(data.dead_mutex, NULL);
-	pthread_mutex_init(data.meal_mutex, NULL);
+	init_mutexes(&data);
+	
 	pthread_join(*data.pthread_mon, NULL);
 	
 	while (++i < data.c->p_num + 1)
