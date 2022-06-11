@@ -37,6 +37,11 @@ enum e_actions {
 	E_ACTIONS_NUM
 };
 
+enum e_foks_states {
+	DIRTY,
+	CLEAN
+};
+
 typedef struct s_const {
 	long long		time_to_die;
 	long long		time_to_eat;
@@ -77,6 +82,7 @@ typedef struct	s_data
 	pthread_mutex_t	*meal_mutex;
 	pthread_mutex_t *forks_mutexes;
 	pthread_mutex_t *printf_mutexes;
+	int				*forks_status;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
 	int				my_id;

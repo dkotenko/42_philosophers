@@ -95,13 +95,13 @@ void    *monitor(void *data_pointer)
     int j;
     int *arr;
     int started_meal;
-    return 0;
+    
     data = (t_data *)data_pointer;
     arr = init_arr(data);
     while (data->mon->done_num < data->c->p_num) {
         if (data->mon->meal_ended) {
             
-            quicksort(arr, data->c->p_num, data->phi);
+            quicksort(arr, data->c->p_num / 2, data->phi);
             set_meal_ended(data, 0);
         }
         j = -1;

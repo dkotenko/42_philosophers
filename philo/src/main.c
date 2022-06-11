@@ -30,6 +30,8 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
 	data->printf_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
+	data->forks_status = (int *)ft_memalloc(
+			sizeof(int) * (data->c->p_num + 1));
 }
 
 void	init_monitor(t_data *data)
@@ -61,6 +63,10 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 		data_arr[i].my_id = i;
 		pthread_create(&data->pthread_phi[i], NULL, philosopher, &data_arr[i]);
 	}
+	
+	i = data->phi[data->c->p_num].left_fork;
+	data->phi[data->c->p_num].left_fork = data->phi[data->c->p_num].right_fork;
+	data->phi[data->c->p_num].right_fork = i;
 }
 
 void	init_mutexes(t_data *data)
@@ -91,11 +97,11 @@ int		main(int ac, char **av)
 	init_monitor(&data);
 	data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 	init_philosophers(&data, data_arr);
-	i = 0;
+	
 	init_mutexes(&data);
 	
 	pthread_join(*data.pthread_mon, NULL);
-	
+	i = 0;
 	while (++i < data.c->p_num + 1)
 	{
 		pthread_join(data.pthread_phi[i], NULL);

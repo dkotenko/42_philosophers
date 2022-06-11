@@ -74,13 +74,15 @@ void	*philosopher(void *data_pointer)
 		if (is_dead(data, me)) {
 			break;
 		}
+		/*
 		while (!take_forks(data, me->left_fork, me->right_fork, me->id))
 			;
-		/*
+		*/
+		
 		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id)) {
 			continue;
 		}
-		*/
+		
 		if (!had_a_meal(data, me))
 			break;
 		if (!had_a_nap(data, me)) {
