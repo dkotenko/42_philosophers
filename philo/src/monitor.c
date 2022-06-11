@@ -96,7 +96,6 @@ void    *monitor(void *data_pointer)
     int i;
     int j;
     int *arr;
-    
     data = (t_data *)data_pointer;
     init_arr(data);
 	arr = data->mon->arr;
@@ -106,7 +105,6 @@ void    *monitor(void *data_pointer)
 		//
         while (++j < data->c->p_num) {
             i = arr[j];
-            //printf("%d %d\n", data->mon->can_take_fork[1],data->mon->can_take_fork[2]);
             if (data->phi[i].status == THINK) {
 				//print_arr(arr, 4);
                 if (data->mon->can_take_fork[data->phi[i].left_fork] == 0 &&
