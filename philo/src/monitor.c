@@ -33,17 +33,16 @@ void quicksort(int *A, int len, t_phi *phi) {
   quicksort(A + i, len - i, phi);
 }
 
-int     *init_arr(t_data *data)
+void	init_arr(t_data *data)
 {
     int *arr;
     int i;
-
-    arr = (int *)ft_memalloc(sizeof(int) * data->c->p_num);
+    
+	arr = data->mon->arr;
     i = -1;
     while (++i < data->c->p_num) {
         arr[i] = i + 1;
     }
-    return (arr);
 }
 
 void    print_arr(int *arr, int size) {
@@ -67,7 +66,11 @@ void    bubble_sort(int *arr, int size, t_phi *phi)
         while (++i < size - 1) {
             phi_index = arr[i];
             phi_index_next = arr[i + 1];
-            if (phi[phi_index].last_meal > phi[phi_index_next].last_meal) {
+            if (phi[phi_index].last_meal >= phi[phi_index_next].last_meal) {
+				if (phi[phi_index].last_meal == phi[phi_index_next].last_meal &&
+					phi[phi_index].must_eat_times >= phi[phi_index_next].must_eat_times) {
+						continue;
+					}
                 swap(i, i + 1, arr);
                 sorted = 1;
             }
@@ -75,17 +78,16 @@ void    bubble_sort(int *arr, int size, t_phi *phi)
     }
 }
 
-void    set_meal_ended(t_data *data, int val)
+void    set_meal_started(t_data *data, int val)
 {
-    while (pthread_mutex_lock(data->meal_mutex))
-        ;
-    data->mon->meal_ended = val;
-    pthread_mutex_unlock(data->meal_mutex);
+    //pthread_mutex_lock(data->meal_mutex);
+    data->mon->meal_started = val;
+    //pthread_mutex_unlock(data->meal_mutex);
 }
-
-void    book_fork()
+void	give_forks(int f1, int f2, int id, t_mon *monitor)
 {
-    
+	monitor->can_take_fork[f1] = id;
+	monitor->can_take_fork[f2] = id;
 }
 
 void    *monitor(void *data_pointer)
@@ -94,31 +96,37 @@ void    *monitor(void *data_pointer)
     int i;
     int j;
     int *arr;
-    int started_meal;
     
     data = (t_data *)data_pointer;
-    arr = init_arr(data);
+    init_arr(data);
+	arr = data->mon->arr;
+	
     while (data->mon->done_num < data->c->p_num) {
-        if (data->mon->meal_ended) {
-            
-            quicksort(arr, data->c->p_num / 2, data->phi);
-            set_meal_ended(data, 0);
-        }
         j = -1;
-        started_meal = 0;
+		//
         while (++j < data->c->p_num) {
             i = arr[j];
             //printf("%d %d\n", data->mon->can_take_fork[1],data->mon->can_take_fork[2]);
             if (data->phi[i].status == THINK) {
+				//print_arr(arr, 4);
                 if (data->mon->can_take_fork[data->phi[i].left_fork] == 0 &&
                     data->mon->can_take_fork[data->phi[i].right_fork] == 0) {
                         give_forks(data->phi[i].left_fork,\
                          data->phi[i].right_fork, i, data->mon);
                         data->phi[i].status = EAT;
-                        started_meal++;
+						
                 }
             }
+			//quicksort(arr, data->c->p_num / 2, data->phi);
         }
+		//bubble_sort(arr, data->c->p_num - 1, data->phi);
+		
+        if (data->mon->meal_started) {
+            quicksort(arr, data->c->p_num / 2, data->phi);
+            //bubble_sort(arr, data->c->p_num, data->phi);
+            set_meal_started(data, 0);
+        }
+		
         
     }
         //quicksort(arr, data->c->p_num, data->phi);

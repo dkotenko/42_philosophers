@@ -3,10 +3,13 @@ SRCS =		parse_const.c \
 			ft.c \
 			handle_errors.c \
 			forks.c \
-			queue.c \
 			monitor.c \
 			philosopher.c \
-			time.c
+			time.c \
+			dlist.c \
+			dlist_free.c \
+			dlist_node.c \
+			printer.c
 			
 SRCS_P1 = $(SRCS)
 SRCS_P1 += main.c
@@ -38,10 +41,15 @@ NAME_P2 = philo_two
 NAME_P3 = philo_three
 
 INCLUDES_DIR = includes
-INCLUDES =	$(INCLUDES_DIR)/philosophers.h
+INCLUDES_FILES = \
+	philosophers.h \
+	dlist.h \
+	libft.h
 
-FLAGS =	-Wall -Wextra -Werror -pg
+INCLUDES = $(addprefix $(INCLUDES_DIR)/, $(INCLUDES_FILES))
 
+FLAGS =	-Wall -Wextra -Werror
+PROFILER_FLAG =  -pg
 CC = gcc
 
 all: $(OBJS_DIR_P1) $(NAME_P1)

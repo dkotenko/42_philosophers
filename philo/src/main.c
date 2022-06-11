@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/11 16:55:37 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,34 @@
 
 void	init_data(t_data *data)
 {
+	int i;
+	
 	data->phi = (t_phi *)ft_memalloc(sizeof(t_phi) * (data->c->p_num + 1));
 	data->pthread_phi = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(data->c->p_num + 1));
 	data->pthread_mon = (pthread_t *)ft_memalloc(sizeof(pthread_t));
-	data->printf_mutex = (pthread_mutex_t *)ft_memalloc(
+	data->pthread_print = (pthread_t *)ft_memalloc(sizeof(pthread_t));
+	data->print_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->done_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
-	data->meal_mutex = (pthread_mutex_t *)ft_memalloc(
-			sizeof(pthread_mutex_t));
-	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
+			
+	
+	
+	data->forks_mutexes = (pthread_mutex_t **)ft_memalloc(
+			sizeof(pthread_mutex_t *) * (data->c->p_num + 1));
+	 i = -1;
+	while (++i < data->c->p_num + 1) {
+		data->forks_mutexes[i] = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t));	
+		
+	}
+	
+	data->print_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
-	data->printf_mutexes = (pthread_mutex_t *)ft_memalloc(
-			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
-	data->forks_status = (int *)ft_memalloc(
-			sizeof(int) * (data->c->p_num + 1));
+	data->pq = t_dlist_new();
 }
 
 void	init_monitor(t_data *data)
@@ -41,7 +51,9 @@ void	init_monitor(t_data *data)
 	data->mon->can_eat = (int *)ft_memalloc(sizeof(int) * (data->c->p_num + 1));
 	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) *\
 	 (data->c->p_num + 1));
+	data->mon->arr = (int *)ft_memalloc(sizeof(int) * (data->c->p_num));
 	pthread_create(data->pthread_mon, NULL, monitor, data);
+	pthread_create(data->pthread_print, NULL, printer, data);
 }
 
 void	init_philosophers(t_data *data, t_data *data_arr)
@@ -61,6 +73,10 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 		curr_p->last_meal = get_current_time_ms();
 		ft_memcpy(&data_arr[i], data, sizeof(t_data));
 		data_arr[i].my_id = i;
+		curr_p->pq = t_dlist_new();
+		curr_p->print_mutex = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t));
+		pthread_mutex_init(curr_p->print_mutex, NULL);
 		pthread_create(&data->pthread_phi[i], NULL, philosopher, &data_arr[i]);
 	}
 	
@@ -73,14 +89,13 @@ void	init_mutexes(t_data *data)
 {
 	int	i;
 
-	pthread_mutex_init(data->printf_mutex, NULL);
+	pthread_mutex_init(data->print_mutex, NULL);
 	pthread_mutex_init(data->done_mutex, NULL);
 	pthread_mutex_init(data->dead_mutex, NULL);
-	pthread_mutex_init(data->meal_mutex, NULL);
 	i = 0;
 	while (++i < data->c->p_num + 1) {
-		pthread_mutex_init(&data->forks_mutexes[i], NULL);
-		pthread_mutex_init(&data->printf_mutexes[i], NULL);
+		pthread_mutex_init(data->forks_mutexes[i], NULL);
+		pthread_mutex_init(&data->print_mutexes[i], NULL);
 	}
 
 }
@@ -96,11 +111,15 @@ int		main(int ac, char **av)
 	init_data(&data);
 	init_monitor(&data);
 	data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
+	
 	init_philosophers(&data, data_arr);
+
 	
 	init_mutexes(&data);
 	
 	pthread_join(*data.pthread_mon, NULL);
+	pthread_join(*data.pthread_print, NULL);
+	
 	i = 0;
 	while (++i < data.c->p_num + 1)
 	{

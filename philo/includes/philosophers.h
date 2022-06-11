@@ -13,10 +13,10 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# include <stdio.h>
-# include <stdlib.h>
+
+# include "dlist.h"
 # include <pthread.h>
-# include <unistd.h>
+
 # include <sys/time.h>
 # include <stdarg.h>
 
@@ -55,9 +55,10 @@ typedef struct s_mon_info
 	int				*is_alive;
 	int				*can_eat;
 	int				*can_take_fork;
+	int				*arr;
 	int				done_num;
 	int				dead_num;
-	int				meal_ended;
+	int				meal_started;
 }					t_mon;
 
 typedef struct s_phi
@@ -69,6 +70,8 @@ typedef struct s_phi
 	int				status;
 	int				must_eat_times;
 	long long		last_meal;
+	t_dlist			*pq;
+	pthread_mutex_t	*print_mutex;
 }					t_phi;
 
 typedef struct	s_data
@@ -78,27 +81,27 @@ typedef struct	s_data
 	t_phi			*phi;
 	pthread_mutex_t	*done_mutex;
 	pthread_mutex_t	*dead_mutex;
-	pthread_mutex_t	*printf_mutex;
-	pthread_mutex_t	*meal_mutex;
-	pthread_mutex_t *forks_mutexes;
-	pthread_mutex_t *printf_mutexes;
-	int				*forks_status;
+	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t **forks_mutexes;
+	pthread_mutex_t *print_mutexes;
+	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
+	t_dlist			*pq;
 	int				my_id;
+
 }					t_data;
 
+/*
 typedef struct s_queue {
 	int *data;  // указатель на данные
 	int low;        // указатель на нижнюю границу
 	int high;       // указатель на верхнюю границу
 	int count;      // количество элементов в очереди
 	int max;        // максимальное количество элементов
-}					t_queue;
-
-t_queue		*t_queue_init (size_t size);
-void		t_queue_add (t_queue *q, int a);
-int			t_queue_get (t_queue *q);
+}
+					t_queue;
+*/
 
 int			is_integer(char *s, int n);
 int			is_forks_taken(t_data *data, int left_fork, \
@@ -107,35 +110,28 @@ int			is_forks_taken(t_data *data, int left_fork, \
  * print.c
  */
 void		print_usage(void);
-
+void    *printer(void *data_pointer);
 /*
  * handle_errors.c
  */
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(pthread_mutex_t *m, int phil_num, int action,
+void		print_action(t_phi *me, int phil_num, int action,
 				int fork_id);
 
-/*
- * ft.c
- */
-int			is_integer(char *s, int n);
-size_t		ft_strlen(const char *str);
-long long	get_current_time_ms(void);
-void		*ft_memset(void *destination, int c, size_t n);
-void		*ft_memalloc(size_t size);
-void		*ft_memcpy(void *dest, const void *src, size_t n);
+
 /*
  * main.c
  */
 void		*philosopher(void *num);
-void    set_meal_ended(t_data *data, int val);
+void    set_meal_started(t_data *data, int val);
 /*
  * monitor.c
  */
 
 void    	*monitor(void *data_pointer);
+void    set_meal_started(t_data *data, int val);
 
 /*
  * forks.c
