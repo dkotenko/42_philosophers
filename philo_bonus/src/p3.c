@@ -22,7 +22,7 @@ void	init_args_n_arr(t_args *args)
 	args->lock = sem_open("lock", O_CREAT, S_IRWXU, 1);
 	sem_unlink("print");
 	args->print = sem_open("print", O_CREAT, S_IRWXU, 1);
-	args->last_meal = get_current_time_ms();
+	args->last_meal = get_current_time_us();
 }
 
 int	main(int ac, char **av)
@@ -57,7 +57,7 @@ void	check_death(t_args *args)
 	long long	death_time;
 
 	death_time = args->last_meal + args->c.time_to_die;
-	curr = get_current_time_ms();
+	curr = get_current_time_us();
 	if (death_time <= curr)
 	{
 		print_action(args->print, args->id, DEAD, 0);
@@ -77,7 +77,7 @@ void	check_death_with_forks(t_args *args)
 	long long	death_time;
 
 	death_time = args->last_meal + args->c.time_to_die;
-	curr = get_current_time_ms();
+	curr = get_current_time_us();
 	if (death_time <= curr)
 	{
 		sem_post(args->forks);
@@ -112,7 +112,7 @@ void	*philosopher(void *arg)
 		check_death_with_forks(args);
 		print_action(args->print, args->id, EAT, 0);
 		usleep_ms(args->c.time_to_eat);
-		args->last_meal = get_current_time_ms();
+		args->last_meal = get_current_time_us();
 		args->c.must_eat_times--;
 		sem_post(args->forks);
 		sem_post(args->forks);

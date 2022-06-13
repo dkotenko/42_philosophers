@@ -13,6 +13,7 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
+#define _GNU_SOURCE
 
 # include "dlist.h"
 # include <pthread.h>
@@ -26,6 +27,7 @@
 
 # define here() printf("here\n")
 
+
 enum e_actions {
 	TAKE_FORK,
 	EAT,
@@ -37,9 +39,10 @@ enum e_actions {
 	E_ACTIONS_NUM
 };
 
-enum e_foks_states {
-	DIRTY,
-	CLEAN
+enum e_meal_phases {
+	PHASE_ONE	= 1,
+	PHASE_TWO	= 2,
+	PHASE_THREE	= 3
 };
 
 typedef struct s_const {
@@ -48,7 +51,10 @@ typedef struct s_const {
 	long long		time_to_sleep;
 	int				must_eat_times;
 	int				p_num;
+	int				debug;
 } 					t_const;
+
+
 
 typedef struct s_mon_info
 {
@@ -59,6 +65,7 @@ typedef struct s_mon_info
 	int				done_num;
 	int				dead_num;
 	int				meal_started;
+	int				curr_phase;
 }					t_mon;
 
 typedef struct s_phi
@@ -82,7 +89,7 @@ typedef struct	s_data
 	pthread_mutex_t	*done_mutex;
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
-	pthread_mutex_t **forks_mutexes;
+	pthread_mutex_t *forks_mutexes;
 	pthread_mutex_t *print_mutexes;
 	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
@@ -109,7 +116,7 @@ int			is_forks_taken(t_data *data, int left_fork, \
 /*
  * print.c
  */
-void		print_usage(void);
+int		print_usage(void);
 void    *printer(void *data_pointer);
 /*
  * handle_errors.c
@@ -117,8 +124,8 @@ void    *printer(void *data_pointer);
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(t_phi *me, int phil_num, int action,
-				int fork_id);
+void		print_action(pthread_mutex_t *print_mutex, 
+int phil_num, int action, int fork_id);
 
 
 /*
@@ -144,6 +151,16 @@ void		give_forks(int f1, int f2, int id, t_mon *monitor);
 /*
  * parse_const.c
  */
-void	parse_const(t_data *data, char **av, int ac);
+int		parse_const(t_data *data, char **av, int ac);
 int		take_forks(t_data *data, int left_fork, int right_fork, int p_id);
+
+/*
+ * validation.c
+ */
+int			is_const_valid(t_const *c, int ac, char **av);
+long long	get_current_time_ms(void);
+long long	get_current_time_us(void);
+
+
+void    print_arr(int *arr, int size);
 #endif

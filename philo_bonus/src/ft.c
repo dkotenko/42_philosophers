@@ -27,7 +27,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-long long	get_current_time_ms(void)
+long long	get_current_time_us(void)
 {
 	struct timeval	te;
 	long long		milliseconds;

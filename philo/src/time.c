@@ -15,11 +15,21 @@ long long	get_current_time_ms(void)
 	return (milliseconds);
 }
 
+long long	get_current_time_us(void)
+{
+	struct timeval	te;
+	long long		useconds;
+
+	gettimeofday(&te, NULL);
+	useconds = te.tv_sec * 1000000LL + te.tv_usec;
+	return (useconds);
+}
+
 void	usleep_ms_until(long long ms)
 {
 	long long	curr;
 
-	curr = get_current_time_ms();
-	while (get_current_time_ms() < curr + ms)
+	curr = get_current_time_us();
+	while (get_current_time_us() < curr + ms)
 		;
 }

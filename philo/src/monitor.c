@@ -1,38 +1,5 @@
 #include "philosophers.h"
 
-void    swap(int i, int j, int *number)
-{
-    int temp;
-
-    temp = number[i];
-    number[i] = number[j];
-    number[j] = temp;
-}
-
-void quicksort(int *A, int len, t_phi *phi) {
-  if (len < 2) return;
- 
-  long long pivot = phi[A[len / 2]].last_meal ;
- 
-  int i, j;
-  for (i = 0, j = len - 1; ; i++, j--) {
-    while (phi[A[i]].last_meal < pivot)
-        i++;
-    while (phi[A[j]].last_meal > pivot)
-        j--;
- 
-    if (i >= j)
-        break;
- 
-    int temp = A[i];
-    A[i]     = A[j];
-    A[j]     = temp;
-  }
- 
-  quicksort(A, i, phi);
-  quicksort(A + i, len - i, phi);
-}
-
 void	init_arr(t_data *data)
 {
     int *arr;
@@ -52,32 +19,6 @@ void    print_arr(int *arr, int size) {
     printf("\n");
 }
 
-void    bubble_sort(int *arr, int size, t_phi *phi)
-{
-    int sorted;
-    int i;
-    int phi_index;
-    int phi_index_next;
-
-    sorted = 1;
-    while (sorted) {
-        sorted = 0;
-        i = -1;
-        while (++i < size - 1) {
-            phi_index = arr[i];
-            phi_index_next = arr[i + 1];
-            if (phi[phi_index].last_meal >= phi[phi_index_next].last_meal) {
-				if (phi[phi_index].last_meal == phi[phi_index_next].last_meal &&
-					phi[phi_index].must_eat_times >= phi[phi_index_next].must_eat_times) {
-						continue;
-					}
-                swap(i, i + 1, arr);
-                sorted = 1;
-            }
-        }
-    }
-}
-
 void    set_meal_started(t_data *data, int val)
 {
     //pthread_mutex_lock(data->meal_mutex);
@@ -90,43 +31,54 @@ void	give_forks(int f1, int f2, int id, t_mon *monitor)
 	monitor->can_take_fork[f2] = id;
 }
 
+int     get_max_faze(int p_num)
+{
+    if (p_num == 1) {
+        return PHASE_ONE;
+    }
+    if (p_num % 2 == 0) {
+        return PHASE_TWO;
+    }
+    return PHASE_THREE;
+}
+
+static void set_meal_order(t_data *data, int *can_take_fork, int p_num, long long int *last_phase_check)
+{
+    int     curr_p_ind;
+    t_phi   *curr_p;
+    int     meal_count;
+    int     i;
+
+    i = 0;
+    meal_count = p_num / 2;
+    while(meal_count--) {
+        curr_p_ind = data->mon->curr_phase + i * 2;
+        curr_p = &data->phi[curr_p_ind];
+        can_take_fork[curr_p->left_fork] = curr_p_ind;
+        can_take_fork[curr_p->right_fork] = curr_p_ind;
+        i++;
+    }
+    data->mon->curr_phase++;
+    if (data->mon->curr_phase > get_max_faze(data->c->p_num)) {
+        data->mon->curr_phase = PHASE_ONE;
+    }
+    *last_phase_check = get_current_time_us();
+}
+
 void    *monitor(void *data_pointer)
 {
     t_data *data;
-    int i;
-    int j;
-    int *arr;
+    long long last_phase_check;
+    
     data = (t_data *)data_pointer;
-    init_arr(data);
-	arr = data->mon->arr;
-	
+    data->mon->curr_phase = PHASE_ONE;
+    set_meal_order(data, data->mon->can_take_fork, data->c->p_num, &last_phase_check);
     while (data->mon->done_num < data->c->p_num) {
-        j = -1;
-		//
-        while (++j < data->c->p_num) {
-            i = arr[j];
-            if (data->phi[i].status == THINK) {
-				//print_arr(arr, 4);
-                if (data->mon->can_take_fork[data->phi[i].left_fork] == 0 &&
-                    data->mon->can_take_fork[data->phi[i].right_fork] == 0) {
-                        give_forks(data->phi[i].left_fork,\
-                         data->phi[i].right_fork, i, data->mon);
-                        data->phi[i].status = EAT;
-						
-                }
-            }
-			//quicksort(arr, data->c->p_num / 2, data->phi);
+        //printf("%lld\n",last_phase_check + data->c->time_to_eat / 2);
+	    //printf("%lld\n",get_current_time_us());
+        if (get_current_time_us() >= last_phase_check + data->c->time_to_eat) {
+            set_meal_order(data, data->mon->can_take_fork, data->c->p_num, &last_phase_check);
         }
-		//bubble_sort(arr, data->c->p_num - 1, data->phi);
-		
-        if (data->mon->meal_started) {
-            quicksort(arr, data->c->p_num / 2, data->phi);
-            //bubble_sort(arr, data->c->p_num, data->phi);
-            set_meal_started(data, 0);
-        }
-		
-        
     }
-        //quicksort(arr, data->c->p_num, data->phi);
     return (0);
 }

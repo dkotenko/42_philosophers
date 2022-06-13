@@ -9,7 +9,8 @@ SRCS =		parse_const.c \
 			dlist.c \
 			dlist_free.c \
 			dlist_node.c \
-			printer.c
+			printer.c \
+			validation.c
 			
 SRCS_P1 = $(SRCS)
 SRCS_P1 += main.c
@@ -48,7 +49,7 @@ INCLUDES_FILES = \
 
 INCLUDES = $(addprefix $(INCLUDES_DIR)/, $(INCLUDES_FILES))
 
-FLAGS =	-Wall -Wextra -Werror
+FLAGS =	-Wall -Wextra -Werror -std=gnu99
 PROFILER_FLAG =  -pg
 CC = gcc
 
