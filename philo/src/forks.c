@@ -35,6 +35,7 @@ int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 	
 	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
 	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
+	increase_meals_counter(data->mon, data->meals_mutex, data->c->p_num);
 	data->phi[p_id].status = SLEEP;
 	print_action(data->print_mutex, p_id, TAKE_FORK, left_fork);
 	print_action(data->print_mutex, p_id, TAKE_FORK, right_fork);
@@ -49,7 +50,6 @@ int	is_forks_taken(t_data *data, int left_fork, int right_fork, int p_id)
 		
         //print_arr(data->mon->can_take_fork, 5);
 		data->phi[p_id].must_eat_times--;
-		set_meal_started(data, 1);
 		take_forks(data, left_fork, right_fork, p_id);
 		return (1);
 	}

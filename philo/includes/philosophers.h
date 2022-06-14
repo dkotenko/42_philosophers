@@ -39,12 +39,6 @@ enum e_actions {
 	E_ACTIONS_NUM
 };
 
-enum e_meal_phases {
-	PHASE_ONE	= 1,
-	PHASE_TWO	= 2,
-	PHASE_THREE	= 3
-};
-
 typedef struct s_const {
 	long long		time_to_die;
 	long long		time_to_eat;
@@ -54,7 +48,11 @@ typedef struct s_const {
 	int				debug;
 } 					t_const;
 
-
+typedef struct s_order
+{
+	int				*arr;
+	int				start;
+}					t_order;
 
 typedef struct s_mon_info
 {
@@ -66,6 +64,9 @@ typedef struct s_mon_info
 	int				dead_num;
 	int				meal_started;
 	int				curr_phase;
+	int				meals_counter;
+	int				start_ordering;
+	t_order			*order;
 }					t_mon;
 
 typedef struct s_phi
@@ -89,6 +90,7 @@ typedef struct	s_data
 	pthread_mutex_t	*done_mutex;
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t	*meals_mutex;
 	pthread_mutex_t *forks_mutexes;
 	pthread_mutex_t *print_mutexes;
 	pthread_t		*pthread_print;
@@ -132,13 +134,11 @@ int phil_num, int action, int fork_id);
  * main.c
  */
 void		*philosopher(void *num);
-void    set_meal_started(t_data *data, int val);
 /*
  * monitor.c
  */
 
 void    	*monitor(void *data_pointer);
-void    set_meal_started(t_data *data, int val);
 
 /*
  * forks.c
@@ -163,4 +163,6 @@ long long	get_current_time_us(void);
 
 
 void    print_arr(int *arr, int size);
+int    *generate_order_arr(int size);
+void    increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
 #endif

@@ -25,6 +25,8 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
+	data->meals_mutex = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t));
 	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t ) * (data->c->p_num + 1));
 }
@@ -37,6 +39,8 @@ void	init_monitor(t_data *data)
 	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) *\
 	 (data->c->p_num + 1));
 	data->mon->arr = (int *)ft_memalloc(sizeof(int) * (data->c->p_num));
+	data->mon->order = (t_order *)ft_memalloc(sizeof(t_order));
+	data->mon->order->arr = generate_order_arr(data->c->p_num);
 	pthread_create(data->pthread_mon, NULL, monitor, data);
 }
 
@@ -69,6 +73,7 @@ void	init_mutexes(t_data *data)
 	int	i;
 
 	pthread_mutex_init(data->print_mutex, NULL);
+	pthread_mutex_init(data->meals_mutex, NULL);
 	pthread_mutex_init(data->done_mutex, NULL);
 	pthread_mutex_init(data->dead_mutex, NULL);
 	i = 0;

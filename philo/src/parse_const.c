@@ -13,6 +13,7 @@
 #include "philosophers.h"
 
 #define MAX 9223372036854775807
+#define IS_DEBUG(a) 
 
 static int	ft_atoi(const char *s)
 {
@@ -80,10 +81,11 @@ int	parse_const(t_data *data, char **av, int ac)
 
 	if (ac < 5)
 		return (print_usage());
+	data->c = (t_const *)ft_memalloc(sizeof(t_const));
 	i = ac;
 	while (--i > 0)
 	{
-		if (ft_strlen(av[i]) == 2 && av[i][0] == '-' && av[i][1] == 'd') {
+		if (ft_strlen(av[i]) == 2 && !ft_memcmp("-d", av[i], sizeof(char) * 2)) {
 			data->c->debug = 1;
 			continue;
 		}
@@ -91,15 +93,12 @@ int	parse_const(t_data *data, char **av, int ac)
 		if (!is_integer(av[i], n) || n < 0)
 			handle_error_str("invalid integer: ", av[i]);
 	}
-	exit(0);
-	data->c = (t_const *)ft_memalloc(sizeof(t_const));
 	data->c->p_num = ft_atoi(av[1]);
 	data->c->time_to_die = (long long)ft_atoi(av[2]) * 1000LL;
 	data->c->time_to_eat = (long long)ft_atoi(av[3]) * 1000LL;
 	data->c->time_to_sleep = (long long)ft_atoi(av[4]) * 1000LL;
+	data->c->must_eat_times = 0x7FFFFFFF;
 	if (ac == 6)
 		data->c->must_eat_times = ft_atoi(av[5]);
-	else
-		data->c->must_eat_times = 0x7FFFFFFF;
 	return (1);
 }
