@@ -1,60 +1,54 @@
-SRCS =		parse_arguments.c \
+SRCS =		parse_const.c \
             print.c \
 			ft.c \
-			handle_errors.c
-			
-SRCS_P1 = $(SRCS)
-SRCS_P1 += p1.c
-SRCS_P2 = $(SRCS)
-SRCS_P2 += p2.c
-SRCS_P3 = $(SRCS)
-SRCS_P3 += p3.c
+			handle_errors.c \
+			forks.c \
+			monitor.c \
+			philosopher.c \
+			time.c \
+			validation.c \
+			main.c
 
 SRCS_DIR = ./src
-OBJS_DIR_P1 = ./obj_p1
-OBJS_DIR_P2 = ./obj_p2
-OBJS_DIR_P3 = ./obj_p3
 
-ALL_OBJS_P1 = $(SRCS_P1:%.c=%.o)
-ALL_OBJS_P2 = $(SRCS_P2:%.c=%.o)
-ALL_OBJS_P3 = $(SRCS_P3:%.c=%.o)
+OBJS_DIR = ./obj
 
-FULLPATH_SRCS_P1 = $(addprefix $(SRCS_DIR)/, $(SRCS_P1))
-FULLPATH_SRCS_P2 = $(addprefix $(SRCS_DIR)/, $(SRCS_P2))
-FULLPATH_SRCS_P3 = $(addprefix $(SRCS_DIR)/, $(SRCS_P3))
+ALL_OBJS = $(SRCS:%.c=%.o)
 
-OBJS_P1 = $(addprefix $(OBJS_DIR_P1)/, $(ALL_OBJS_P1))
-OBJS_P2 = $(addprefix $(OBJS_DIR_P2)/, $(ALL_OBJS_P2))
-OBJS_P3 = $(addprefix $(OBJS_DIR_P3)/, $(ALL_OBJS_P3))
+FULLPATH_SRCS = $(addprefix $(SRCS_DIR)/, $(SRCS))
+
+OBJS = $(addprefix $(OBJS_DIR)/, $(ALL_OBJS))
 
 
-NAME_P1 = philo_one
-NAME_P2 = philo_two
-NAME_P3 = philo_bonus
+NAME = philo_bonus
 
 INCLUDES_DIR = includes
-INCLUDES =	$(INCLUDES_DIR)/philosophers.h
+INCLUDES_FILES = \
+	philosophers.h \
+	libft.h
 
-FLAGS =	-Wall -Wextra -Werror
+INCLUDES = $(addprefix $(INCLUDES_DIR)/, $(INCLUDES_FILES))
 
+FLAGS =	-Wall -Wextra -Werror -std=gnu99
+PROFILER_FLAG =  -pg
 CC = gcc
 
-all: $(OBJS_DIR_P3) $(NAME_P3)
+all: $(OBJS_DIR) $(NAME)
 
-$(NAME_P3):	$(OBJS_P3)
-	$(CC) $(OBJS_P3) $(FLAGS) -lpthread -o $@
+$(NAME):	$(OBJS)
+	$(CC) $(OBJS) $(FLAGS) -lpthread -o $@
 
-$(OBJS_DIR_P3):
-	/bin/mkdir -p $(OBJS_DIR_P3)
+$(OBJS_DIR):
+	/bin/mkdir -p $(OBJS_DIR)
 
-$(OBJS_DIR_P3)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR_P3)
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -c $< -o $@
 
 clean:
 	@rm -rf obj_*
 
 fclean: clean
-	@rm -rf $(NAME_P1) $(NAME_P2) $(NAME_P3)
+	@rm -rf $(NAME)
 
 re:		fclean all
 

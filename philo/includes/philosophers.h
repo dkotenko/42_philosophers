@@ -15,7 +15,7 @@
 
 #define _GNU_SOURCE
 
-# include "dlist.h"
+# include "libft.h"
 # include <pthread.h>
 
 # include <sys/time.h>
@@ -56,14 +56,10 @@ typedef struct s_order
 
 typedef struct s_mon_info
 {
-	int				*is_alive;
-	int				*can_eat;
 	int				*can_take_fork;
-	int				*arr;
 	int				done_num;
 	int				dead_num;
 	int				meal_started;
-	int				curr_phase;
 	int				meals_counter;
 	int				start_ordering;
 	t_order			*order;
@@ -72,14 +68,11 @@ typedef struct s_mon_info
 typedef struct s_phi
 {
 	int				id;
-	int				is_alive;
 	int				left_fork;
 	int				right_fork;
 	int				status;
 	int				must_eat_times;
 	long long		last_meal;
-	t_dlist			*pq;
-	pthread_mutex_t	*print_mutex;
 }					t_phi;
 
 typedef struct	s_data
@@ -92,25 +85,12 @@ typedef struct	s_data
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*meals_mutex;
 	pthread_mutex_t *forks_mutexes;
-	pthread_mutex_t *print_mutexes;
 	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
-	t_dlist			*pq;
 	int				my_id;
 
 }					t_data;
-
-/*
-typedef struct s_queue {
-	int *data;  // указатель на данные
-	int low;        // указатель на нижнюю границу
-	int high;       // указатель на верхнюю границу
-	int count;      // количество элементов в очереди
-	int max;        // максимальное количество элементов
-}
-					t_queue;
-*/
 
 int			is_integer(char *s, int n);
 int			is_forks_taken(t_data *data, int left_fork, \

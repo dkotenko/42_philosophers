@@ -1,17 +1,5 @@
 #include "philosophers.h"
 
-void	init_arr(t_data *data)
-{
-    int *arr;
-    int i;
-    
-	arr = data->mon->arr;
-    i = -1;
-    while (++i < data->c->p_num) {
-        arr[i] = i + 1;
-    }
-}
-
 void    print_arr(int *arr, int size) {
     for (int i = 0; i < size; i++) {
         printf("%d ", arr[i]);

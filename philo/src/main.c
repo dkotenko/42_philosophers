@@ -34,11 +34,8 @@ void	init_data(t_data *data)
 void	init_monitor(t_data *data)
 {
 	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
-	data->mon->is_alive = (int *)ft_memalloc(sizeof(int) * (data->c->p_num + 1));
-	data->mon->can_eat = (int *)ft_memalloc(sizeof(int) * (data->c->p_num + 1));
 	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) *\
 	 (data->c->p_num + 1));
-	data->mon->arr = (int *)ft_memalloc(sizeof(int) * (data->c->p_num));
 	data->mon->order = (t_order *)ft_memalloc(sizeof(t_order));
 	data->mon->order->arr = generate_order_arr(data->c->p_num);
 	pthread_create(data->pthread_mon, NULL, monitor, data);
