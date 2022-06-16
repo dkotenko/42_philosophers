@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/16 20:58:16 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,10 @@ void	print_action(sem_t *print, int phil_num, int action, int fork_id)
 	sem_post(print);
 }
 
-void	print_usage(void)
+int	print_usage(void)
 {
 	printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
 		   " time_to_eat time_to_sleep \
 		   [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
-	exit(0);
-}
-
-void	usleep_ms(long long ms)
-{
-	usleep(ms * 1000);
+	return (1);
 }

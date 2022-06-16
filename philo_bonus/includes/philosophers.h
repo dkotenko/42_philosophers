@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/16 20:51:54 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@
 # include <pthread.h>
 
 # include <sys/time.h>
+# include <sys/wait.h>
+# include <sys/types.h>
 # include <stdarg.h>
+# include <semaphore.h>
 
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
@@ -109,14 +112,13 @@ void    *printer(void *data_pointer);
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(pthread_mutex_t *print_mutex, 
-int phil_num, int action, int fork_id);
+void		print_action(sem_t *print, int phil_num, int action, int fork_id);
 
 
 /*
  * main.c
  */
-void		*philosopher(void *num);
+void		*philosopher(t_data *data);
 /*
  * monitor.c
  */
@@ -148,4 +150,5 @@ long long	get_current_time_us(void);
 void    print_arr(int *arr, int size);
 int    *generate_order_arr(int size);
 void    increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
+void	wait_n_exit(t_data *data);
 #endif

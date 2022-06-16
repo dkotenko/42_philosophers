@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/11 18:10:27 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/16 19:28:22 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	init_monitor(t_data *data)
 	 (data->c->p_num + 1));
 	data->mon->order = (t_order *)ft_memalloc(sizeof(t_order));
 	data->mon->order->arr = generate_order_arr(data->c->p_num);
+	//print_arr(data->mon->can_take_fork, 5);
 	pthread_create(data->pthread_mon, NULL, monitor, data);
 }
 
@@ -94,6 +95,8 @@ int		main(int ac, char **av)
 		data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 		init_philosophers(&data, data_arr);
 		init_mutexes(&data);
+
+    	set_meal_order(&data, data.mon->can_take_fork);
 		pthread_join(*data.pthread_mon, NULL);
 		pthread_join(*data.pthread_print, NULL);
 		i = 0;

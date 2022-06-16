@@ -13,7 +13,7 @@ int		had_a_meal(t_data *data, t_phi *me)
 {
 	long long diff;
 
-	print_action(data->print_mutex, me->id, EAT, 0);
+	
 	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
 	me->last_meal = get_current_time_us();
 	if (diff >= 0) {

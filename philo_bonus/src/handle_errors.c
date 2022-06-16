@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*   handle_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/16 20:25:04 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ void	handle_error_str(char *message, char *s)
 	exit(0);
 }
 
-void	wait_n_exit(t_args *args)
+void	wait_n_exit(t_data *data)
 {
 	int	status;
 
-	while (args->c.p_num-- > 0)
+	while (data->c->p_num-- > 0)
 		wait(&status);
 	exit(0);
 }

@@ -133,7 +133,7 @@ void		give_forks(int f1, int f2, int id, t_mon *monitor);
  */
 int		parse_const(t_data *data, char **av, int ac);
 int		take_forks(t_data *data, int left_fork, int right_fork, int p_id);
-
+void	set_meal_order(t_data *data, int *can_take_fork);
 /*
  * validation.c
  */
