@@ -23,6 +23,7 @@
 # include <sys/types.h>
 # include <stdarg.h>
 # include <semaphore.h>
+# include <fcntl.h>
 
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
@@ -93,6 +94,7 @@ typedef struct	s_data
 	t_sem			*print_sem;
 	t_sem			*meals_sem;
 	t_sem			**forks_sem;
+	t_sem			*forks_common;
 	pid_t			*process_mon;
 	pid_t			*processes_phi;
 	int				my_id;
@@ -128,7 +130,6 @@ void    	*monitor(void *data_pointer);
 /*
  * forks.c
  */
-void		put_forks(int f1, int f2, t_data *data);
 int			get_fork_id(int id, int forks_number, int is_left_fork);
 void		usleep_ms(long long ms);
 void		give_forks(int f1, int f2, int id, t_mon *monitor);

@@ -14,49 +14,50 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-
-
 void	print_action_more(int phil_num, int action)
 {
+	char *s;
+
 	if (action == SLEEP)
+		
 	{
 		printf("%lld %d is sleeping\n",
-			get_current_time_ms(), phil_num);
+			get_current_time_ms() % 1000000, phil_num);
 	}
 	else if (action == THINK)
 	{
 		printf("%lld %d is thinking\n",
-			get_current_time_ms(), phil_num);
+			get_current_time_ms() % 1000000, phil_num);
 	}
 	else if (action == DEAD)
 	{
 		printf("%lld %d died\n",
-			get_current_time_ms(), phil_num);
+			get_current_time_ms() % 1000000, phil_num);
 	}
 	else if (action == DONE)
 	{
 		printf("%lld %d is done and alive. Congratulations!\n",
-			get_current_time_ms(), phil_num);
+			get_current_time_ms() % 1000000, phil_num);
 	}
 }
 
 void	print_action(pthread_mutex_t *print_mutex, int phil_num, int action, int fork_id)
 {
+	pthread_mutex_lock(print_mutex);
 	if (action == TAKE_FORK)
 	{
 		printf("%lld %d has taken a fork %d\n",
-			get_current_time_ms(), phil_num, fork_id);
+			get_current_time_ms() % 1000000, phil_num, fork_id);
 	}
 	else if (action == EAT)
 	{
 		printf("%lld %d is eating\n",
-			get_current_time_ms(), phil_num);
+			get_current_time_ms() % 1000000, phil_num);
 	}
 	else
 	{
 		print_action_more(phil_num, action);
 	}
-	pthread_mutex_lock(print_mutex);
 	pthread_mutex_unlock(print_mutex);
 }
 

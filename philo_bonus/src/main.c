@@ -54,11 +54,14 @@ void	init_data(t_data *data)
 	data->processes_phi = (pid_t *)ft_memalloc(sizeof(pid_t) * \
 			(data->c->p_num + 1));
 	data->process_mon = (pid_t *)ft_memalloc(sizeof(pid_t));
-	
+	data->forks_sem = (t_sem **)ft_memalloc(sizeof(t_sem *) *
+	(data->c->p_num + 1));
+
 	data->done_sem = create_sem("done", 1);
+	data->forks_common = create_sem("forks_common", data->c->p_num);
 	data->print_sem = create_sem("print", 1);
 	data->dead_sem = create_sem("dead", 1);
-	data->meals_sem = create_sem("meals counter", 1);
+	data->meals_sem = create_sem("meals_counter", 1);
 	//data->forks_common = create_sem("forks common", data->c->p_num);
 	i = 0;
 	while (++i < data->c->p_num + 1) {
@@ -90,6 +93,7 @@ int	main(int ac, char **av)
 		init_data(&data);
 		init_monitor(&data);
 		init_philosophers(&data);
+		i = 0;
 		while (++i < data.c->p_num + 1)
 		{
 			data.my_id = i;

@@ -13,19 +13,20 @@ int		had_a_meal(t_data *data, t_phi *me)
 {
 	long long diff;
 
-	print_action(data->print_sem->sem, me->id, EAT, 0);
+	//print_action(data->print_sem->sem, me->id, EAT, 0);
 	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
 	me->last_meal = get_current_time_us();
 	if (diff >= 0) {
 		usleep(diff);
-		put_forks(me->left_fork, me->right_fork, data);
+		sem_post(data->forks_common->sem);
+		sem_post(data->forks_common->sem);
 		me->status = DEAD;
 		return (0);
 	} else {
 		usleep(data->c->time_to_eat);
 	}
-	put_forks(me->left_fork, me->right_fork, data);
-	
+	sem_post(data->forks_common->sem);
+	sem_post(data->forks_common->sem);
 	return (1);
 }
 

@@ -26,19 +26,13 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 
 int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 {
-	sem_wait(data->forks_sem[left_fork]->sem);
+	sem_wait(data->forks_common->sem);
 	print_action(data->print_sem->sem, p_id, TAKE_FORK, left_fork);
-	sem_wait(data->forks_sem[right_fork]->sem);
+	sem_wait(data->forks_common->sem);
 	print_action(data->print_sem->sem, p_id, TAKE_FORK, right_fork);
 	print_action(data->print_sem->sem, p_id, EAT, 0);
 	data->phi[p_id].must_eat_times--;
 	sem_post(data->meals_sem->sem);
 	data->phi[p_id].status = SLEEP;
 	return (1);
-}
-
-void	put_forks(int left_fork, int right_fork, t_data *data)
-{
-	sem_post(data->forks_sem[left_fork]->sem);
-	sem_post(data->forks_sem[right_fork]->sem);
 }
