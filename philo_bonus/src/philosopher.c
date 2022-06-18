@@ -1,25 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosopher.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
+/*   Updated: 2022/06/18 19:59:00 by clala            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 #include <limits.h>
 
-int	is_dead(t_data *data, t_phi *me)
+void	do_eat(t_data *data, long long diff, t_phi *me)
 {
-	return (me->last_meal + data->c->time_to_die <= get_current_time_us() \
-		|| me->status == DEAD);
-}
-
-int	had_a_meal(t_data *data, t_phi *me)
-{
-	long long	diff;
-
-	sem_wait(data->forks_common->sem);
-	print_action(data->print_sem->sem, me->id, TAKE_FORK);
-	if (data->c->p_num < 2)
-		return (data->phi[me->id].status = DEAD);
-	sem_wait(data->forks_common->sem);
-	print_action(data->print_sem->sem, me->id, TAKE_FORK);
-	print_action(data->print_sem->sem, me->id, EAT);
-	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
-	me->last_meal = get_current_time_us();
 	if (diff >= 0)
 	{
 		usleep(diff);
@@ -31,6 +26,27 @@ int	had_a_meal(t_data *data, t_phi *me)
 		data->phi[me->id].status = SLEEP;
 		usleep(data->c->time_to_eat - (get_current_time_us() - me->last_meal));
 	}
+}
+
+int	had_a_meal(t_data *data, t_phi *me)
+{
+	long long	diff;
+
+	sem_wait(data->fork_access_sem->sem);
+	sem_wait(data->forks_common->sem);
+	print_action(data->print_sem->sem, me->id, TAKE_FORK);
+	if (data->c->p_num < 2)
+	{
+		sem_post(data->fork_access_sem->sem);
+		return (data->phi[me->id].status = DEAD);
+	}
+	sem_wait(data->forks_common->sem);
+	sem_post(data->fork_access_sem->sem);
+	print_action(data->print_sem->sem, me->id, TAKE_FORK);
+	print_action(data->print_sem->sem, me->id, EAT);
+	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
+	me->last_meal = get_current_time_us();
+	do_eat(data, diff, me);
 	sem_post(data->forks_common->sem);
 	sem_post(data->forks_common->sem);
 	return (1);

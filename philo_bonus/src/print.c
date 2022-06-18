@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 12:26:30 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 21:14:42 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,9 @@ void	print_action(sem_t *print, int phil_num, int action)
 
 int	print_usage(void)
 {
-	printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
-		   " time_to_eat time_to_sleep \
-		   [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
+	dprintf(STDERR_FILENO, "%sUSAGE: ./philo_n number_of_philosophers \
+time_to_die time_to_eat time_to_sleep \
+[number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
+	exit (1);
 	return (1);
 }

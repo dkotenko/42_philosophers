@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 12:50:52 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 19:44:46 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,12 @@ int	parse_const(t_data *data, char **av, int ac)
 	int	i;
 	int	n;
 
-	if (ac < 5)
+	if (ac < 5 || ac > 6)
 		return (print_usage());
 	data->c = (t_const *)ft_memalloc(sizeof(t_const));
 	i = ac;
 	while (--i > 0)
 	{
-		if (ft_strlen(av[i]) == 2 && !ft_memcmp("-d", av[i], \
-		sizeof(char) * 2))
-			continue ;
 		n = ft_atoi(av[i]);
 		if (!is_integer(av[i], n) || n < 0)
 			handle_error_str("invalid integer: ", av[i]);

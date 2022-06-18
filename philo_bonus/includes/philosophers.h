@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 13:43:23 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 19:28:14 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct s_data
 	t_sem			*print_sem;
 	t_sem			*forks_common;
 	t_sem			*done_sem;
+	t_sem			*fork_access_sem;
 	pid_t			*processes_phi;
 	int				my_id;
 }					t_data;
@@ -94,6 +95,7 @@ typedef struct s_data
 int			is_integer(char *s, int n);
 int			is_forks_taken(t_data *data, int left_fork, \
 	int right_fork, int p_id);
+int			is_dead(t_data *data, t_phi *me);
 /*
  * print.c
  */

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 14:33:16 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 21:12:52 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	init_data(t_data *data)
 	data->forks_common = create_sem("forks_common", data->c->p_num);
 	data->print_sem = create_sem("print", 1);
 	data->done_sem = create_sem("done", data->c->p_num);
+	data->fork_access_sem = create_sem("fork_access", 1);
 }
 
 void	wait_forks(t_data *data)
@@ -67,8 +68,8 @@ int	main(int ac, char **av)
 	int		i;
 
 	ft_memset(&data, 0, sizeof(t_data));
-	if (!(parse_const(&data, av, ac) && is_const_valid(data.c, ac, av)))
-		return (0);
+	parse_const(&data, av, ac);
+	is_const_valid(data.c, ac, av);
 	init_data(&data);
 	init_philosophers(&data);
 	i = 0;
