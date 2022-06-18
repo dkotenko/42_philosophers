@@ -17,7 +17,6 @@
 void	print_action_more(int phil_num, int action)
 {
 	if (action == SLEEP)
-		
 	{
 		printf("%lld %d is sleeping\n",
 			get_current_time_ms() % 1000000, phil_num);
@@ -39,7 +38,8 @@ void	print_action_more(int phil_num, int action)
 	}
 }
 
-void	print_action(pthread_mutex_t *print_mutex, int phil_num, int action, int fork_id)
+void	print_action(pthread_mutex_t *print_mutex, int phil_num,
+int action, int fork_id)
 {
 	pthread_mutex_lock(print_mutex);
 	if (action == TAKE_FORK)
@@ -62,7 +62,7 @@ void	print_action(pthread_mutex_t *print_mutex, int phil_num, int action, int fo
 int	print_usage(void)
 {
 	printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
-		   " time_to_eat time_to_sleep" \
-   " [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
-   return (1);
+	" time_to_eat time_to_sleep" \
+	" [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
+	return (1);
 }

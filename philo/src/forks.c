@@ -16,7 +16,7 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 {
 	if (is_left_fork)
 	{
-		return id;
+		return (id);
 	}
 	else
 	{
@@ -24,11 +24,11 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 		{
 			return (1);
 		}
-		return id + 1;
+		return (id + 1);
 	}
 }
 
-int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
+int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 {
 	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
 	print_action(data->print_mutex, p_id, TAKE_FORK, left_fork);
@@ -37,8 +37,6 @@ int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 	print_action(data->print_mutex, p_id, EAT, 0);
 	increase_meals_counter(data->mon, data->meals_mutex, data->c->p_num);
 	data->phi[p_id].status = SLEEP;
-	
-	
 	return (1);
 }
 
@@ -60,4 +58,16 @@ void	put_forks(int left_fork, int right_fork, t_data *data)
 {
 	pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
 	pthread_mutex_unlock(&data->forks_mutexes[right_fork]);
+}
+
+void	print_arr(int *arr, int size)
+{
+	int	i;
+
+	i = -1;
+	while (++i < size)
+	{
+		printf("%d ", arr[i]);
+	}
+	printf("\n");
 }

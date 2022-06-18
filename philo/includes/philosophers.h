@@ -13,7 +13,7 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-#define _GNU_SOURCE
+# define _GNU_SOURCE
 
 # include "libft.h"
 # include <pthread.h>
@@ -24,9 +24,6 @@
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
-
-# define here() printf("here\n")
-
 
 enum e_actions {
 	TAKE_FORK,
@@ -46,7 +43,7 @@ typedef struct s_const {
 	int				must_eat_times;
 	int				p_num;
 	int				debug;
-} 					t_const;
+}					t_const;
 
 typedef struct s_order
 {
@@ -75,7 +72,7 @@ typedef struct s_phi
 	long long		last_meal;
 }					t_phi;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	t_const			*c;
 	t_mon			*mon;
@@ -84,7 +81,7 @@ typedef struct	s_data
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*meals_mutex;
-	pthread_mutex_t *forks_mutexes;
+	pthread_mutex_t	*forks_mutexes;
 	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
@@ -98,17 +95,16 @@ int			is_forks_taken(t_data *data, int left_fork, \
 /*
  * print.c
  */
-int		print_usage(void);
-void    *printer(void *data_pointer);
+int			print_usage(void);
+void		*printer(void *data_pointer);
 /*
  * handle_errors.c
  */
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(pthread_mutex_t *print_mutex, 
+void		print_action(pthread_mutex_t *print_mutex, \
 int phil_num, int action, int fork_id);
-
 
 /*
  * main.c
@@ -118,7 +114,7 @@ void		*philosopher(void *num);
  * monitor.c
  */
 
-void    	*monitor(void *data_pointer);
+void		*monitor(void *data_pointer);
 
 /*
  * forks.c
@@ -131,9 +127,9 @@ void		give_forks(int f1, int f2, int id, t_mon *monitor);
 /*
  * parse_const.c
  */
-int		parse_const(t_data *data, char **av, int ac);
-int		take_forks(t_data *data, int left_fork, int right_fork, int p_id);
-void	set_meal_order(t_data *data, int *can_take_fork);
+int			parse_const(t_data *data, char **av, int ac);
+int			take_forks(t_data *data, int left_fork, int right_fork, int p_id);
+void		set_meal_order(t_data *data, int *can_take_fork);
 /*
  * validation.c
  */
@@ -141,8 +137,7 @@ int			is_const_valid(t_const *c, int ac, char **av);
 long long	get_current_time_ms(void);
 long long	get_current_time_us(void);
 
-
-void    print_arr(int *arr, int size);
-int    *generate_order_arr(int size);
-void    increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
+void		print_arr(int *arr, int size);
+int			*generate_order_arr(int size);
+void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
 #endif

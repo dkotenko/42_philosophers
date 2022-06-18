@@ -1,19 +1,32 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
+/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 #include <limits.h>
 
-int		is_dead(t_data *data, t_phi *me)
+int	is_dead(t_data *data, t_phi *me)
 {
 	return (me->last_meal + data->c->time_to_die <= get_current_time_us() \
 		|| me->status == DEAD);
 }
 
-int		had_a_meal(t_data *data, t_phi *me)
+int	had_a_meal(t_data *data, t_phi *me)
 {
 	long long	diff;
 
 	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
 	me->last_meal = get_current_time_us();
-	if (diff >= 0) {
+	if (diff >= 0)
+	{
 		usleep(diff);
 		put_forks(me->left_fork, me->right_fork, data);
 		me->status = DEAD;
@@ -25,7 +38,7 @@ int		had_a_meal(t_data *data, t_phi *me)
 	return (1);
 }
 
-int		had_a_nap(t_data *data, t_phi *me)
+int	had_a_nap(t_data *data, t_phi *me)
 {
 	long long	diff;
 
@@ -44,13 +57,16 @@ int		had_a_nap(t_data *data, t_phi *me)
 
 void	set_final_status(t_data *data, t_phi *me)
 {
-	if (is_dead(data, me)) {
+	if (is_dead(data, me))
+	{
 		me->status = DEAD;
 		print_action(data->print_mutex, me->id, DEAD, 0);
 		pthread_mutex_lock(data->dead_mutex);
 		data->mon->dead_num++;
-		pthread_mutex_unlock(data->dead_mutex);	
-	} else {
+		pthread_mutex_unlock(data->dead_mutex);
+	}
+	else
+	{
 		me->status = DONE;
 		print_action(data->print_mutex, me->id, DONE, 0);
 	}
@@ -72,18 +88,14 @@ void	*philosopher(void *data_pointer)
 	me->last_meal = get_current_time_us();
 	while (me->must_eat_times && me->status != DEAD)
 	{
-		if (is_dead(data, me)) {
-			break;
-		}
-		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id)) {
-			continue;
-		}
+		if (is_dead(data, me))
+			break ;
+		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id))
+			continue ;
 		if (!had_a_meal(data, me))
-			break;
-		if (!had_a_nap(data, me)) {
-			break;
-		}
-		
+			break ;
+		if (!had_a_nap(data, me))
+			break ;
 		print_action(data->print_mutex, me->id, THINK, 0);
 		me->status = THINK;
 	}

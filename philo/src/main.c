@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 14:54:06 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 18:21:28 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void	init_data(t_data *data)
 	data->meals_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
-			sizeof(pthread_mutex_t ) * (data->c->p_num + 1));
+			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
 }
 
 void	init_monitor(t_data *data)
 {
 	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
-	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) *\
-	 (data->c->p_num + 1));
+	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) * \
+	(data->c->p_num + 1));
 	data->mon->order = (t_order *)ft_memalloc(sizeof(t_order));
 	data->mon->order->arr = generate_order_arr(data->c->p_num);
 	pthread_create(data->pthread_mon, NULL, monitor, data);
@@ -45,7 +45,7 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 {
 	int		i;
 	t_phi	*curr_p;
-	
+
 	i = 0;
 	while (++i < data->c->p_num + 1)
 	{
@@ -74,35 +74,33 @@ void	init_mutexes(t_data *data)
 	pthread_mutex_init(data->done_mutex, NULL);
 	pthread_mutex_init(data->dead_mutex, NULL);
 	i = 0;
-	while (++i < data->c->p_num + 1) {
+	while (++i < data->c->p_num + 1)
+	{
 		pthread_mutex_init(&data->forks_mutexes[i], NULL);
 	}
 }
 
-int		main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	t_data	data;
-	t_data *data_arr;
+	t_data	*data_arr;
 	int		i;
 
 	ft_memset(&data, 0, sizeof(t_data));
-	i = parse_const(&data, av, ac);
-	if (i && is_const_valid(data.c, ac, av))
+	if (parse_const(&data, av, ac) && is_const_valid(data.c, ac, av))
 	{
 		init_data(&data);
 		init_monitor(&data);
 		data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 		init_philosophers(&data, data_arr);
 		init_mutexes(&data);
-    	set_meal_order(&data, data.mon->can_take_fork);
+		set_meal_order(&data, data.mon->can_take_fork);
 		pthread_join(*data.pthread_mon, NULL);
 		pthread_join(*data.pthread_print, NULL);
 		i = 0;
 		while (++i < data.c->p_num + 1)
-		{
 			pthread_join(data.pthread_phi[i], NULL);
-		}
-		printf("Result: %d / %d alive\n", 
+		printf("Result: %d / %d alive\n", \
 		data.c->p_num - data.mon->dead_num, data.c->p_num);
 	}
 	exit(0);
