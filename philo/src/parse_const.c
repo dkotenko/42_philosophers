@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 18:05:22 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 21:17:42 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	parse_const(t_data *data, char **av, int ac)
 	int	i;
 	int	n;
 
-	if (ac < 5)
+	if (ac < 5 || ac > 6)
 		return (print_usage());
 	data->c = (t_const *)ft_memalloc(sizeof(t_const));
 	i = ac;

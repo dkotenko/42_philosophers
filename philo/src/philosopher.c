@@ -78,8 +78,8 @@ void	set_final_status(t_data *data, t_phi *me)
 
 void	*philosopher(void *data_pointer)
 {
-	t_data	*data;
-	t_phi	*me;
+	t_data		*data;
+	t_phi		*me;
 
 	data = (t_data *)data_pointer;
 	me = &data->phi[data->my_id];
