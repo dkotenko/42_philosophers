@@ -6,14 +6,14 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/16 20:51:54 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 13:43:23 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-#define _GNU_SOURCE
+# define _GNU_SOURCE
 
 # include "libft.h"
 # include <pthread.h>
@@ -28,9 +28,6 @@
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
-
-# define here() printf("here\n")
-
 
 enum e_actions {
 	TAKE_FORK,
@@ -50,7 +47,7 @@ typedef struct s_const {
 	int				must_eat_times;
 	int				p_num;
 	int				debug;
-} 					t_const;
+}					t_const;
 
 typedef struct s_order
 {
@@ -72,8 +69,6 @@ typedef struct s_mon_info
 typedef struct s_phi
 {
 	int				id;
-	int				left_fork;
-	int				right_fork;
 	int				status;
 	int				must_eat_times;
 	long long		last_meal;
@@ -84,18 +79,14 @@ typedef struct s_sem {
 	char			*name;
 }					t_sem;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	t_const			*c;
 	t_mon			*mon;
 	t_phi			*phi;
-	t_sem			*done_sem;
-	t_sem			*dead_sem;
 	t_sem			*print_sem;
-	t_sem			*meals_sem;
-	t_sem			**forks_sem;
 	t_sem			*forks_common;
-	pid_t			*process_mon;
+	t_sem			*done_sem;
 	pid_t			*processes_phi;
 	int				my_id;
 }					t_data;
@@ -106,16 +97,15 @@ int			is_forks_taken(t_data *data, int left_fork, \
 /*
  * print.c
  */
-int		print_usage(void);
-void    *printer(void *data_pointer);
+int			print_usage(void);
+void		*printer(void *data_pointer);
 /*
  * handle_errors.c
  */
 void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
-void		print_action(sem_t *print, int phil_num, int action, int fork_id);
-
+void		print_action(sem_t *print, int phil_num, int action);
 
 /*
  * main.c
@@ -125,7 +115,7 @@ void		*philosopher(t_data *data);
  * monitor.c
  */
 
-void    	*monitor(void *data_pointer);
+void		*monitor(void *data_pointer);
 
 /*
  * forks.c
@@ -137,8 +127,7 @@ void		give_forks(int f1, int f2, int id, t_mon *monitor);
 /*
  * parse_const.c
  */
-int		parse_const(t_data *data, char **av, int ac);
-int		take_forks(t_data *data, int left_fork, int right_fork, int p_id);
+int			parse_const(t_data *data, char **av, int ac);
 
 /*
  * validation.c
@@ -146,10 +135,8 @@ int		take_forks(t_data *data, int left_fork, int right_fork, int p_id);
 int			is_const_valid(t_const *c, int ac, char **av);
 long long	get_current_time_ms(void);
 long long	get_current_time_us(void);
-
-
-void    print_arr(int *arr, int size);
-int    *generate_order_arr(int size);
-void    increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
-void	wait_n_exit(t_data *data);
+void		print_arr(int *arr, int size);
+int			*generate_order_arr(int size);
+void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
+void		wait_n_exit(t_data *data);
 #endif

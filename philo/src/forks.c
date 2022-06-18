@@ -14,10 +14,14 @@
 
 int	get_fork_id(int id, int forks_number, int is_left_fork)
 {
-	if (is_left_fork) {
+	if (is_left_fork)
+	{
 		return id;
-	} else {
-		if (id == forks_number) {
+	}
+	else
+	{
+		if (id == forks_number)
+		{
 			return (1);
 		}
 		return id + 1;
@@ -26,7 +30,6 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 
 int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 {
-	
 	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
 	print_action(data->print_mutex, p_id, TAKE_FORK, left_fork);
 	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
@@ -41,6 +44,8 @@ int		take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 
 int	is_forks_taken(t_data *data, int left_fork, int right_fork, int p_id)
 {
+	if (data->c->p_num == 1)
+		return (0);
 	if (data->mon->can_take_fork[left_fork] == p_id && \
 		data->mon->can_take_fork[right_fork] == p_id)
 	{

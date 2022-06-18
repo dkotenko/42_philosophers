@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/16 20:58:16 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 12:26:30 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ static void	print_action_more(int phil_num, int action)
 	}
 }
 
-void	print_action(sem_t *print, int phil_num, int action, int fork_id)
+void	print_action(sem_t *print, int phil_num, int action)
 {
 	sem_wait(print);
 	if (action == TAKE_FORK)
 	{
-		printf("%lld %d has taken a fork %d\n",
-			get_current_time_ms() % 1000000, phil_num, fork_id);
+		printf("%lld %d has taken a fork\n",
+			get_current_time_ms() % 1000000, phil_num);
 	}
 	else if (action == EAT)
 	{

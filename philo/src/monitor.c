@@ -43,7 +43,12 @@ int    *generate_order_arr(int size)
     int i;
 
     order_arr = ft_memalloc(sizeof(int) * size);
-    i = 0;
+	i = 0;
+	if (size == 1)
+	{
+		order_arr[i] = 'E';
+		return (order_arr);
+	}
     while (i < size) {
         order_arr[i] = 'E';
         order_arr[i + 1] = 'S';
@@ -71,14 +76,7 @@ void    increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num)
 	}
 	if (mon->meals_counter % (p_num / 2) == 0)
         mon->start_ordering = 1;
-	/*
-    pthread_mutex_lock(m);
-    mon->meals_counter++;
-    if (mon->meals_counter % (p_num / 2) == 0)
-        mon->start_ordering = 1;
-    pthread_mutex_unlock(m);
-	*/
-(void)m;
+	(void)m;
 }
 
 void    *monitor(void *data_pointer)
@@ -87,12 +85,9 @@ void    *monitor(void *data_pointer)
     
     data = (t_data *)data_pointer;
     while (data->mon->done_num < data->c->p_num) {
-        //printf("%lld\n",last_phase_check + data->c->time_to_eat / 2);
-	    //printf("%lld\n",get_current_time_us());
         if (data->mon->start_ordering)
         {
             set_meal_order(data, data->mon->can_take_fork);
-			//print_arr(data->mon->can_take_fork, 5);
             data->mon->start_ordering = 0;
         }
     }

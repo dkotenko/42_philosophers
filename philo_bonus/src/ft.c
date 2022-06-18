@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/16 20:58:01 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 13:09:03 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,6 @@
 
 #define ERR_MALLOC "Can't allocate memory"
 #define ERR_MALLOC_SIZE "Invalid malloc size"
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	if (!str)
-		return (i);
-	while (str[i])
-		i++;
-	return (i);
-}
 
 void	*ft_memalloc(size_t size)
 {

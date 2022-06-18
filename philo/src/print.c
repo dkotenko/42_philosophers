@@ -16,8 +16,6 @@
 
 void	print_action_more(int phil_num, int action)
 {
-	char *s;
-
 	if (action == SLEEP)
 		
 	{

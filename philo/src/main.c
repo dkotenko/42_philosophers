@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/16 19:28:22 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 14:54:06 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	init_monitor(t_data *data)
 	 (data->c->p_num + 1));
 	data->mon->order = (t_order *)ft_memalloc(sizeof(t_order));
 	data->mon->order->arr = generate_order_arr(data->c->p_num);
-	//print_arr(data->mon->can_take_fork, 5);
 	pthread_create(data->pthread_mon, NULL, monitor, data);
 }
 
@@ -78,7 +77,6 @@ void	init_mutexes(t_data *data)
 	while (++i < data->c->p_num + 1) {
 		pthread_mutex_init(&data->forks_mutexes[i], NULL);
 	}
-
 }
 
 int		main(int ac, char **av)
@@ -89,13 +87,13 @@ int		main(int ac, char **av)
 
 	ft_memset(&data, 0, sizeof(t_data));
 	i = parse_const(&data, av, ac);
-	if (i && is_const_valid(data.c, ac, av)) {
+	if (i && is_const_valid(data.c, ac, av))
+	{
 		init_data(&data);
 		init_monitor(&data);
 		data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 		init_philosophers(&data, data_arr);
 		init_mutexes(&data);
-
     	set_meal_order(&data, data.mon->can_take_fork);
 		pthread_join(*data.pthread_mon, NULL);
 		pthread_join(*data.pthread_print, NULL);
@@ -107,7 +105,6 @@ int		main(int ac, char **av)
 		printf("Result: %d / %d alive\n", 
 		data.c->p_num - data.mon->dead_num, data.c->p_num);
 	}
-	
 	exit(0);
 	return (0);
 }

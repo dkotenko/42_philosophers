@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_create2dchararr.c                               :+:      :+:    :+:   */
+/*   parse_const.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2020/02/15 22:02:50 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/18 12:50:52 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
 #define MAX 9223372036854775807
-#define IS_DEBUG(a) 
 
 static int	ft_atoi(const char *s)
 {
@@ -85,10 +84,9 @@ int	parse_const(t_data *data, char **av, int ac)
 	i = ac;
 	while (--i > 0)
 	{
-		if (ft_strlen(av[i]) == 2 && !ft_memcmp("-d", av[i], sizeof(char) * 2)) {
-			data->c->debug = 1;
-			continue;
-		}
+		if (ft_strlen(av[i]) == 2 && !ft_memcmp("-d", av[i], \
+		sizeof(char) * 2))
+			continue ;
 		n = ft_atoi(av[i]);
 		if (!is_integer(av[i], n) || n < 0)
 			handle_error_str("invalid integer: ", av[i]);

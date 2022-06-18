@@ -3,11 +3,11 @@ SRCS =		parse_const.c \
 			ft.c \
 			handle_errors.c \
 			forks.c \
-			monitor.c \
 			philosopher.c \
 			time.c \
 			validation.c \
-			main.c
+			main.c \
+			ft_more.c
 
 SRCS_DIR = ./src
 
