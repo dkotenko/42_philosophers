@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 19:59:00 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/20 21:21:35 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,19 +71,35 @@ int	had_a_nap(t_data *data, t_phi *me)
 	return (1);
 }
 
+void kill_all(t_data *data, pid_t me)
+{
+	int	i;
+
+	i = 0;
+	while (++i < data->c->p_num + 1)
+	{
+		if (data->processes_phi[i] != me)
+			kill(data->processes_phi[i], 9);
+	}
+	exit(1);
+}
+
 void	set_final_status(t_data *data, t_phi *me)
 {
 	if (is_dead(data, me))
 	{
 		me->status = DEAD;
 		print_action(data->print_sem->sem, me->id, DEAD);
+		sem_wait(data->print_sem->sem);
+		sem_wait(data->done_sem->sem);
+		exit(0);
+		//kill_all(data, data->processes_phi[me->id]);
 	}
 	else
 	{
 		me->status = DONE;
 		print_action(data->print_sem->sem, me->id, DONE);
 	}
-	sem_post(data->done_sem->sem);
 }
 
 void	*philosopher(t_data *data)
@@ -109,5 +125,5 @@ void	*philosopher(t_data *data)
 		me->status = THINK;
 	}
 	set_final_status(data, me);
-	return (0);
+	exit (0);
 }

@@ -19,22 +19,22 @@ void	print_action_more(int phil_num, int action)
 	if (action == SLEEP)
 	{
 		printf("%lld %d is sleeping\n",
-			get_current_time_ms() % 1000000, phil_num);
+			get_current_time_ms(), phil_num);
 	}
 	else if (action == THINK)
 	{
 		printf("%lld %d is thinking\n",
-			get_current_time_ms() % 1000000, phil_num);
+			get_current_time_ms(), phil_num);
 	}
 	else if (action == DEAD)
 	{
 		printf("%lld %d died\n",
-			get_current_time_ms() % 1000000, phil_num);
+			get_current_time_ms(), phil_num);
 	}
 	else if (action == DONE)
 	{
 		printf("%lld %d is done and alive. Congratulations!\n",
-			get_current_time_ms() % 1000000, phil_num);
+			get_current_time_ms(), phil_num);
 	}
 }
 
@@ -45,12 +45,12 @@ int action, int fork_id)
 	if (action == TAKE_FORK)
 	{
 		printf("%lld %d has taken a fork %d\n",
-			get_current_time_ms() % 1000000, phil_num, fork_id);
+			get_current_time_ms(), phil_num, fork_id);
 	}
 	else if (action == EAT)
 	{
 		printf("%lld %d is eating\n",
-			get_current_time_ms() % 1000000, phil_num);
+			get_current_time_ms(), phil_num);
 	}
 	else
 	{
@@ -64,6 +64,5 @@ int	print_usage(void)
 	printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
 	" time_to_eat time_to_sleep" \
 	" [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
-	exit(1);
 	return (1);
 }

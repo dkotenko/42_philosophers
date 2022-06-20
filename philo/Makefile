@@ -45,10 +45,10 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -c $< -o $@
 
 clean:
-	@rm -rf obj_*
+	rm -rf obj*
 
 fclean: clean
-	@rm -rf $(NAME)
+	rm -rf $(NAME)
 
 re:		fclean all
 

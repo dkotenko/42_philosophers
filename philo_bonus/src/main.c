@@ -6,22 +6,11 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 21:12:52 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/20 21:27:56 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-t_sem	*create_sem(char *name, int value)
-{
-	t_sem	*new;
-
-	sem_unlink(name);
-	new = (t_sem *)ft_memalloc(sizeof(t_sem));
-	new->name = ft_strdup(name);
-	new->sem = sem_open(new->name, O_CREAT, S_IRWXU, value);
-	return (new);
-}
 
 void	init_philosophers(t_data *data)
 {
@@ -47,19 +36,36 @@ void	init_data(t_data *data)
 	data->print_sem = create_sem("print", 1);
 	data->done_sem = create_sem("done", data->c->p_num);
 	data->fork_access_sem = create_sem("fork_access", 1);
+	data->pthread_timer = (pthread_t *)ft_memalloc(sizeof(pthread_t));
+	data->pthread_monitor = (pthread_t *)ft_memalloc(sizeof(pthread_t));
 }
 
-void	wait_forks(t_data *data)
+void	*timer(void *p)
 {
-	int	i;
+	t_data	*data;
 
-	i = -1;
-	usleep_ms(200);
-	while (++i < data->c->p_num)
+	data = (t_data *)p;
+	data->curr_time = get_current_time_us();
+	while (1)
 	{
 		sem_wait(data->done_sem->sem);
+		sem_post(data->done_sem->sem);
+		data->curr_time = get_current_time_us();
 	}
-	exit(0);
+	return (0);
+}
+
+void	*monitor(void *p)
+{
+	t_data	*data;
+
+	data = (t_data *)p;
+	usleep_ms(1);
+	if (get_current_time_us() - data->curr_time > 1000)
+	{
+		kill_all(data, 0);
+	}
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -73,20 +79,45 @@ int	main(int ac, char **av)
 	init_data(&data);
 	init_philosophers(&data);
 	i = 0;
+	data.processes_phi[i] = 1;
 	while (++i < data.c->p_num + 1)
 	{
-		data.my_id = i;
 		data.processes_phi[i] = fork();
-		if (data.processes_phi[i] < 0)
+		if (data.processes_phi[i] == 0)
+		{
+			philosopher(&data);
+			exit (0);
+		}
+		else
+		{
+		}
+		if (data.processes_phi[i] > 0)
+		{
+			data.my_id = i;
+			
+
+	printf("here\n");
+		}
+		else if (data.processes_phi[i] < 0)
 		{
 			perror("fork");
 			abort();
 		}
-		else if (data.processes_phi[i] == 0)
+	}
+	i = 0;
+	pthread_create(data.pthread_timer, NULL, timer, &data);
+	pthread_create(data.pthread_monitor, NULL, monitor, &data);
+	pthread_join(*data.pthread_timer, NULL);
+	pthread_join(*data.pthread_monitor, NULL);
+	while (++i < data.c->p_num + 1)
+	{
+		if (data.processes_phi[i] == 0)
 		{
 			philosopher(&data);
-			exit(0);
-		}
+			exit (0);
+		} else {
+			waitpid(data.processes_phi[i], NULL, WNOHANG);	
+		}		
 	}
-	wait_forks(&data);
+	exit(0);
 }

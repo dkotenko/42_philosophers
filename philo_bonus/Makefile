@@ -2,7 +2,6 @@ SRCS =		parse_const.c \
             print.c \
 			ft.c \
 			handle_errors.c \
-			forks.c \
 			philosopher.c \
 			time.c \
 			validation.c \
@@ -45,7 +44,7 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c $(INCLUDES) | $(OBJS_DIR)
 	$(CC) $(FLAGS) -I./$(INCLUDES_DIR) -c $< -o $@
 
 clean:
-	@rm -rf obj_*
+	@rm -rf obj*
 
 fclean: clean
 	@rm -rf $(NAME)

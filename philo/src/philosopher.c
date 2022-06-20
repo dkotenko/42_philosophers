@@ -61,6 +61,7 @@ void	set_final_status(t_data *data, t_phi *me)
 	{
 		me->status = DEAD;
 		print_action(data->print_mutex, me->id, DEAD, 0);
+		pthread_mutex_lock(data->print_mutex);
 		pthread_mutex_lock(data->dead_mutex);
 		data->mon->dead_num++;
 		pthread_mutex_unlock(data->dead_mutex);

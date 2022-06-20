@@ -122,7 +122,6 @@ void		*monitor(void *data_pointer);
 void		put_forks(int f1, int f2, t_data *data);
 int			get_fork_id(int id, int forks_number, int is_left_fork);
 void		usleep_ms(long long ms);
-void		give_forks(int f1, int f2, int id, t_mon *monitor);
 
 /*
  * parse_const.c

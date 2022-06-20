@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 19:28:14 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/20 21:15:15 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <stdarg.h>
 # include <semaphore.h>
 # include <fcntl.h>
+# include <signal.h>
 
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
@@ -89,6 +90,10 @@ typedef struct s_data
 	t_sem			*done_sem;
 	t_sem			*fork_access_sem;
 	pid_t			*processes_phi;
+	pid_t			process_waiter;
+	pthread_t		*pthread_timer;
+	pthread_t		*pthread_monitor;
+	long long		curr_time;
 	int				my_id;
 }					t_data;
 
@@ -141,4 +146,6 @@ void		print_arr(int *arr, int size);
 int			*generate_order_arr(int size);
 void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
 void		wait_n_exit(t_data *data);
+t_sem		*create_sem(char *name, int value);
+void		kill_all(t_data *data, pid_t me);
 #endif

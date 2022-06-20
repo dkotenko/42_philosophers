@@ -12,12 +12,6 @@
 
 #include "philosophers.h"
 
-void	give_forks(int f1, int f2, int id, t_mon *monitor)
-{
-	monitor->can_take_fork[f1] = id;
-	monitor->can_take_fork[f2] = id;
-}
-
 void	set_meal_order(t_data *data, int *can_take_fork)
 {
 	int		curr_p_ind;
@@ -92,6 +86,19 @@ void	increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num)
 	(void)m;
 }
 
+void	clean_all(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->c->p_num + 1)
+	{
+		pthread_detach(data->pthread_phi[i]);
+		pthread_mutex_unlock(&data->forks_mutexes[i]);
+		pthread_mutex_destroy(&data->forks_mutexes[i]);
+	}
+}
+
 void	*monitor(void *data_pointer)
 {
 	t_data	*data;
@@ -103,6 +110,12 @@ void	*monitor(void *data_pointer)
 		{
 			set_meal_order(data, data->mon->can_take_fork);
 			data->mon->start_ordering = 0;
+		}
+		if (data->mon->dead_num)
+		{
+			memset(data->mon->can_take_fork, 0, sizeof(int) * (data->c->p_num + 1));
+			clean_all(data);
+			break ;
 		}
 	}
 	return (0);

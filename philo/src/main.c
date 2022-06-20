@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 21:16:45 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/20 19:01:00 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,6 @@ int	main(int ac, char **av)
 		i = 0;
 		while (++i < data.c->p_num + 1)
 			pthread_join(data.pthread_phi[i], NULL);
-		printf("Result: %d / %d alive\n", \
-		data.c->p_num - data.mon->dead_num, data.c->p_num);
 	}
-	exit(0);
 	return (0);
 }
