@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/20 21:21:35 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/21 20:56:31 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,19 +71,6 @@ int	had_a_nap(t_data *data, t_phi *me)
 	return (1);
 }
 
-void kill_all(t_data *data, pid_t me)
-{
-	int	i;
-
-	i = 0;
-	while (++i < data->c->p_num + 1)
-	{
-		if (data->processes_phi[i] != me)
-			kill(data->processes_phi[i], 9);
-	}
-	exit(1);
-}
-
 void	set_final_status(t_data *data, t_phi *me)
 {
 	if (is_dead(data, me))
@@ -102,25 +89,43 @@ void	set_final_status(t_data *data, t_phi *me)
 	}
 }
 
+void	*monitor(void *p)
+{
+	t_data	*data;
+	t_phi	*me;
+
+	data = (t_data *)p;
+	me = &data->phi[data->my_id];
+	while (1)
+	{
+		usleep(50);
+		if(is_dead(data, me))
+		{
+			exit (1);
+		}
+			
+	}
+	return (0);
+}
+
 void	*philosopher(t_data *data)
 {
 	t_phi	*me;
 
-	sem_wait(data->done_sem->sem);
 	me = &data->phi[data->my_id];
 	me->id = data->my_id;
 	me->status = THINK;
 	me->last_meal = get_current_time_us();
+	
+	//printf("%d\n", 1);
+	pthread_create(data->pthread_monitor, NULL, monitor, data);
+	pthread_join(*data->pthread_monitor, NULL);
+	printf("%d\n", data->my_id);
 	while (me->must_eat_times && me->status != DEAD)
 	{
-		if (is_dead(data, me))
-			break ;
+		
 		had_a_meal(data, me);
-		if (is_dead(data, me))
-			break ;
 		had_a_nap(data, me);
-		if (is_dead(data, me))
-			break ;
 		print_action(data->print_sem->sem, me->id, THINK);
 		me->status = THINK;
 	}

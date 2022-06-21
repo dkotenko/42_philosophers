@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/20 21:27:56 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/21 20:40:42 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,38 +40,22 @@ void	init_data(t_data *data)
 	data->pthread_monitor = (pthread_t *)ft_memalloc(sizeof(pthread_t));
 }
 
-void	*timer(void *p)
+void kill_all(t_data *data)
 {
-	t_data	*data;
+	int	i;
 
-	data = (t_data *)p;
-	data->curr_time = get_current_time_us();
-	while (1)
-	{
-		sem_wait(data->done_sem->sem);
-		sem_post(data->done_sem->sem);
-		data->curr_time = get_current_time_us();
-	}
-	return (0);
-}
-
-void	*monitor(void *p)
-{
-	t_data	*data;
-
-	data = (t_data *)p;
-	usleep_ms(1);
-	if (get_current_time_us() - data->curr_time > 1000)
-	{
-		kill_all(data, 0);
-	}
-	return (0);
+	i = 0;
+	while (++i < data->c->p_num + 1)
+		kill(data->processes_phi[i], 9);
+	exit(1);
 }
 
 int	main(int ac, char **av)
 {
 	t_data	data;
 	int		i;
+	int		status;
+	int		status_counter;
 
 	ft_memset(&data, 0, sizeof(t_data));
 	parse_const(&data, av, ac);
@@ -79,24 +63,15 @@ int	main(int ac, char **av)
 	init_data(&data);
 	init_philosophers(&data);
 	i = 0;
-	data.processes_phi[i] = 1;
+	
 	while (++i < data.c->p_num + 1)
 	{
 		data.processes_phi[i] = fork();
 		if (data.processes_phi[i] == 0)
 		{
+			data.my_id = i;
 			philosopher(&data);
 			exit (0);
-		}
-		else
-		{
-		}
-		if (data.processes_phi[i] > 0)
-		{
-			data.my_id = i;
-			
-
-	printf("here\n");
 		}
 		else if (data.processes_phi[i] < 0)
 		{
@@ -104,19 +79,22 @@ int	main(int ac, char **av)
 			abort();
 		}
 	}
-	i = 0;
-	pthread_create(data.pthread_timer, NULL, timer, &data);
-	pthread_create(data.pthread_monitor, NULL, monitor, &data);
-	pthread_join(*data.pthread_timer, NULL);
-	pthread_join(*data.pthread_monitor, NULL);
-	while (++i < data.c->p_num + 1)
+	status = -1;
+	status_counter = 0;
+	while (status_counter < data.c->p_num)
 	{
-		if (data.processes_phi[i] == 0)
+
+		i = 0;
+		while (++i < data.c->p_num + 1)
 		{
-			philosopher(&data);
-			exit (0);
-		} else {
-			waitpid(data.processes_phi[i], NULL, WNOHANG);	
+			waitpid(data.processes_phi[i], &status, WNOHANG);
+			if (status == 256)
+				kill_all(&data);
+			else if (status == 0)
+			{
+				status_counter++;
+				status = -1;
+			}
 		}		
 	}
 	exit(0);
