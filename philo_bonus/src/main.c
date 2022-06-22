@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/21 20:40:42 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/22 18:43:30 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	init_data(t_data *data)
 	data->pthread_monitor = (pthread_t *)ft_memalloc(sizeof(pthread_t));
 }
 
-void kill_all(t_data *data)
+void	kill_all(t_data *data)
 {
 	int	i;
 
@@ -50,12 +50,35 @@ void kill_all(t_data *data)
 	exit(1);
 }
 
+void	wait_end(t_data *data)
+{
+	int		status;
+	int		status_counter;
+	int		i;
+
+	status = -1;
+	status_counter = 0;
+	while (status_counter < data->c->p_num)
+	{
+		i = 0;
+		while (++i < data->c->p_num + 1)
+		{
+			waitpid(data->processes_phi[i], &status, WNOHANG);
+			if (status == 256)
+				kill_all(&data);
+			else if (status == 0)
+			{
+				status_counter++;
+				status = -1;
+			}
+		}		
+	}
+}
+
 int	main(int ac, char **av)
 {
 	t_data	data;
 	int		i;
-	int		status;
-	int		status_counter;
 
 	ft_memset(&data, 0, sizeof(t_data));
 	parse_const(&data, av, ac);
@@ -63,7 +86,6 @@ int	main(int ac, char **av)
 	init_data(&data);
 	init_philosophers(&data);
 	i = 0;
-	
 	while (++i < data.c->p_num + 1)
 	{
 		data.processes_phi[i] = fork();
@@ -78,24 +100,6 @@ int	main(int ac, char **av)
 			perror("fork");
 			abort();
 		}
-	}
-	status = -1;
-	status_counter = 0;
-	while (status_counter < data.c->p_num)
-	{
-
-		i = 0;
-		while (++i < data.c->p_num + 1)
-		{
-			waitpid(data.processes_phi[i], &status, WNOHANG);
-			if (status == 256)
-				kill_all(&data);
-			else if (status == 0)
-			{
-				status_counter++;
-				status = -1;
-			}
-		}		
 	}
 	exit(0);
 }

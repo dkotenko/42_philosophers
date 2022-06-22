@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/21 20:15:56 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/22 18:41:11 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,4 +148,6 @@ void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
 void		wait_n_exit(t_data *data);
 t_sem		*create_sem(char *name, int value);
 void		kill_all(t_data *data);
+void		*monitor(void *p);
+void		set_final_status(t_data *data, t_phi *me);
 #endif

@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/21 20:56:31 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/22 18:41:49 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,47 +71,6 @@ int	had_a_nap(t_data *data, t_phi *me)
 	return (1);
 }
 
-void	set_final_status(t_data *data, t_phi *me)
-{
-	if (is_dead(data, me))
-	{
-		if (me->status == EAT)
-		{
-			sem_post(data->forks_common->sem);
-			sem_post(data->forks_common->sem);
-		}
-		me->status = DEAD;
-		print_action(data->print_sem->sem, me->id, DEAD);
-		sem_wait(data->print_sem->sem);
-		//kill_all(data);
-	}
-	else
-	{
-		me->status = DONE;
-		print_action(data->print_sem->sem, me->id, DONE);
-	}
-}
-
-void	*monitor(void *p)
-{
-	t_data	*data;
-	t_phi	*me;
-
-	data = (t_data *)p;
-	me = &data->phi[data->my_id];
-	while (1)
-	{
-		usleep(50);
-		if(is_dead(data, me))
-		{
-			set_final_status(data, me);
-			exit (1);
-		}
-			
-	}
-	return (0);
-}
-
 void	*routine(void *p)
 {
 	t_data	*data;
@@ -120,8 +79,7 @@ void	*routine(void *p)
 	data = (t_data *)p;
 	me = &data->phi[data->my_id];
 	while (me->must_eat_times && me->status != DEAD)
-	{
-		
+	{	
 		had_a_meal(data, me);
 		had_a_nap(data, me);
 		print_action(data->print_sem->sem, me->id, THINK);

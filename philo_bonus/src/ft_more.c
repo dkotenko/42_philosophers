@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/21 20:49:54 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/22 18:40:26 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,42 @@ t_sem	*create_sem(char *name, int value)
 	new->name = ft_strdup(name);
 	new->sem = sem_open(new->name, O_CREAT, S_IRWXU, value);
 	return (new);
+}
+
+void	set_final_status(t_data *data, t_phi *me)
+{
+	if (is_dead(data, me))
+	{
+		if (me->status == EAT)
+		{
+			sem_post(data->forks_common->sem);
+			sem_post(data->forks_common->sem);
+		}
+		me->status = DEAD;
+		print_action(data->print_sem->sem, me->id, DEAD);
+		sem_wait(data->print_sem->sem);
+	}
+	else
+	{
+		me->status = DONE;
+		print_action(data->print_sem->sem, me->id, DONE);
+	}
+}
+
+void	*monitor(void *p)
+{
+	t_data	*data;
+	t_phi	*me;
+
+	data = (t_data *)p;
+	me = &data->phi[data->my_id];
+	while (1)
+	{
+		usleep(50);
+		if (is_dead(data, me))
+		{
+			set_final_status(data, me);
+			exit (1);
+		}
+	}
 }

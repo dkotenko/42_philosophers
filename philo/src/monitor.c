@@ -21,7 +21,6 @@ void	set_meal_order(t_data *data, int *can_take_fork)
 
 	curr_p_ind = 0;
 	counter = 0;
-	i = data->mon->order->start;
 	while (++curr_p_ind < data->c->p_num + 1)
 	{
 		i = (data->mon->order->start + counter) % data->c->p_num;
@@ -113,7 +112,8 @@ void	*monitor(void *data_pointer)
 		}
 		if (data->mon->dead_num)
 		{
-			memset(data->mon->can_take_fork, 0, sizeof(int) * (data->c->p_num + 1));
+			memset(data->mon->can_take_fork, 0, \
+sizeof(int) * (data->c->p_num + 1));
 			clean_all(data);
 			break ;
 		}
