@@ -36,7 +36,7 @@ void	init_data(t_data *data)
 	data->print_sem = create_sem("print", 1);
 	data->done_sem = create_sem("done", data->c->p_num);
 	data->fork_access_sem = create_sem("fork_access", 1);
-	data->pthread_timer = (pthread_t *)ft_memalloc(sizeof(pthread_t));
+	data->pthread_routine = (pthread_t *)ft_memalloc(sizeof(pthread_t));
 	data->pthread_monitor = (pthread_t *)ft_memalloc(sizeof(pthread_t));
 }
 

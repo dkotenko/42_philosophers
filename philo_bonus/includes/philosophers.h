@@ -91,7 +91,7 @@ typedef struct s_data
 	t_sem			*fork_access_sem;
 	pid_t			*processes_phi;
 	pid_t			process_waiter;
-	pthread_t		*pthread_timer;
+	pthread_t		*pthread_routine;
 	pthread_t		*pthread_monitor;
 	long long		curr_time;
 	int				my_id;

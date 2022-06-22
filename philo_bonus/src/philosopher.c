@@ -75,12 +75,15 @@ void	set_final_status(t_data *data, t_phi *me)
 {
 	if (is_dead(data, me))
 	{
+		if (me->status == EAT)
+		{
+			sem_post(data->forks_common->sem);
+			sem_post(data->forks_common->sem);
+		}
 		me->status = DEAD;
 		print_action(data->print_sem->sem, me->id, DEAD);
 		sem_wait(data->print_sem->sem);
-		sem_wait(data->done_sem->sem);
-		exit(0);
-		//kill_all(data, data->processes_phi[me->id]);
+		//kill_all(data);
 	}
 	else
 	{
@@ -101,10 +104,31 @@ void	*monitor(void *p)
 		usleep(50);
 		if(is_dead(data, me))
 		{
+			set_final_status(data, me);
 			exit (1);
 		}
 			
 	}
+	return (0);
+}
+
+void	*routine(void *p)
+{
+	t_data	*data;
+	t_phi	*me;
+
+	data = (t_data *)p;
+	me = &data->phi[data->my_id];
+	while (me->must_eat_times && me->status != DEAD)
+	{
+		
+		had_a_meal(data, me);
+		had_a_nap(data, me);
+		print_action(data->print_sem->sem, me->id, THINK);
+		me->status = THINK;
+	}
+	set_final_status(data, me);
+	exit (0);
 	return (0);
 }
 
@@ -116,19 +140,9 @@ void	*philosopher(t_data *data)
 	me->id = data->my_id;
 	me->status = THINK;
 	me->last_meal = get_current_time_us();
-	
-	//printf("%d\n", 1);
 	pthread_create(data->pthread_monitor, NULL, monitor, data);
+	pthread_create(data->pthread_monitor, NULL, routine, data);
+	pthread_join(*data->pthread_routine, NULL);
 	pthread_join(*data->pthread_monitor, NULL);
-	printf("%d\n", data->my_id);
-	while (me->must_eat_times && me->status != DEAD)
-	{
-		
-		had_a_meal(data, me);
-		had_a_nap(data, me);
-		print_action(data->print_sem->sem, me->id, THINK);
-		me->status = THINK;
-	}
-	set_final_status(data, me);
-	exit (0);
+	return (0);
 }
