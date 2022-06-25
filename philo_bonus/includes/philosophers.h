@@ -150,4 +150,5 @@ t_sem		*create_sem(char *name, int value);
 void		kill_all(t_data *data);
 void		*monitor(void *p);
 void		set_final_status(t_data *data, t_phi *me);
+void		wait_end(t_data *data);
 #endif

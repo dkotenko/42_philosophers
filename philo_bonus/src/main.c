@@ -50,56 +50,38 @@ void	kill_all(t_data *data)
 	exit(1);
 }
 
-void	wait_end(t_data *data)
+void	start_philosophers(t_data *data)
 {
-	int		status;
-	int		status_counter;
-	int		i;
+	int	i;	
 
-	status = -1;
-	status_counter = 0;
-	while (status_counter < data->c->p_num)
+	i = 0;
+	while (++i < data->c->p_num + 1)
 	{
-		i = 0;
-		while (++i < data->c->p_num + 1)
+		data->processes_phi[i] = fork();
+		if (data->processes_phi[i] == 0)
 		{
-			waitpid(data->processes_phi[i], &status, WNOHANG);
-			if (status == 256)
-				kill_all(&data);
-			else if (status == 0)
-			{
-				status_counter++;
-				status = -1;
-			}
-		}		
+			data->my_id = i;
+			philosopher(data);
+			exit (0);
+		}
+		else if (data->processes_phi[i] < 0)
+		{
+			perror("fork");
+			abort();
+		}
 	}
 }
 
 int	main(int ac, char **av)
 {
 	t_data	data;
-	int		i;
 
 	ft_memset(&data, 0, sizeof(t_data));
 	parse_const(&data, av, ac);
 	is_const_valid(data.c, ac, av);
 	init_data(&data);
 	init_philosophers(&data);
-	i = 0;
-	while (++i < data.c->p_num + 1)
-	{
-		data.processes_phi[i] = fork();
-		if (data.processes_phi[i] == 0)
-		{
-			data.my_id = i;
-			philosopher(&data);
-			exit (0);
-		}
-		else if (data.processes_phi[i] < 0)
-		{
-			perror("fork");
-			abort();
-		}
-	}
+	start_philosophers(&data);
+	wait_end(&data);
 	exit(0);
 }

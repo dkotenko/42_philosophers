@@ -13,17 +13,57 @@
 #include "philosophers.h"
 #include <limits.h>
 
-int	is_dead(t_data *data, t_phi *me)
+int had_a_meal_new(t_data *data, t_phi *me)
 {
-	return (me->last_meal + data->c->time_to_die <= get_current_time_us() \
-		|| me->status == DEAD);
+	long long	meal_end;
+
+	meal_end = get_current_time_us() + data->c->time_to_eat;
+	while (get_current_time_us() < meal_end)
+	{
+		if (is_dead(data, me))
+		{
+			data->mon->is_death = 1;
+		}
+		if (data->mon->is_death)
+		{
+			me->status = DEAD;
+			put_forks(me->left_fork, me->right_fork, data);
+			return (0);
+		}
+	}
+	put_forks(me->left_fork, me->right_fork, data);
+	return (1);
+}
+
+int had_a_nap_new(t_data *data, t_phi *me)
+{
+	long long	nap_end;
+
+	print_action(data->print_mutex, me->id, SLEEP, 1);
+	nap_end = get_current_time_us() + data->c->time_to_sleep;
+	while (get_current_time_us() < nap_end)
+	{
+		if (is_dead(data, me))
+		{
+			data->mon->is_death = 1;
+		}
+		if (data->mon->is_death)
+		{
+			me->status = DEAD;
+			return (0);
+		}
+	}
+	return (1);
 }
 
 int	had_a_meal(t_data *data, t_phi *me)
 {
 	long long	diff;
+	//long long	meal_end;
 
+	//meal_end = me->last_meal + data->c->time_to_eat;
 	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
+	printf("%lld diff\n", diff);
 	me->last_meal = get_current_time_us();
 	if (diff >= 0)
 	{
@@ -42,7 +82,7 @@ int	had_a_nap(t_data *data, t_phi *me)
 {
 	long long	diff;
 
-	print_action(data->print_mutex, me->id, SLEEP, 0);
+	print_action(data->print_mutex, me->id, SLEEP, 1);
 	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
 	if (diff >= 0)
 	{
@@ -61,7 +101,6 @@ void	set_final_status(t_data *data, t_phi *me)
 	{
 		me->status = DEAD;
 		print_action(data->print_mutex, me->id, DEAD, 0);
-		pthread_mutex_lock(data->print_mutex);
 		pthread_mutex_lock(data->dead_mutex);
 		data->mon->dead_num++;
 		pthread_mutex_unlock(data->dead_mutex);
@@ -69,7 +108,7 @@ void	set_final_status(t_data *data, t_phi *me)
 	else
 	{
 		me->status = DONE;
-		print_action(data->print_mutex, me->id, DONE, 0);
+		print_action(data->print_mutex, me->id, DONE, 1);
 	}
 	me->last_meal = LLONG_MAX;
 	pthread_mutex_lock(data->done_mutex);
@@ -93,11 +132,11 @@ void	*philosopher(void *data_pointer)
 			break ;
 		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id))
 			continue ;
-		if (!had_a_meal(data, me))
+		if (!had_a_meal_new(data, me))
 			break ;
-		if (!had_a_nap(data, me))
+		if (!had_a_nap_new(data, me))
 			break ;
-		print_action(data->print_mutex, me->id, THINK, 0);
+		print_action(data->print_mutex, me->id, THINK, 1);
 		me->status = THINK;
 	}
 	set_final_status(data, me);

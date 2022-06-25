@@ -59,6 +59,7 @@ typedef struct s_mon_info
 	int				meal_started;
 	int				meals_counter;
 	int				start_ordering;
+	int				is_death;
 	t_order			*order;
 }					t_mon;
 
@@ -104,7 +105,7 @@ void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
 void		print_action(pthread_mutex_t *print_mutex, \
-int phil_num, int action, int fork_id);
+int phil_num, int action, int release_lock);
 
 /*
  * main.c
@@ -139,4 +140,5 @@ long long	get_current_time_us(void);
 void		print_arr(int *arr, int size);
 int			*generate_order_arr(int size);
 void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
+int			is_dead(t_data *data, t_phi *me);
 #endif

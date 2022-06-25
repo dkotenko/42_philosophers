@@ -31,10 +31,10 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 {
 	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
-	print_action(data->print_mutex, p_id, TAKE_FORK, left_fork);
+	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
 	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
-	print_action(data->print_mutex, p_id, TAKE_FORK, right_fork);
-	print_action(data->print_mutex, p_id, EAT, 0);
+	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+	print_action(data->print_mutex, p_id, EAT, 1);
 	increase_meals_counter(data->mon, data->meals_mutex, data->c->p_num);
 	data->phi[p_id].status = SLEEP;
 	return (1);

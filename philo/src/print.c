@@ -39,13 +39,13 @@ void	print_action_more(int phil_num, int action)
 }
 
 void	print_action(pthread_mutex_t *print_mutex, int phil_num,
-int action, int fork_id)
+int action, int release_lock)
 {
 	pthread_mutex_lock(print_mutex);
 	if (action == TAKE_FORK)
 	{
-		printf("%lld %d has taken a fork %d\n",
-			get_current_time_ms(), phil_num, fork_id);
+		printf("%lld %d has taken a fork\n",
+			get_current_time_ms(), phil_num);
 	}
 	else if (action == EAT)
 	{
@@ -56,7 +56,8 @@ int action, int fork_id)
 	{
 		print_action_more(phil_num, action);
 	}
-	pthread_mutex_unlock(print_mutex);
+	if (release_lock)
+		pthread_mutex_unlock(print_mutex);
 }
 
 int	print_usage(void)

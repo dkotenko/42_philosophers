@@ -7,7 +7,8 @@ SRCS =		parse_const.c \
 			philosopher.c \
 			time.c \
 			validation.c \
-			main.c
+			main.c \
+			death_checker.c
 
 SRCS_DIR = ./src
 

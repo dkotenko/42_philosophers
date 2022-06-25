@@ -38,3 +38,28 @@ void	wait_n_exit(t_data *data)
 		wait(&status);
 	exit(0);
 }
+
+void	wait_end(t_data *data)
+{
+	int		status;
+	int		status_counter;
+	int		i;
+
+	status = -1;
+	status_counter = 0;
+	while (status_counter < data->c->p_num)
+	{
+		i = 0;
+		while (++i < data->c->p_num + 1)
+		{
+			waitpid(data->processes_phi[i], &status, WNOHANG);
+			if (status == 256)
+				kill_all(data);
+			else if (status == 0)
+			{
+				status_counter++;
+				status = -1;
+			}
+		}		
+	}
+}
