@@ -47,7 +47,8 @@ typedef struct s_const {
 
 typedef struct s_order
 {
-	int				*arr;
+	int				**curr_order;
+	int				**next_order;
 	int				start;
 }					t_order;
 
@@ -83,6 +84,8 @@ typedef struct s_data
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*meals_mutex;
 	pthread_mutex_t	*forks_mutexes;
+	pthread_mutex_t	*start_ordering_mutex;
+	pthread_mutex_t	*can_take_fork_mutex;
 	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
@@ -139,6 +142,8 @@ long long	get_current_time_us(void);
 
 void		print_arr(int *arr, int size);
 int			*generate_order_arr(int size);
-void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
 int			is_dead(t_data *data, t_phi *me);
+void		die(t_data *data, t_phi *me);
+void		increase_start_ordering(t_data *data);
+void		reset_start_ordering(t_data *data);
 #endif

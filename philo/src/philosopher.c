@@ -16,7 +16,7 @@
 int	had_a_meal_new(t_data *data, t_phi *me)
 {
 	long long	meal_end;
-
+	
 	meal_end = get_current_time_us() + data->c->time_to_eat;
 	while (get_current_time_us() < meal_end)
 	{
@@ -30,9 +30,10 @@ int	had_a_meal_new(t_data *data, t_phi *me)
 			put_forks(me->left_fork, me->right_fork, data);
 			return (0);
 		}
+		usleep(30);
 	}
 	put_forks(me->left_fork, me->right_fork, data);
-	return (1);
+	return (!is_dead(data, me));
 }
 
 int	had_a_nap_new(t_data *data, t_phi *me)
@@ -52,8 +53,9 @@ int	had_a_nap_new(t_data *data, t_phi *me)
 			me->status = DEAD;
 			return (0);
 		}
+		usleep(30);
 	}
-	return (1);
+	return (!is_dead(data, me));
 }
 
 void	set_final_status(t_data *data, t_phi *me)

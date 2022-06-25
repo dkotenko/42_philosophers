@@ -18,13 +18,15 @@ void	set_meal_order(t_data *data, int *can_take_fork)
 	t_phi	*curr_p;
 	int		i;
 	int		counter;
+	int		*arr;
 
+	arr = *data->mon->order->next_order;	
 	curr_p_ind = 0;
 	counter = 0;
 	while (++curr_p_ind < data->c->p_num + 1)
 	{
 		i = (data->mon->order->start + counter) % data->c->p_num;
-		if (data->mon->order->arr[i] == 'E')
+		if (arr[i] == 'E')
 		{
 			curr_p = &data->phi[curr_p_ind];
 			can_take_fork[curr_p->left_fork] = curr_p_ind;
@@ -63,28 +65,6 @@ int	*generate_order_arr(int size)
 	return (order_arr);
 }
 
-void	increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num)
-{
-	int	temp;
-
-	temp = mon->meals_counter;
-	while (1)
-	{
-		if (temp == mon->meals_counter)
-		{
-			mon->meals_counter++;
-			break ;
-		}
-		else
-		{
-			temp = mon->meals_counter;
-		}
-	}
-	if (mon->meals_counter % (p_num / 2) == 0)
-		mon->start_ordering = 1;
-	(void)m;
-}
-
 void	clean_all(t_data *data)
 {
 	int	i;
@@ -101,19 +81,30 @@ void	clean_all(t_data *data)
 void	*monitor(void *data_pointer)
 {
 	t_data	*data;
+	int		*tmp;
 
 	data = (t_data *)data_pointer;
 	while (data->mon->done_num < data->c->p_num)
 	{
 		if (data->mon->start_ordering)
 		{
-			set_meal_order(data, data->mon->can_take_fork);
-			data->mon->start_ordering = 0;
+			if (data->mon->start_ordering % data->c->p_num / 2 == 0)
+			{
+				pthread_mutex_lock(data->can_take_fork_mutex);
+				tmp = *data->mon->order->curr_order;
+				*data->mon->order->curr_order = *data->mon->order->next_order;
+				*data->mon->order->next_order = tmp;
+				pthread_mutex_unlock(data->can_take_fork_mutex);
+				ft_memcpy(*data->mon->order->next_order, \
+					*data->mon->order->curr_order, sizeof(int) * data->c->p_num);
+				set_meal_order(data, data->mon->can_take_fork);
+				print_arr(*data->mon->order->curr_order, 6);
+				print_arr(*data->mon->order->next_order, 6);
+				reset_start_ordering(data);
+			}
 		}
 		if (data->mon->dead_num)
 		{
-			memset(data->mon->can_take_fork, 0, \
-sizeof(int) * (data->c->p_num + 1));
 			clean_all(data);
 			break ;
 		}

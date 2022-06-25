@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/20 19:01:00 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/25 21:42:40 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
-	data->meals_mutex = (pthread_mutex_t *)ft_memalloc(
+	data->start_ordering_mutex = (pthread_mutex_t *)ft_memalloc(
+			sizeof(pthread_mutex_t));
+	data->can_take_fork_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
@@ -37,7 +39,10 @@ void	init_monitor(t_data *data)
 	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) * \
 	(data->c->p_num + 1));
 	data->mon->order = (t_order *)ft_memalloc(sizeof(t_order));
-	data->mon->order->arr = generate_order_arr(data->c->p_num);
+	data->mon->order->curr_order = (int **)ft_memalloc(sizeof(int *));
+	data->mon->order->next_order = (int **)ft_memalloc(sizeof(int *));
+	*data->mon->order->next_order = generate_order_arr(data->c->p_num);
+	*data->mon->order->curr_order = generate_order_arr(data->c->p_num);
 	pthread_create(data->pthread_mon, NULL, monitor, data);
 }
 
@@ -69,14 +74,20 @@ void	init_mutexes(t_data *data)
 {
 	int	i;
 
-	pthread_mutex_init(data->print_mutex, NULL);
-	pthread_mutex_init(data->meals_mutex, NULL);
-	pthread_mutex_init(data->done_mutex, NULL);
-	pthread_mutex_init(data->dead_mutex, NULL);
+	if (pthread_mutex_init(data->print_mutex, NULL) != 0)
+		printf("print mutex init error\n");
+	if (pthread_mutex_init(data->start_ordering_mutex, NULL) != 0)
+		printf("meals mutex init error\n");
+	if (pthread_mutex_init(data->done_mutex, NULL) != 0)
+		printf("done mutex init error\n");
+	if (pthread_mutex_init(data->dead_mutex, NULL) != 0)
+		printf("dead mutex init error\n");
+	pthread_mutex_init(data->can_take_fork_mutex, NULL);
 	i = 0;
 	while (++i < data->c->p_num + 1)
 	{
-		pthread_mutex_init(&data->forks_mutexes[i], NULL);
+		if (pthread_mutex_init(&data->forks_mutexes[i], NULL) != 0)
+			printf("fork mutex init error\n");
 	}
 }
 
