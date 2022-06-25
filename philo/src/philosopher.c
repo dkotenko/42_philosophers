@@ -13,7 +13,7 @@
 #include "philosophers.h"
 #include <limits.h>
 
-int had_a_meal_new(t_data *data, t_phi *me)
+int	had_a_meal_new(t_data *data, t_phi *me)
 {
 	long long	meal_end;
 
@@ -35,7 +35,7 @@ int had_a_meal_new(t_data *data, t_phi *me)
 	return (1);
 }
 
-int had_a_nap_new(t_data *data, t_phi *me)
+int	had_a_nap_new(t_data *data, t_phi *me)
 {
 	long long	nap_end;
 
@@ -53,45 +53,6 @@ int had_a_nap_new(t_data *data, t_phi *me)
 			return (0);
 		}
 	}
-	return (1);
-}
-
-int	had_a_meal(t_data *data, t_phi *me)
-{
-	long long	diff;
-	//long long	meal_end;
-
-	//meal_end = me->last_meal + data->c->time_to_eat;
-	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
-	printf("%lld diff\n", diff);
-	me->last_meal = get_current_time_us();
-	if (diff >= 0)
-	{
-		usleep(diff);
-		put_forks(me->left_fork, me->right_fork, data);
-		me->status = DEAD;
-		return (0);
-	}
-	else
-		usleep(data->c->time_to_eat);
-	put_forks(me->left_fork, me->right_fork, data);
-	return (1);
-}
-
-int	had_a_nap(t_data *data, t_phi *me)
-{
-	long long	diff;
-
-	print_action(data->print_mutex, me->id, SLEEP, 1);
-	diff = get_current_time_us() - me->last_meal - data->c->time_to_die;
-	if (diff >= 0)
-	{
-		usleep(diff);
-		me->status = DEAD;
-		return (0);
-	}
-	else
-		usleep(data->c->time_to_sleep);
 	return (1);
 }
 

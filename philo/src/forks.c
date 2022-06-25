@@ -35,6 +35,7 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
 	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
 	print_action(data->print_mutex, p_id, EAT, 1);
+	data->phi[p_id].last_meal = get_current_time_us();
 	increase_meals_counter(data->mon, data->meals_mutex, data->c->p_num);
 	data->phi[p_id].status = SLEEP;
 	return (1);
