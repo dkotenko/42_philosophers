@@ -13,48 +13,34 @@
 #include "philosophers.h"
 #include <limits.h>
 
-int	had_a_meal_new(t_data *data, t_phi *me)
+# define NEXT_STATUS me->order->arr[me->order->start]
+
+int	had_an_action(t_data *data, t_phi *me, int action)
 {
-	long long	meal_end;
-	
-	meal_end = get_current_time_us() + data->c->time_to_eat;
-	while (get_current_time_us() < meal_end)
+	long long	action_end;
+	long long	action_time;
+
+	action_time = data->c->times[action];
+	if (action == SLEEP || action == THINK)
+		print_action(data->print_mutex, me->id, action, 1);
+	action_end = get_current_time_us() + action_time;
+	while (get_current_time_us() < action_end)
 	{
 		if (is_dead(data, me))
-		{
 			data->mon->is_death = 1;
-		}
 		if (data->mon->is_death)
 		{
-			me->status = DEAD;
-			put_forks(me->left_fork, me->right_fork, data);
-			return (0);
-		}
-		usleep(30);
-	}
-	put_forks(me->left_fork, me->right_fork, data);
-	return (!is_dead(data, me));
-}
-
-int	had_a_nap_new(t_data *data, t_phi *me)
-{
-	long long	nap_end;
-
-	print_action(data->print_mutex, me->id, SLEEP, 1);
-	nap_end = get_current_time_us() + data->c->time_to_sleep;
-	while (get_current_time_us() < nap_end)
-	{
-		if (is_dead(data, me))
-		{
-			data->mon->is_death = 1;
-		}
-		if (data->mon->is_death)
-		{
+			if (action == EAT)
+				put_forks(me->left_fork, me->right_fork, data);
 			me->status = DEAD;
 			return (0);
 		}
 		usleep(30);
 	}
+	if (action == EAT)
+		put_forks(me->left_fork, me->right_fork, data);
+	set_next_order(data, me);
+	me->status = NEXT_STATUS;
 	return (!is_dead(data, me));
 }
 
@@ -79,6 +65,21 @@ void	set_final_status(t_data *data, t_phi *me)
 	pthread_mutex_unlock(data->done_mutex);
 }
 
+int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
+{
+	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
+	
+	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+	
+	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
+	
+	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+	print_action(data->print_mutex, p_id, EAT, 1);
+	data->phi[p_id].must_eat_times--;
+	data->phi[p_id].last_meal = get_current_time_us();
+	return (1);
+}
+
 void	*philosopher(void *data_pointer)
 {
 	t_data		*data;
@@ -93,14 +94,18 @@ void	*philosopher(void *data_pointer)
 	{
 		if (is_dead(data, me))
 			break ;
-		if (!is_forks_taken(data, me->left_fork, me->right_fork, me->id))
-			continue ;
-		if (!had_a_meal_new(data, me))
-			break ;
-		if (!had_a_nap_new(data, me))
-			break ;
-		print_action(data->print_mutex, me->id, THINK, 1);
-		me->status = THINK;
+		if (NEXT_STATUS == EAT)
+		{
+			take_forks(data, me->left_fork, me->right_fork, me->id);
+			if (!had_an_action(data, me, NEXT_STATUS))
+				break ;
+			had_an_action(data, me, NEXT_STATUS);
+		}
+		else if (NEXT_STATUS == SLEEP || NEXT_STATUS == THINK)
+		{
+			if (!had_an_action(data, me, NEXT_STATUS))
+				break ;
+		}
 	}
 	set_final_status(data, me);
 	return (0);

@@ -28,35 +28,6 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 	}
 }
 
-int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
-{
-	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
-	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
-	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
-	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
-	print_action(data->print_mutex, p_id, EAT, 1);
-	data->phi[p_id].last_meal = get_current_time_us();
-	data->phi[p_id].status = SLEEP;
-	return (1);
-}
-
-int	is_forks_taken(t_data *data, int left_fork, int right_fork, int p_id)
-{
-	if (data->c->p_num == 1)
-		return (0);
-	pthread_mutex_lock(data->can_take_fork_mutex);
-	if (data->mon->can_take_fork[left_fork] == p_id && \
-		data->mon->can_take_fork[right_fork] == p_id)
-	{
-		pthread_mutex_unlock(data->can_take_fork_mutex);
-		data->phi[p_id].must_eat_times--;
-		return (take_forks(data, left_fork, right_fork, p_id));
-	}
-	else
-		pthread_mutex_unlock(data->can_take_fork_mutex);
-	return (0);
-}
-
 void	put_forks(int left_fork, int right_fork, t_data *data)
 {
 	pthread_mutex_unlock(&data->forks_mutexes[left_fork]);

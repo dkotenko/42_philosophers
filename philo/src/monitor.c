@@ -26,7 +26,7 @@ void	set_meal_order(t_data *data, int *can_take_fork)
 	while (++curr_p_ind < data->c->p_num + 1)
 	{
 		i = ((*(data->mon->next_order))->start + counter) % data->c->p_num;
-		if (arr[i] == 'E')
+		if (arr[i] == EAT)
 		{
 			curr_p = &data->phi[curr_p_ind];
 			can_take_fork[curr_p->left_fork] = curr_p_ind;
@@ -39,6 +39,13 @@ void	set_meal_order(t_data *data, int *can_take_fork)
 		(*(data->mon->next_order))->start += data->c->p_num;
 }
 
+void	set_next_order(t_data *data, t_phi *me)
+{
+	me->order->start--;
+	if (me->order->start < 0)
+		me->order->start = data->c->p_num - 1;
+}
+
 int	*generate_order_arr(int size)
 {
 	int	*order_arr;
@@ -48,19 +55,19 @@ int	*generate_order_arr(int size)
 	i = 0;
 	if (size == 1)
 	{
-		order_arr[i] = 'E';
+		order_arr[i] = EAT;
 		return (order_arr);
 	}
 	while (i < size)
 	{
-		order_arr[i] = 'E';
-		order_arr[i + 1] = 'S';
+		order_arr[i] = EAT;
+		order_arr[i + 1] = SLEEP;
 		i += 2;
 	}
 	if (size % 2)
 	{
-		order_arr[size - 1] = 'S';
-		order_arr[size - 2] = 'T';
+		order_arr[size - 1] = SLEEP;
+		order_arr[size - 2] = THINK;
 	}
 	return (order_arr);
 }
@@ -80,40 +87,21 @@ void	clean_all(t_data *data)
 
 void	*monitor(void *data_pointer)
 {
+	(void)data_pointer;
+	/*
 	t_data	*data;
 	t_order	*tmp;
 
 	data = (t_data *)data_pointer;
+	
 	while (data->mon->done_num < data->c->p_num)
 	{
-		if (data->mon->ended_meal)
-		{
-			if (data->mon->ended_meal % (data->c->p_num / 2) == 0)
-			{
-				
-				//printf("%d\n", data->mon->ended_meal);
-				pthread_mutex_lock(data->can_take_fork_mutex);
-				/*
-				ft_memcpy(data->mon->curr_order, \
-					data->mon->next_order, sizeof(t_order));
-				*/	
-				tmp = *data->mon->curr_order;
-				*data->mon->curr_order = *data->mon->next_order;
-				*data->mon->next_order = tmp;
-				
-				pthread_mutex_unlock(data->can_take_fork_mutex);
-				
-				set_meal_order(data, data->mon->can_take_fork);
-				//print_arr(*data->mon->order->curr_order, 6);
-				//print_arr(*data->mon->order->next_order, 6);
-				reset_ended_meal(data);
-			}
-		}
 		if (data->mon->dead_num)
 		{
 			clean_all(data);
 			break ;
 		}
 	}
+	*/
 	return (0);
 }

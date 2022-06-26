@@ -61,9 +61,12 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 		curr_p->right_fork = get_fork_id(i, data->c->p_num, 0);
 		curr_p->status = THINK;
 		curr_p->must_eat_times = data->c->must_eat_times;
-		curr_p->last_meal = get_current_time_ms();
+		curr_p->order = ft_memalloc(sizeof(t_order));
+		curr_p->order->arr = generate_order_arr(data->c->p_num);
+		curr_p->order->start = i - 1;
 		ft_memcpy(&data_arr[i], data, sizeof(t_data));
 		data_arr[i].my_id = i;
+		curr_p->last_meal = get_current_time_ms();
 		pthread_create(&data->pthread_phi[i], NULL, philosopher, &data_arr[i]);
 	}
 	i = data->phi[data->c->p_num].left_fork;

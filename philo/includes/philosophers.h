@@ -25,6 +25,8 @@
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
 
+# define THINK_DIFF 0
+
 enum e_actions {
 	TAKE_FORK,
 	EAT,
@@ -39,9 +41,11 @@ typedef struct s_const {
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
+	long long		time_to_think;
 	int				must_eat_times;
 	int				p_num;
 	int				debug;
+	int				*times;
 }					t_const;
 
 typedef struct s_order
@@ -69,8 +73,10 @@ typedef struct s_phi
 	int				left_fork;
 	int				right_fork;
 	int				status;
+	int				next_status;
 	int				must_eat_times;
 	long long		last_meal;
+	t_order			*order;
 }					t_phi;
 
 typedef struct s_data
@@ -145,4 +151,13 @@ int			is_dead(t_data *data, t_phi *me);
 void		die(t_data *data, t_phi *me);
 void		increase_ended_meal(t_data *data);
 void		reset_ended_meal(t_data *data);
+
+/*
+** ft_more.c
+*/
+int			is_integer(char *s, int n);
+size_t		ft_ilen(int n);
+int			ft_isdigit(int c);
+int			ft_atoi(const char *s);
+void		set_next_order(t_data *data, t_phi *me);
 #endif
