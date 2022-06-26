@@ -20,12 +20,12 @@ void	set_meal_order(t_data *data, int *can_take_fork)
 	int		counter;
 	int		*arr;
 
-	arr = *data->mon->order->next_order;	
+	arr = (*(data->mon->next_order))->arr;	
 	curr_p_ind = 0;
 	counter = 0;
 	while (++curr_p_ind < data->c->p_num + 1)
 	{
-		i = (data->mon->order->start + counter) % data->c->p_num;
+		i = ((*(data->mon->next_order))->start + counter) % data->c->p_num;
 		if (arr[i] == 'E')
 		{
 			curr_p = &data->phi[curr_p_ind];
@@ -34,9 +34,9 @@ void	set_meal_order(t_data *data, int *can_take_fork)
 		}
 		counter++;
 	}
-	data->mon->order->start--;
-	if (data->mon->order->start < 0)
-		data->mon->order->start += data->c->p_num;
+	(*(data->mon->next_order))->start--;
+	if ((*(data->mon->next_order))->start < 0)
+		(*(data->mon->next_order))->start += data->c->p_num;
 }
 
 int	*generate_order_arr(int size)
@@ -81,26 +81,32 @@ void	clean_all(t_data *data)
 void	*monitor(void *data_pointer)
 {
 	t_data	*data;
-	int		*tmp;
+	t_order	*tmp;
 
 	data = (t_data *)data_pointer;
 	while (data->mon->done_num < data->c->p_num)
 	{
-		if (data->mon->start_ordering)
+		if (data->mon->ended_meal)
 		{
-			if (data->mon->start_ordering % data->c->p_num / 2 == 0)
+			if (data->mon->ended_meal % (data->c->p_num / 2) == 0)
 			{
+				
+				//printf("%d\n", data->mon->ended_meal);
 				pthread_mutex_lock(data->can_take_fork_mutex);
-				tmp = *data->mon->order->curr_order;
-				*data->mon->order->curr_order = *data->mon->order->next_order;
-				*data->mon->order->next_order = tmp;
+				/*
+				ft_memcpy(data->mon->curr_order, \
+					data->mon->next_order, sizeof(t_order));
+				*/	
+				tmp = *data->mon->curr_order;
+				*data->mon->curr_order = *data->mon->next_order;
+				*data->mon->next_order = tmp;
+				
 				pthread_mutex_unlock(data->can_take_fork_mutex);
-				ft_memcpy(*data->mon->order->next_order, \
-					*data->mon->order->curr_order, sizeof(int) * data->c->p_num);
+				
 				set_meal_order(data, data->mon->can_take_fork);
-				print_arr(*data->mon->order->curr_order, 6);
-				print_arr(*data->mon->order->next_order, 6);
-				reset_start_ordering(data);
+				//print_arr(*data->mon->order->curr_order, 6);
+				//print_arr(*data->mon->order->next_order, 6);
+				reset_ended_meal(data);
 			}
 		}
 		if (data->mon->dead_num)

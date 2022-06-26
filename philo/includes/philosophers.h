@@ -30,7 +30,6 @@ enum e_actions {
 	EAT,
 	SLEEP,
 	THINK,
-	ALIVE,
 	DEAD,
 	DONE,
 	E_ACTIONS_NUM
@@ -47,8 +46,7 @@ typedef struct s_const {
 
 typedef struct s_order
 {
-	int				**curr_order;
-	int				**next_order;
+	int				*arr;
 	int				start;
 }					t_order;
 
@@ -59,9 +57,10 @@ typedef struct s_mon_info
 	int				dead_num;
 	int				meal_started;
 	int				meals_counter;
-	int				start_ordering;
+	int				ended_meal;
 	int				is_death;
-	t_order			*order;
+	t_order			**curr_order;
+	t_order			**next_order;
 }					t_mon;
 
 typedef struct s_phi
@@ -84,7 +83,7 @@ typedef struct s_data
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*meals_mutex;
 	pthread_mutex_t	*forks_mutexes;
-	pthread_mutex_t	*start_ordering_mutex;
+	pthread_mutex_t	*ended_meal_mutex;
 	pthread_mutex_t	*can_take_fork_mutex;
 	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
@@ -144,6 +143,6 @@ void		print_arr(int *arr, int size);
 int			*generate_order_arr(int size);
 int			is_dead(t_data *data, t_phi *me);
 void		die(t_data *data, t_phi *me);
-void		increase_start_ordering(t_data *data);
-void		reset_start_ordering(t_data *data);
+void		increase_ended_meal(t_data *data);
+void		reset_ended_meal(t_data *data);
 #endif

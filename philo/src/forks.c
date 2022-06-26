@@ -61,7 +61,7 @@ void	put_forks(int left_fork, int right_fork, t_data *data)
 {
 	pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
 	pthread_mutex_unlock(&data->forks_mutexes[right_fork]);
-	increase_start_ordering(data);
+	increase_ended_meal(data);
 }
 
 void	print_arr(int *arr, int size)

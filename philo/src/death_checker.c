@@ -24,17 +24,17 @@ void	die(t_data *data, t_phi *me)
 	data->mon->is_death = 1;
 }
 
-void	increase_start_ordering(t_data *data)
+void	increase_ended_meal(t_data *data)
 {
-	pthread_mutex_lock(data->start_ordering_mutex);
-	data->mon->start_ordering++;
-	pthread_mutex_unlock(data->start_ordering_mutex);
+	pthread_mutex_lock(data->ended_meal_mutex);
+	data->mon->ended_meal++;
+	pthread_mutex_unlock(data->ended_meal_mutex);
 }
 
-void	reset_start_ordering(t_data *data)
+void	reset_ended_meal(t_data *data)
 {
-	pthread_mutex_lock(data->start_ordering_mutex);
-	data->mon->start_ordering = 0;
-	pthread_mutex_unlock(data->start_ordering_mutex);
+	pthread_mutex_lock(data->ended_meal_mutex);
+	data->mon->ended_meal = 0;
+	pthread_mutex_unlock(data->ended_meal_mutex);
 }
 				
