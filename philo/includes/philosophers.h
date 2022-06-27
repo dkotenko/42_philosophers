@@ -26,6 +26,13 @@
 # define RED "\033[0;31m"
 
 # define THINK_DIFF 0
+# define MIN_WAIT 30
+
+enum e_fork_status {
+	OCCUPIED,
+	AVAILABLE,
+	FORK_STATUS_NUM
+};
 
 enum e_actions {
 	TAKE_FORK,
@@ -56,7 +63,6 @@ typedef struct s_order
 
 typedef struct s_mon_info
 {
-	int				*can_take_fork;
 	int				done_num;
 	int				dead_num;
 	int				meal_started;
@@ -95,6 +101,7 @@ typedef struct s_data
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
 	int				my_id;
+	int				*can_take_fork;
 
 }					t_data;
 
@@ -160,4 +167,7 @@ size_t		ft_ilen(int n);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *s);
 void		set_next_order(t_data *data, t_phi *me);
+int			is_fork_available(t_data *data, int fork_num);
+void		occupy_fork(t_data *data, int fork_num);
+void		release_fork(t_data *data, int fork_num);
 #endif

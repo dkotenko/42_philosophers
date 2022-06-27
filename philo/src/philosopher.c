@@ -21,8 +21,7 @@ int	had_an_action(t_data *data, t_phi *me, int action)
 	long long	action_time;
 
 	action_time = data->c->times[action];
-	if (action == SLEEP || action == THINK)
-		print_action(data->print_mutex, me->id, action, 1);
+	print_action(data->print_mutex, me->id, action, 1);
 	action_end = get_current_time_us() + action_time;
 	while (get_current_time_us() < action_end)
 	{
@@ -35,7 +34,7 @@ int	had_an_action(t_data *data, t_phi *me, int action)
 			me->status = DEAD;
 			return (0);
 		}
-		usleep(30);
+		usleep(MIN_WAIT);
 	}
 	if (action == EAT)
 		put_forks(me->left_fork, me->right_fork, data);
@@ -67,14 +66,32 @@ void	set_final_status(t_data *data, t_phi *me)
 
 int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 {
-	pthread_mutex_lock(&data->forks_mutexes[left_fork]);
-	
-	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
-	
-	pthread_mutex_lock(&data->forks_mutexes[right_fork]);
-	
-	print_action(data->print_mutex, p_id, TAKE_FORK, 1);
-	print_action(data->print_mutex, p_id, EAT, 1);
+	while (1)
+	{
+		if (is_fork_available(data, left_fork))
+		{
+			pthread_mutex_lock(&data->forks_mutexes[left_fork]);
+			if (is_fork_available(data, right_fork))
+			{	
+				pthread_mutex_lock(&data->forks_mutexes[right_fork]);
+				occupy_fork(data, left_fork);
+				occupy_fork(data, right_fork);
+				print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+				print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+				return (1);
+			}
+			else
+				pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
+		}
+		if (is_dead(data, &data->phi[data->my_id]))
+			data->mon->is_death = 1;
+		if (data->mon->is_death)
+		{
+			data->phi[data->my_id].status = DEAD;
+			return (0);
+		}
+		usleep(MIN_WAIT);
+	}
 	data->phi[p_id].must_eat_times--;
 	data->phi[p_id].last_meal = get_current_time_us();
 	return (1);
@@ -96,10 +113,11 @@ void	*philosopher(void *data_pointer)
 			break ;
 		if (NEXT_STATUS == EAT)
 		{
-			take_forks(data, me->left_fork, me->right_fork, me->id);
+			if (!(take_forks(data, me->left_fork, me->right_fork, me->id)))
+				break ;
+
 			if (!had_an_action(data, me, NEXT_STATUS))
 				break ;
-			had_an_action(data, me, NEXT_STATUS);
 		}
 		else if (NEXT_STATUS == SLEEP || NEXT_STATUS == THINK)
 		{

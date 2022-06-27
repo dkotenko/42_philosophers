@@ -32,17 +32,8 @@ void	put_forks(int left_fork, int right_fork, t_data *data)
 {
 	pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
 	pthread_mutex_unlock(&data->forks_mutexes[right_fork]);
+	release_fork(data, left_fork);
+	release_fork(data, right_fork);
 	increase_ended_meal(data);
 }
 
-void	print_arr(int *arr, int size)
-{
-	int	i;
-
-	i = -1;
-	while (++i < size)
-	{
-		printf("%d ", arr[i]);
-	}
-	printf("\n");
-}

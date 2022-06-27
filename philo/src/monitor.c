@@ -105,3 +105,27 @@ void	*monitor(void *data_pointer)
 	*/
 	return (0);
 }
+
+int		is_fork_available(t_data *data, int fork_num)
+{
+	int	val;
+
+	pthread_mutex_lock(&data->can_take_fork_mutex[fork_num]);
+	val = data->can_take_fork[fork_num];
+	pthread_mutex_unlock(&data->can_take_fork_mutex[fork_num]);
+	return val;
+}
+
+void	occupy_fork(t_data *data, int fork_num)
+{
+	pthread_mutex_lock(&data->can_take_fork_mutex[fork_num]);
+	data->can_take_fork[fork_num] = OCCUPIED;
+	pthread_mutex_unlock(&data->can_take_fork_mutex[fork_num]);
+}
+
+void	release_fork(t_data *data, int fork_num)
+{
+	pthread_mutex_lock(&data->can_take_fork_mutex[fork_num]);
+	data->can_take_fork[fork_num] = AVAILABLE;
+	pthread_mutex_unlock(&data->can_take_fork_mutex[fork_num]);
+}

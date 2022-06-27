@@ -35,9 +35,14 @@ void	init_data(t_data *data)
 
 void	init_monitor(t_data *data)
 {
+	int	i;
+
+	i = 0;
 	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
-	data->mon->can_take_fork = (int *)ft_memalloc(sizeof(int) * \
+	data->can_take_fork = (int *)ft_memalloc(sizeof(int) * \
 	(data->c->p_num + 1));
+	while (++i < data->c->p_num + 1)
+		data->can_take_fork[i] = AVAILABLE;
 	data->mon->curr_order = (t_order **)ft_memalloc(sizeof(t_order *));
 	data->mon->next_order = (t_order **)ft_memalloc(sizeof(t_order *));
 	*data->mon->curr_order = (t_order *)ft_memalloc(sizeof(t_order));
@@ -110,7 +115,7 @@ int	main(int ac, char **av)
 		data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 		init_philosophers(&data, data_arr);
 		init_mutexes(&data);
-		set_meal_order(&data, data.mon->can_take_fork);
+		//set_meal_order(&data, data.mon->can_take_fork);
 		pthread_join(*data.pthread_mon, NULL);
 		pthread_join(*data.pthread_print, NULL);
 		i = 0;

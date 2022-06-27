@@ -72,3 +72,15 @@ int	is_integer(char *s, int n)
 		return (0);
 	return (1);
 }
+
+void	print_arr(int *arr, int size)
+{
+	int	i;
+
+	i = -1;
+	while (++i < size)
+	{
+		printf("%d ", arr[i]);
+	}
+	printf("\n");
+}
