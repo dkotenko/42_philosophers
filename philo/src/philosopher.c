@@ -70,18 +70,24 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 	{
 		if (is_fork_available(data, left_fork))
 		{
-			pthread_mutex_lock(&data->forks_mutexes[left_fork]);
+			pthread_mutex_lock(&data->can_take_fork_mutexes[left_fork]);
 			if (is_fork_available(data, right_fork))
-			{	
-				pthread_mutex_lock(&data->forks_mutexes[right_fork]);
+			{
+				
+		
+				pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
+				
 				occupy_fork(data, left_fork);
 				occupy_fork(data, right_fork);
+				
 				print_action(data->print_mutex, p_id, TAKE_FORK, 1);
 				print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+				data->phi[p_id].must_eat_times--;
+				data->phi[p_id].last_meal = get_current_time_us();
 				return (1);
 			}
 			else
-				pthread_mutex_unlock(&data->forks_mutexes[left_fork]);
+				pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);
 		}
 		if (is_dead(data, &data->phi[data->my_id]))
 			data->mon->is_death = 1;
@@ -91,9 +97,8 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 			return (0);
 		}
 		usleep(MIN_WAIT);
+		
 	}
-	data->phi[p_id].must_eat_times--;
-	data->phi[p_id].last_meal = get_current_time_us();
 	return (1);
 }
 
@@ -115,7 +120,6 @@ void	*philosopher(void *data_pointer)
 		{
 			if (!(take_forks(data, me->left_fork, me->right_fork, me->id)))
 				break ;
-
 			if (!had_an_action(data, me, NEXT_STATUS))
 				break ;
 		}

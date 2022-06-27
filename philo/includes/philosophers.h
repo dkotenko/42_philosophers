@@ -94,9 +94,9 @@ typedef struct s_data
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*meals_mutex;
-	pthread_mutex_t	*forks_mutexes;
 	pthread_mutex_t	*ended_meal_mutex;
-	pthread_mutex_t	*can_take_fork_mutex;
+	pthread_mutex_t	*forks_mutexes;
+	pthread_mutex_t	*can_take_fork_mutexes;
 	pthread_t		*pthread_print;
 	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
