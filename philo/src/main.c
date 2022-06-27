@@ -73,6 +73,7 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 		data_arr[i].my_id = i;
 		curr_p->last_meal = get_current_time_ms();
 		pthread_create(&data->pthread_phi[i], NULL, philosopher, &data_arr[i]);
+		pthread_detach(data->pthread_phi[i]);
 	}
 	/*
 	i = data->phi[data->c->p_num].left_fork;
@@ -112,19 +113,20 @@ int	main(int ac, char **av)
 
 	ft_memset(&data, 0, sizeof(t_data));
 	parse_const(&data, av, ac);
-	if (is_const_valid(data.c, ac, av))
-	{
-		init_data(&data);
-		init_monitor(&data);
-		data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
-		init_philosophers(&data, data_arr);
-		init_mutexes(&data);
-		//set_meal_order(&data, data.mon->can_take_fork);
-		pthread_join(*data.pthread_mon, NULL);
-		pthread_join(*data.pthread_print, NULL);
-		i = 0;
-		while (++i < data.c->p_num + 1)
-			pthread_join(data.pthread_phi[i], NULL);
+	if (!is_const_valid(data.c, ac, av))
+		return (1);
+	init_data(&data);
+	init_monitor(&data);
+	data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
+	init_philosophers(&data, data_arr);
+	init_mutexes(&data);
+	pthread_join(*data.pthread_mon, NULL);
+	pthread_join(*data.pthread_print, NULL);
+	i = 0;
+	while (++i < data.c->p_num + 1)
+		pthread_join(data.pthread_phi[i], NULL);
+	while (1) {
+		;
 	}
 	return (0);
 }

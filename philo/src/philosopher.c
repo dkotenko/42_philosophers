@@ -48,6 +48,7 @@ void	set_final_status(t_data *data, t_phi *me)
 	if (is_dead(data, me))
 	{
 		me->status = DEAD;
+		data->mon->is_death = 1;
 		print_action(data->print_mutex, me->id, DEAD, 0);
 		pthread_mutex_lock(data->dead_mutex);
 		data->mon->dead_num++;
@@ -130,5 +131,6 @@ void	*philosopher(void *data_pointer)
 		}
 	}
 	set_final_status(data, me);
+	printf("%d exited\n", me->id);
 	return (0);
 }

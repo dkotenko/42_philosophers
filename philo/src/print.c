@@ -56,8 +56,8 @@ int action, int release_lock)
 	{
 		print_action_more(phil_num, action);
 	}
-	if (release_lock)
-		pthread_mutex_unlock(print_mutex);
+	(void)release_lock;
+	pthread_mutex_unlock(print_mutex);
 }
 
 int	print_usage(void)
