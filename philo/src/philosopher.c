@@ -21,7 +21,7 @@ int	had_an_action(t_data *data, t_phi *me, int action)
 	long long	action_time;
 
 	action_time = data->c->times[action];
-	print_action(data->print_mutex, me->id, action, 1);
+	print_action(data->print_mutex, me->id, action, data->mon->is_death);
 	action_end = get_current_time_us() + action_time;
 	while (get_current_time_us() < action_end)
 	{
@@ -48,16 +48,13 @@ void	set_final_status(t_data *data, t_phi *me)
 	if (is_dead(data, me))
 	{
 		me->status = DEAD;
-		data->mon->is_death = 1;
 		print_action(data->print_mutex, me->id, DEAD, 0);
-		pthread_mutex_lock(data->dead_mutex);
-		data->mon->dead_num++;
-		pthread_mutex_unlock(data->dead_mutex);
+		data->mon->is_death = 1;
 	}
 	else
 	{
 		me->status = DONE;
-		print_action(data->print_mutex, me->id, DONE, 1);
+		print_action(data->print_mutex, me->id, DONE, data->mon->is_death);
 	}
 	me->last_meal = LLONG_MAX;
 	pthread_mutex_lock(data->done_mutex);
@@ -74,15 +71,11 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 			pthread_mutex_lock(&data->can_take_fork_mutexes[left_fork]);
 			if (is_fork_available(data, right_fork))
 			{
-				
-		
 				pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
-				
 				occupy_fork(data, left_fork);
 				occupy_fork(data, right_fork);
-				
-				print_action(data->print_mutex, p_id, TAKE_FORK, 1);
-				print_action(data->print_mutex, p_id, TAKE_FORK, 1);
+				print_action(data->print_mutex, p_id, TAKE_FORK, data->mon->is_death);
+				print_action(data->print_mutex, p_id, TAKE_FORK, data->mon->is_death);
 				data->phi[p_id].must_eat_times--;
 				data->phi[p_id].last_meal = get_current_time_us();
 				return (1);
@@ -115,8 +108,6 @@ void	*philosopher(void *data_pointer)
 	me->last_meal = get_current_time_us();
 	while (me->must_eat_times && me->status != DEAD)
 	{
-		if (is_dead(data, me))
-			break ;
 		if (NEXT_STATUS == EAT)
 		{
 			if (!(take_forks(data, me->left_fork, me->right_fork, me->id)))
@@ -129,8 +120,9 @@ void	*philosopher(void *data_pointer)
 			if (!had_an_action(data, me, NEXT_STATUS))
 				break ;
 		}
+		if (is_dead(data, me))
+			break ;
 	}
 	set_final_status(data, me);
-	printf("%d exited\n", me->id);
 	return (0);
 }

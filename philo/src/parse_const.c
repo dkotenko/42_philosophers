@@ -12,20 +12,42 @@
 
 #include "philosophers.h"
 
+#define MSG "ERROR: invalid integer %s for %s param: must be at least %d\n"
+
+int	is_const_valid(t_const *c, int ac, char **av)
+{
+	int	is_error;
+
+	is_error = 0;
+	if (c->must_eat_times < 0 && ac > 5)
+		is_error = printf(MSG, av[5], "\"must eat times\"", 0);
+	if (c->p_num < 1)
+		is_error = printf(MSG, av[1], "\"philo number\"", 2);
+	if (c->p_num > 200)
+	{
+		is_error = printf("ERROR: too many philosophers, \
+		must be less than 201\n");
+	}
+	if (c->times[DIE]  < 60 * 1000)
+		is_error = printf(MSG, av[2], "\"time to die\"", 60);
+	if (c->times[EAT] < 60 * 1000)
+		is_error = printf(MSG, av[3], "\"time to eat\"", 60);
+	if (c->times[SLEEP] < 60 * 1000)
+		is_error = printf(MSG, av[4], "\"time to sleep\"", 60);
+	return (is_error == 0);
+}
+
 void	populate_const(t_data *data, char **av, int ac)
 {
 	data->c->p_num = ft_atoi(av[1]);
-	data->c->time_to_die = (long long)ft_atoi(av[2]) * 1000LL;
-	data->c->time_to_eat = (long long)ft_atoi(av[3]) * 1000LL;
-	data->c->time_to_sleep = (long long)ft_atoi(av[4]) * 1000LL;
-	data->c->time_to_think = data->c->time_to_eat - THINK_DIFF;
 	data->c->must_eat_times = 0x7FFFFFFF;
 	if (ac == 6)
 		data->c->must_eat_times = ft_atoi(av[5]);
-	data->c->times = ft_memalloc(sizeof(int) * E_ACTIONS_NUM);
-	data->c->times[EAT] = data->c->time_to_eat;
-	data->c->times[SLEEP] = data->c->time_to_sleep;
-	data->c->times[THINK] = data->c->time_to_think;
+	data->c->times = ft_memalloc(sizeof(long long) * E_ACTIONS_NUM);
+	data->c->times[EAT] = (long long)ft_atoi(av[3]) * 1000LL;
+	data->c->times[SLEEP] = (long long)ft_atoi(av[4]) * 1000LL;
+	data->c->times[THINK] = data->c->times[EAT] - THINK_DIFF;
+	data->c->times[DIE] = (long long)ft_atoi(av[2]) * 1000LL;
 }
 
 int	parse_const(t_data *data, char **av, int ac)

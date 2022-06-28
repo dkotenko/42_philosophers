@@ -17,15 +17,11 @@ void	init_data(t_data *data)
 	data->phi = (t_phi *)ft_memalloc(sizeof(t_phi) * (data->c->p_num + 1));
 	data->pthread_phi = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(data->c->p_num + 1));
-	data->pthread_mon = (pthread_t *)ft_memalloc(sizeof(pthread_t));
-	data->pthread_print = (pthread_t *)ft_memalloc(sizeof(pthread_t));
 	data->print_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->done_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
-			sizeof(pthread_mutex_t));
-	data->ended_meal_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
@@ -43,13 +39,6 @@ void	init_monitor(t_data *data)
 	(data->c->p_num + 1));
 	while (++i < data->c->p_num + 1)
 		data->can_take_fork[i] = AVAILABLE;
-	data->mon->curr_order = (t_order **)ft_memalloc(sizeof(t_order *));
-	data->mon->next_order = (t_order **)ft_memalloc(sizeof(t_order *));
-	*data->mon->curr_order = (t_order *)ft_memalloc(sizeof(t_order));
-	*data->mon->next_order = (t_order *)ft_memalloc(sizeof(t_order));
-	(*(data->mon->next_order))->arr = generate_order_arr(data->c->p_num);
-	(*(data->mon->curr_order))->arr = generate_order_arr(data->c->p_num);
-	pthread_create(data->pthread_mon, NULL, monitor, data);
 }
 
 void	init_philosophers(t_data *data, t_data *data_arr)
@@ -75,11 +64,6 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 		pthread_create(&data->pthread_phi[i], NULL, philosopher, &data_arr[i]);
 		pthread_detach(data->pthread_phi[i]);
 	}
-	/*
-	i = data->phi[data->c->p_num].left_fork;
-	data->phi[data->c->p_num].left_fork = data->phi[data->c->p_num].right_fork;
-	data->phi[data->c->p_num].right_fork = i;
-	*/
 }
 
 void	init_mutexes(t_data *data)
@@ -88,8 +72,6 @@ void	init_mutexes(t_data *data)
 
 	if (pthread_mutex_init(data->print_mutex, NULL) != 0)
 		printf("print mutex init error\n");
-	if (pthread_mutex_init(data->ended_meal_mutex, NULL) != 0)
-		printf("meals mutex init error\n");
 	if (pthread_mutex_init(data->done_mutex, NULL) != 0)
 		printf("done mutex init error\n");
 	if (pthread_mutex_init(data->dead_mutex, NULL) != 0)
@@ -120,13 +102,15 @@ int	main(int ac, char **av)
 	data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
 	init_philosophers(&data, data_arr);
 	init_mutexes(&data);
-	pthread_join(*data.pthread_mon, NULL);
-	pthread_join(*data.pthread_print, NULL);
 	i = 0;
 	while (++i < data.c->p_num + 1)
 		pthread_join(data.pthread_phi[i], NULL);
-	while (1) {
-		;
+	while (1)
+	{
+		if (data.mon->is_death)
+			break ;
+		if (data.mon->done_num == data.c->p_num)
+			break ;
 	}
 	return (0);
 }

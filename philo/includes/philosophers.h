@@ -41,18 +41,15 @@ enum e_actions {
 	THINK,
 	DEAD,
 	DONE,
+	DIE,
 	E_ACTIONS_NUM
 };
 
 typedef struct s_const {
-	long long		time_to_die;
-	long long		time_to_eat;
-	long long		time_to_sleep;
-	long long		time_to_think;
+	long long		*times;
 	int				must_eat_times;
 	int				p_num;
-	int				debug;
-	int				*times;
+	
 }					t_const;
 
 typedef struct s_order
@@ -64,13 +61,7 @@ typedef struct s_order
 typedef struct s_mon_info
 {
 	int				done_num;
-	int				dead_num;
-	int				meal_started;
-	int				meals_counter;
-	int				ended_meal;
 	int				is_death;
-	t_order			**curr_order;
-	t_order			**next_order;
 }					t_mon;
 
 typedef struct s_phi
@@ -94,11 +85,8 @@ typedef struct s_data
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*meals_mutex;
-	pthread_mutex_t	*ended_meal_mutex;
 	pthread_mutex_t	*forks_mutexes;
 	pthread_mutex_t	*can_take_fork_mutexes;
-	pthread_t		*pthread_print;
-	pthread_t		*pthread_mon;
 	pthread_t		*pthread_phi;
 	int				my_id;
 	int				*can_take_fork;
@@ -113,6 +101,7 @@ int			is_forks_taken(t_data *data, int left_fork, \
  */
 int			print_usage(void);
 void		*printer(void *data_pointer);
+int			printf_mutex(pthread_mutex_t *print_mutex, const char *format, ...);
 /*
  * handle_errors.c
  */
@@ -120,17 +109,19 @@ void		handle_error(char *message);
 void		handle_error_int(char *message, int d);
 void		handle_error_str(char *message, char *s);
 void		print_action(pthread_mutex_t *print_mutex, \
-int phil_num, int action, int release_lock);
+int phil_num, int action, int is_death);
 
 /*
  * main.c
  */
 void		*philosopher(void *num);
+
 /*
  * monitor.c
  */
-
-void		*monitor(void *data_pointer);
+int			is_fork_available(t_data *data, int fork_num);
+void		occupy_fork(t_data *data, int fork_num);
+void		release_fork(t_data *data, int fork_num);
 
 /*
  * forks.c
@@ -144,7 +135,6 @@ void		usleep_ms(long long ms);
  */
 int			parse_const(t_data *data, char **av, int ac);
 int			take_forks(t_data *data, int left_fork, int right_fork, int p_id);
-void		set_meal_order(t_data *data, int *can_take_fork);
 /*
  * validation.c
  */
@@ -156,8 +146,6 @@ void		print_arr(int *arr, int size);
 int			*generate_order_arr(int size);
 int			is_dead(t_data *data, t_phi *me);
 void		die(t_data *data, t_phi *me);
-void		increase_ended_meal(t_data *data);
-void		reset_ended_meal(t_data *data);
 
 /*
 ** ft_more.c
@@ -167,7 +155,4 @@ size_t		ft_ilen(int n);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *s);
 void		set_next_order(t_data *data, t_phi *me);
-int			is_fork_available(t_data *data, int fork_num);
-void		occupy_fork(t_data *data, int fork_num);
-void		release_fork(t_data *data, int fork_num);
 #endif

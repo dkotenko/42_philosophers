@@ -6,7 +6,6 @@ SRCS =		parse_const.c \
 			monitor.c \
 			philosopher.c \
 			time.c \
-			validation.c \
 			main.c \
 			death_checker.c \
 			ft_more.c
