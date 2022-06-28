@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/22 18:41:49 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/28 21:02:23 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,9 @@ void	*philosopher(t_data *data)
 	me->status = THINK;
 	me->last_meal = get_current_time_us();
 	pthread_create(data->pthread_monitor, NULL, monitor, data);
-	pthread_create(data->pthread_monitor, NULL, routine, data);
+	pthread_create(data->pthread_routine, NULL, routine, data);
 	pthread_join(*data->pthread_routine, NULL);
 	pthread_join(*data->pthread_monitor, NULL);
+	free_all(data);
 	return (0);
 }

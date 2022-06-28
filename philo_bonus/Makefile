@@ -6,7 +6,8 @@ SRCS =		parse_const.c \
 			time.c \
 			validation.c \
 			main.c \
-			ft_more.c
+			ft_more.c \
+			free.c
 
 SRCS_DIR = ./src
 

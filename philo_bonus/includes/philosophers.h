@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/22 18:41:11 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/28 21:30:00 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,23 +50,6 @@ typedef struct s_const {
 	int				debug;
 }					t_const;
 
-typedef struct s_order
-{
-	int				*arr;
-	int				start;
-}					t_order;
-
-typedef struct s_mon_info
-{
-	int				*can_take_fork;
-	int				done_num;
-	int				dead_num;
-	int				meal_started;
-	int				meals_counter;
-	int				start_ordering;
-	t_order			*order;
-}					t_mon;
-
 typedef struct s_phi
 {
 	int				id;
@@ -83,7 +66,6 @@ typedef struct s_sem {
 typedef struct s_data
 {
 	t_const			*c;
-	t_mon			*mon;
 	t_phi			*phi;
 	t_sem			*print_sem;
 	t_sem			*forks_common;
@@ -129,7 +111,6 @@ void		*monitor(void *data_pointer);
  */
 int			get_fork_id(int id, int forks_number, int is_left_fork);
 void		usleep_ms(long long ms);
-void		give_forks(int f1, int f2, int id, t_mon *monitor);
 
 /*
  * parse_const.c
@@ -143,12 +124,11 @@ int			is_const_valid(t_const *c, int ac, char **av);
 long long	get_current_time_ms(void);
 long long	get_current_time_us(void);
 void		print_arr(int *arr, int size);
-int			*generate_order_arr(int size);
-void		increase_meals_counter(t_mon *mon, pthread_mutex_t *m, int p_num);
 void		wait_n_exit(t_data *data);
 t_sem		*create_sem(char *name, int value);
 void		kill_all(t_data *data);
 void		*monitor(void *p);
 void		set_final_status(t_data *data, t_phi *me);
 void		wait_end(t_data *data);
+void		free_all(t_data *data);
 #endif

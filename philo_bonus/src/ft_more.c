@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/22 18:40:26 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/28 21:38:47 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void	*monitor(void *p)
 		if (is_dead(data, me))
 		{
 			set_final_status(data, me);
+			free_all(data);
 			exit (1);
 		}
 	}

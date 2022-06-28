@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/22 18:43:30 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/28 21:39:35 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,15 @@ void	start_philosophers(t_data *data)
 
 int	main(int ac, char **av)
 {
-	t_data	data;
+	t_data	*data;
 
-	ft_memset(&data, 0, sizeof(t_data));
-	parse_const(&data, av, ac);
-	is_const_valid(data.c, ac, av);
-	init_data(&data);
-	init_philosophers(&data);
-	start_philosophers(&data);
-	wait_end(&data);
-	exit(0);
+	data = (t_data *)ft_memalloc(sizeof(t_data));
+	ft_memset(data, 0, sizeof(t_data));
+	parse_const(data, av, ac);
+	is_const_valid(data->c, ac, av);
+	init_data(data);
+	init_philosophers(data);
+	start_philosophers(data);
+	wait_end(data);
+	free_all(data);
 }
