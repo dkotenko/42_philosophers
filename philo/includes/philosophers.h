@@ -84,7 +84,6 @@ typedef struct s_data
 	pthread_mutex_t	*done_mutex;
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
-	pthread_mutex_t	*meals_mutex;
 	pthread_mutex_t	*forks_mutexes;
 	pthread_mutex_t	*can_take_fork_mutexes;
 	pthread_t		*pthread_phi;
@@ -155,4 +154,5 @@ size_t		ft_ilen(int n);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *s);
 void		set_next_order(t_data *data, t_phi *me);
+void		free_all(t_data *data, t_data *data_arr);
 #endif

@@ -72,7 +72,7 @@ int	print_usage(void)
 
 int	printf_mutex(pthread_mutex_t *print_mutex, const char *format, ...)
 {
-	va_list ap;
+	va_list	ap;
 	int		printed;
 
 	va_start(ap, format);
@@ -80,5 +80,5 @@ int	printf_mutex(pthread_mutex_t *print_mutex, const char *format, ...)
 	printed = printf(format, ap);
 	pthread_mutex_unlock(print_mutex);
 	va_end(ap);
-	return printed;
+	return (printed);
 }

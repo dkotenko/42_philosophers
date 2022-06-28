@@ -13,8 +13,6 @@
 #include "philosophers.h"
 #include <limits.h>
 
-# define NEXT_STATUS me->order->arr[me->order->start]
-
 int	had_an_action(t_data *data, t_phi *me, int action)
 {
 	long long	action_end;
@@ -39,7 +37,7 @@ int	had_an_action(t_data *data, t_phi *me, int action)
 	if (action == EAT)
 		put_forks(me->left_fork, me->right_fork, data);
 	set_next_order(data, me);
-	me->status = NEXT_STATUS;
+	me->status = me->order->arr[me->order->start];
 	return (!is_dead(data, me));
 }
 
@@ -62,18 +60,17 @@ void	set_final_status(t_data *data, t_phi *me)
 	pthread_mutex_unlock(data->done_mutex);
 }
 
-int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
+int	do_take(t_data *data, int left_fork, int right_fork, int p_id)
 {
-	while (1)
-	{
-		if (is_fork_available(data, left_fork))
+	if (is_fork_available(data, left_fork))
 		{
+			occupy_fork(data, left_fork);
 			pthread_mutex_lock(&data->can_take_fork_mutexes[left_fork]);
+			
 			if (is_fork_available(data, right_fork))
 			{
-				pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
-				occupy_fork(data, left_fork);
 				occupy_fork(data, right_fork);
+				pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
 				print_action(data->print_mutex, p_id, TAKE_FORK, data->mon->is_death);
 				print_action(data->print_mutex, p_id, TAKE_FORK, data->mon->is_death);
 				data->phi[p_id].must_eat_times--;
@@ -81,8 +78,21 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 				return (1);
 			}
 			else
+			{
 				pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);
+				release_fork(data, left_fork);
+			}
+				
 		}
+	return (0);
+}
+
+int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
+{
+	while (1)
+	{
+		if (do_take(data, left_fork, right_fork, p_id))
+			return (1);
 		if (is_dead(data, &data->phi[data->my_id]))
 			data->mon->is_death = 1;
 		if (data->mon->is_death)
@@ -96,6 +106,28 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 	return (1);
 }
 
+void	routine(t_data *data, t_phi *me)
+{
+	while (me->must_eat_times && me->status != DEAD)
+	{
+		if (me->order->arr[me->order->start] == EAT)
+		{
+			if (!(take_forks(data, me->left_fork, me->right_fork, me->id)))
+				break ;
+			if (!had_an_action(data, me, me->order->arr[me->order->start]))
+				break ;
+		}
+		else if (me->order->arr[me->order->start] == SLEEP || \
+		me->order->arr[me->order->start] == THINK)
+		{
+			if (!had_an_action(data, me, me->order->arr[me->order->start]))
+				break ;
+		}
+		if (is_dead(data, me))
+			break ;
+	}
+}
+
 void	*philosopher(void *data_pointer)
 {
 	t_data		*data;
@@ -106,23 +138,7 @@ void	*philosopher(void *data_pointer)
 	me->id = data->my_id;
 	me->status = THINK;
 	me->last_meal = get_current_time_us();
-	while (me->must_eat_times && me->status != DEAD)
-	{
-		if (NEXT_STATUS == EAT)
-		{
-			if (!(take_forks(data, me->left_fork, me->right_fork, me->id)))
-				break ;
-			if (!had_an_action(data, me, NEXT_STATUS))
-				break ;
-		}
-		else if (NEXT_STATUS == SLEEP || NEXT_STATUS == THINK)
-		{
-			if (!had_an_action(data, me, NEXT_STATUS))
-				break ;
-		}
-		if (is_dead(data, me))
-			break ;
-	}
+	routine(data, me);
 	set_final_status(data, me);
 	return (0);
 }

@@ -31,7 +31,7 @@ int	*generate_order_arr(int size)
 		order_arr[i] = EAT;
 		return (order_arr);
 	}
-	while (i < size)
+	while (i < size && i + 1 < size)
 	{
 		order_arr[i] = EAT;
 		order_arr[i + 1] = SLEEP;

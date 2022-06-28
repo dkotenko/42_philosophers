@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/25 21:42:40 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/28 20:26:08 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	init_data(t_data *data)
 {
+	int	i;
+	
 	data->phi = (t_phi *)ft_memalloc(sizeof(t_phi) * (data->c->p_num + 1));
 	data->pthread_phi = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(data->c->p_num + 1));
@@ -27,12 +29,6 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
 	data->can_take_fork_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
-}
-
-void	init_monitor(t_data *data)
-{
-	int	i;
-
 	i = 0;
 	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
 	data->can_take_fork = (int *)ft_memalloc(sizeof(int) * \
@@ -89,28 +85,32 @@ void	init_mutexes(t_data *data)
 
 int	main(int ac, char **av)
 {
-	t_data	data;
+	t_data	*data;
 	t_data	*data_arr;
 	int		i;
 
-	ft_memset(&data, 0, sizeof(t_data));
-	parse_const(&data, av, ac);
-	if (!is_const_valid(data.c, ac, av))
+	data = (t_data *)ft_memalloc(sizeof(t_data));
+	parse_const(data, av, ac);
+	if (!is_const_valid(data->c, ac, av))
 		return (1);
-	init_data(&data);
-	init_monitor(&data);
-	data_arr = ft_memalloc(sizeof(t_data) * (data.c->p_num + 1));
-	init_philosophers(&data, data_arr);
-	init_mutexes(&data);
+	init_data(data);
+	data_arr = ft_memalloc(sizeof(t_data) * (data->c->p_num + 1));
+	init_philosophers(data, data_arr);
+	init_mutexes(data);
 	i = 0;
-	while (++i < data.c->p_num + 1)
-		pthread_join(data.pthread_phi[i], NULL);
+	while (++i < data->c->p_num + 1)
+		pthread_join(data->pthread_phi[i], NULL);
 	while (1)
 	{
-		if (data.mon->is_death)
+		if (data->mon->is_death)
+		{
+			usleep_ms(200);
 			break ;
-		if (data.mon->done_num == data.c->p_num)
+		}
+			
+		if (data->mon->done_num == data->c->p_num)
 			break ;
 	}
+	free_all(data, data_arr);
 	return (0);
 }
