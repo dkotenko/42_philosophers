@@ -66,7 +66,11 @@ int	parse_const(t_data *data, char **av, int ac)
 			continue ;
 		n = ft_atoi(av[i]);
 		if (!is_integer(av[i], n) || n < 0)
+		{
 			handle_error_str("invalid integer: ", av[i]);
+			return (0);
+		}
+			
 	}
 	populate_const(data, av, ac);
 	return (1);

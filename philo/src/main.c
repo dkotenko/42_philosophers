@@ -90,11 +90,11 @@ int	main(int ac, char **av)
 	int		i;
 
 	data = (t_data *)ft_memalloc(sizeof(t_data));
-	parse_const(data, av, ac);
-	if (!is_const_valid(data->c, ac, av))
+	if (!parse_const(data, av, ac) || !is_const_valid(data->c, ac, av))
 		return (1);
 	init_data(data);
 	data_arr = ft_memalloc(sizeof(t_data) * (data->c->p_num + 1));
+	handle_error_malloc();
 	init_philosophers(data, data_arr);
 	init_mutexes(data);
 	i = 0;

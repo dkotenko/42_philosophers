@@ -104,9 +104,10 @@ int			printf_mutex(pthread_mutex_t *print_mutex, const char *format, ...);
 /*
  * handle_errors.c
  */
-void		handle_error(char *message);
-void		handle_error_int(char *message, int d);
-void		handle_error_str(char *message, char *s);
+int			handle_error(char *message);
+int			handle_error_int(char *message, int d);
+int			handle_error_str(char *message, char *s);
+void		handle_error_malloc();
 void		print_action(pthread_mutex_t *print_mutex, \
 int phil_num, int action, int is_death);
 
@@ -155,4 +156,5 @@ int			ft_isdigit(int c);
 int			ft_atoi(const char *s);
 void		set_next_order(t_data *data, t_phi *me);
 void		free_all(t_data *data, t_data *data_arr);
+void		free_if(void *p);
 #endif

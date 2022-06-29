@@ -44,16 +44,3 @@ int	*generate_order_arr(int size)
 	}
 	return (order_arr);
 }
-
-void	clean_all(t_data *data)
-{
-	int	i;
-
-	i = -1;
-	while (++i < data->c->p_num + 1)
-	{
-		pthread_detach(data->pthread_phi[i]);
-		pthread_mutex_unlock(&data->forks_mutexes[i]);
-		pthread_mutex_destroy(&data->forks_mutexes[i]);
-	}
-}

@@ -12,20 +12,30 @@
 
 #include "philosophers.h"
 
-void	handle_error(char *message)
+int		handle_error(char *message)
 {
 	printf("%sError: %s%s\n", RED, message, RESET);
-	exit(0);
+	return (1);
 }
 
-void	handle_error_int(char *message, int d)
+int		handle_error_int(char *message, int d)
 {
 	printf("%sError: %s: %d%s\n", RED, message, d, RESET);
-	exit(0);
+	return (1);
 }
 
-void	handle_error_str(char *message, char *s)
+void	handle_error_malloc()
+{
+	asm volatile(
+	"movl $0x2000001, %eax;"
+  	"movl $1, %ebx;"
+  	"syscall"
+	);
+}
+
+int		handle_error_str(char *message, char *s)
 {
 	printf("%sError: %s: %s%s\n", RED, message, s, RESET);
-	exit(0);
+	return (1);
 }
+

@@ -55,3 +55,9 @@ void	free_all(t_data *data, t_data *data_arr)
 	free(data->pthread_phi);
 	free_data(data, data_arr);
 }
+
+void	free_if(void *p)
+{
+	if (p)
+		free(p);
+}

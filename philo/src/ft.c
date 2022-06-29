@@ -32,10 +32,16 @@ void	*ft_memalloc(size_t size)
 	void	*a;
 
 	if (size + 1 < size)
+	{
 		handle_error(ERR_MALLOC_SIZE);
+		return (NULL);
+	}
 	a = malloc(size);
 	if (!a)
+	{
 		handle_error(ERR_MALLOC);
+		return NULL;
+	}	
 	ft_memset(a, 0, size);
 	return (a);
 }
