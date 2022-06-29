@@ -37,17 +37,24 @@ int	is_const_valid(t_const *c, int ac, char **av)
 	return (is_error == 0);
 }
 
-void	populate_const(t_data *data, char **av, int ac)
+int		populate_const(t_data *data, char **av, int ac)
 {
 	data->c->p_num = ft_atoi(av[1]);
 	data->c->must_eat_times = 0x7FFFFFFF;
 	if (ac == 6)
 		data->c->must_eat_times = ft_atoi(av[5]);
 	data->c->times = ft_memalloc(sizeof(long long) * E_ACTIONS_NUM);
+	if (!data->c->times)
+	{
+		free(data->c);
+		free(data);
+		return (0);
+	}
 	data->c->times[EAT] = (long long)ft_atoi(av[3]) * 1000LL;
 	data->c->times[SLEEP] = (long long)ft_atoi(av[4]) * 1000LL;
 	data->c->times[THINK] = data->c->times[EAT] - THINK_DIFF;
 	data->c->times[DIE] = (long long)ft_atoi(av[2]) * 1000LL;
+	return (1);
 }
 
 int	parse_const(t_data *data, char **av, int ac)
@@ -58,6 +65,11 @@ int	parse_const(t_data *data, char **av, int ac)
 	if (ac < 5 || ac > 6)
 		return (print_usage());
 	data->c = (t_const *)ft_memalloc(sizeof(t_const));
+	if (!data->c)
+	{
+		free(data);
+		return (0);
+	}
 	i = ac;
 	while (--i > 0)
 	{
@@ -69,9 +81,7 @@ int	parse_const(t_data *data, char **av, int ac)
 		{
 			handle_error_str("invalid integer: ", av[i]);
 			return (0);
-		}
-			
+		}	
 	}
-	populate_const(data, av, ac);
-	return (1);
+	return (populate_const(data, av, ac));
 }

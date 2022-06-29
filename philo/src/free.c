@@ -16,19 +16,21 @@ void	free_data(t_data *data, t_data *data_arr)
 {
 	int	i;
 
-	i = 0;
-	while (++i < data->c->p_num + 1)
+	if (data->c && data->c->p_num && data->phi)
 	{
-		free(data->phi[i].order->arr);
-		free(data->phi[i].order);
+		i = 0;
+		while (++i < data->c->p_num + 1)
+		{	
+			free_if(data->phi[i].order_arr);
+		}
 	}
-	free(data->c->times);
-	free(data->c);
-	free(data->mon);
-	free(data->phi);
-	free(data->can_take_fork);
-	free(data_arr);
-	free(data);
+	free_if(data->c->times);
+	free_if(data->c);
+	free_if(data->mon);
+	free_if(data->phi);
+	free_if(data->can_take_fork);
+	free_if(data_arr);
+	free_if(data);
 }
 
 void	free_and_destroy_mutex(pthread_mutex_t *m)

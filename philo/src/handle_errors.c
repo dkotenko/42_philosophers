@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
+#include <sys/syscall.h>
 
 int		handle_error(char *message)
 {
@@ -26,11 +27,13 @@ int		handle_error_int(char *message, int d)
 
 void	handle_error_malloc()
 {
+	/*
 	asm volatile(
 	"movl $0x2000001, %eax;"
-  	"movl $1, %ebx;"
+  	"movl $1, %edi;" //%ebx
   	"syscall"
 	);
+	*/
 }
 
 int		handle_error_str(char *message, char *s)

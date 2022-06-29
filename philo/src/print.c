@@ -69,16 +69,3 @@ int	print_usage(void)
 	" [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
 	return (1);
 }
-
-int	printf_mutex(pthread_mutex_t *print_mutex, const char *format, ...)
-{
-	va_list	ap;
-	int		printed;
-
-	va_start(ap, format);
-	pthread_mutex_lock(print_mutex);
-	printed = printf(format, ap);
-	pthread_mutex_unlock(print_mutex);
-	va_end(ap);
-	return (printed);
-}

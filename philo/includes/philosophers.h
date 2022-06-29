@@ -25,6 +25,9 @@
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
 
+# define ERR_MALLOC "Can't allocate memory"
+# define ERR_MALLOC_SIZE "Invalid malloc size"
+
 # define THINK_DIFF 0
 # define MIN_WAIT 30
 
@@ -54,8 +57,7 @@ typedef struct s_const {
 
 typedef struct s_order
 {
-	int				*arr;
-	int				start;
+	
 }					t_order;
 
 typedef struct s_mon_info
@@ -73,7 +75,8 @@ typedef struct s_phi
 	int				next_status;
 	int				must_eat_times;
 	long long		last_meal;
-	t_order			*order;
+	int				order_start;
+	int				*order_arr;
 }					t_phi;
 
 typedef struct s_data
@@ -89,18 +92,29 @@ typedef struct s_data
 	pthread_t		*pthread_phi;
 	int				my_id;
 	int				*can_take_fork;
-
 }					t_data;
 
-int			is_integer(char *s, int n);
-int			is_forks_taken(t_data *data, int left_fork, \
-	int right_fork, int p_id);
+
+/*
+ * forks.c
+ */
+void		put_forks(int f1, int f2, t_data *data);
+int			get_fork_id(int id, int forks_number, int is_left_fork);
+
+/*
+ * time.c
+ */
+void		usleep_ms(long long ms);
+long long	get_current_time_ms(void);
+long long	get_current_time_us(void);
+
 /*
  * print.c
  */
 int			print_usage(void);
-void		*printer(void *data_pointer);
-int			printf_mutex(pthread_mutex_t *print_mutex, const char *format, ...);
+void		print_action(pthread_mutex_t *print_mutex, \
+int phil_num, int action, int is_death);
+
 /*
  * handle_errors.c
  */
@@ -108,8 +122,6 @@ int			handle_error(char *message);
 int			handle_error_int(char *message, int d);
 int			handle_error_str(char *message, char *s);
 void		handle_error_malloc();
-void		print_action(pthread_mutex_t *print_mutex, \
-int phil_num, int action, int is_death);
 
 /*
  * main.c
@@ -119,33 +131,28 @@ void		*philosopher(void *num);
 /*
  * monitor.c
  */
-int			is_fork_available(t_data *data, int fork_num);
-void		occupy_fork(t_data *data, int fork_num);
-void		release_fork(t_data *data, int fork_num);
-
-/*
- * forks.c
- */
-void		put_forks(int f1, int f2, t_data *data);
-int			get_fork_id(int id, int forks_number, int is_left_fork);
-void		usleep_ms(long long ms);
+int			*generate_order_arr(int size);
+int			is_dead(t_data *data, t_phi *me);
+void		set_next_order(t_data *data, t_phi *me);
 
 /*
  * parse_const.c
  */
 int			parse_const(t_data *data, char **av, int ac);
+
+/*
+ * forks.c
+ */
+int			is_fork_available(t_data *data, int fork_num);
+void		occupy_fork(t_data *data, int fork_num);
+void		release_fork(t_data *data, int fork_num);
 int			take_forks(t_data *data, int left_fork, int right_fork, int p_id);
 /*
  * validation.c
  */
 int			is_const_valid(t_const *c, int ac, char **av);
-long long	get_current_time_ms(void);
-long long	get_current_time_us(void);
 
 void		print_arr(int *arr, int size);
-int			*generate_order_arr(int size);
-int			is_dead(t_data *data, t_phi *me);
-void		die(t_data *data, t_phi *me);
 
 /*
 ** ft_more.c
@@ -154,7 +161,11 @@ int			is_integer(char *s, int n);
 size_t		ft_ilen(int n);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *s);
-void		set_next_order(t_data *data, t_phi *me);
+
+/*
+** free.c
+*/
 void		free_all(t_data *data, t_data *data_arr);
 void		free_if(void *p);
+void		free_data(t_data *data, t_data *data_arr);
 #endif

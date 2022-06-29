@@ -37,7 +37,7 @@ int	had_an_action(t_data *data, t_phi *me, int action)
 	if (action == EAT)
 		put_forks(me->left_fork, me->right_fork, data);
 	set_next_order(data, me);
-	me->status = me->order->arr[me->order->start];
+	me->status = me->order_arr[me->order_start];
 	return (!is_dead(data, me));
 }
 
@@ -110,17 +110,17 @@ void	routine(t_data *data, t_phi *me)
 {
 	while (me->must_eat_times && me->status != DEAD)
 	{
-		if (me->order->arr[me->order->start] == EAT)
+		if (me->order_arr[me->order_start] == EAT)
 		{
 			if (!(take_forks(data, me->left_fork, me->right_fork, me->id)))
 				break ;
-			if (!had_an_action(data, me, me->order->arr[me->order->start]))
+			if (!had_an_action(data, me, me->order_arr[me->order_start]))
 				break ;
 		}
-		else if (me->order->arr[me->order->start] == SLEEP || \
-		me->order->arr[me->order->start] == THINK)
+		else if (me->order_arr[me->order_start] == SLEEP || \
+		me->order_arr[me->order_start] == THINK)
 		{
-			if (!had_an_action(data, me, me->order->arr[me->order->start]))
+			if (!had_an_action(data, me, me->order_arr[me->order_start]))
 				break ;
 		}
 		if (is_dead(data, me))

@@ -7,9 +7,9 @@ SRCS =		parse_const.c \
 			philosopher.c \
 			time.c \
 			main.c \
-			death_checker.c \
 			ft_more.c \
-			free.c
+			free.c \
+			init.c
 
 SRCS_DIR = ./src
 
@@ -34,7 +34,7 @@ INCLUDES = $(addprefix $(INCLUDES_DIR)/, $(INCLUDES_FILES))
 FLAGS =	-Wall -Wextra -Werror# -std=gnu99
 PROFILER_FLAG =  -pg
 CC = gcc
-PREPROC = 
+PREPROC =
 all: $(OBJS_DIR) $(NAME)
 
 $(NAME):	$(OBJS)

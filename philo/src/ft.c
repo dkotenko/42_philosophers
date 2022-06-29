@@ -12,9 +12,6 @@
 
 #include "philosophers.h"
 
-#define ERR_MALLOC "Can't allocate memory"
-#define ERR_MALLOC_SIZE "Invalid malloc size"
-
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;

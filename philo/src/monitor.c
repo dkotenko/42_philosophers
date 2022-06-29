@@ -12,11 +12,17 @@
 
 #include "philosophers.h"
 
+int	is_dead(t_data *data, t_phi *me)
+{
+	return (me->last_meal + data->c->times[DIE] <= get_current_time_us() \
+		|| me->status == DEAD);
+}
+
 void	set_next_order(t_data *data, t_phi *me)
 {
-	me->order->start--;
-	if (me->order->start < 0)
-		me->order->start = data->c->p_num - 1;
+	me->order_start--;
+	if (me->order_start < 0)
+		me->order_start = data->c->p_num - 1;
 }
 
 int	*generate_order_arr(int size)
