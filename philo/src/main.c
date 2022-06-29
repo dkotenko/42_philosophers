@@ -6,24 +6,24 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/28 20:26:08 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/29 19:16:01 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int		free_order_arrs(t_data *data, int i)
+int	free_order_arrs(t_data *data, int i)
 {
 	while (--i > 0)
 	{
-		free(data->phi[i]->order_arr);
+		free(data->phi[i].order_arr);
 	}
 	free(data->c);
 	free(data);
 	return (1);
 }
 
-void	init_philosophers(t_data *data, t_data *data_arr)
+int	init_philosophers(t_data *data, t_data *data_arr)
 {
 	int		i;
 	t_phi	*curr_p;
@@ -52,8 +52,8 @@ void	init_philosophers(t_data *data, t_data *data_arr)
 
 void	main_routine(t_data *data)
 {
-	int		i;
-	
+	int	i;
+
 	i = 0;
 	while (++i < data->c->p_num + 1)
 		pthread_join(data->pthread_phi[i], NULL);
@@ -72,21 +72,21 @@ void	main_routine(t_data *data)
 int	main(int ac, char **av)
 {
 	t_data	*data;
-	t_data	*data_arr;
 
 	data = (t_data *)ft_memalloc(sizeof(t_data));
-	data_arr = ft_memalloc(sizeof(t_data) * (data->c->p_num + 1));
-	if (!data || !data_arr)
+	if (!data)
 	{
-		free_data(data, data_arr);
+		free_data(data, data->data_arr);
 		handle_error(ERR_MALLOC);
+		return (1);
 	}
 	if (!parse_const(data, av, ac) || !is_const_valid(data->c, ac, av))
 		return (1);
-	init_data(data);
-	init_philosophers(data, data_arr);
+	data->data_arr = ft_memalloc(sizeof(t_data) * (data->c->p_num + 1));
+	if (!init_data(data) || !init_philosophers(data, data->data_arr))
+		return (1);
 	init_mutexes(data);
 	main_routine(data);
-	free_all(data, data_arr);
+	free_all(data, data->data_arr);
 	return (0);
 }

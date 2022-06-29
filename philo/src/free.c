@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/28 20:33:59 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/29 19:10:00 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,31 +30,33 @@ void	free_data(t_data *data, t_data *data_arr)
 	free_if(data->phi);
 	free_if(data->can_take_fork);
 	free_if(data_arr);
+	free_if(data->done_mutex);
+	free_if(data->dead_mutex);
+	free_if(data->print_mutex);
+	free_if(data->forks_mutexes);
+	free_if(data->can_take_fork_mutexes);
+	free_if(data->pthread_phi);
 	free_if(data);
 }
 
-void	free_and_destroy_mutex(pthread_mutex_t *m)
-{
-	pthread_mutex_destroy(m);
-	free(m);
-}
-
-void	free_all(t_data *data, t_data *data_arr)
+void	destroy_mutexes(t_data *data)
 {
 	int	i;
-	
-	free_and_destroy_mutex(data->done_mutex);
-	free_and_destroy_mutex(data->dead_mutex);
-	free_and_destroy_mutex(data->print_mutex);
+
+	pthread_mutex_destroy(data->done_mutex);
+	pthread_mutex_destroy(data->dead_mutex);
+	pthread_mutex_destroy(data->print_mutex);
 	i = 0;
 	while (++i < data->c->p_num + 1)
 	{
 		pthread_mutex_destroy(&data->forks_mutexes[i]);
 		pthread_mutex_destroy(&data->can_take_fork_mutexes[i]);
 	}
-	free(data->forks_mutexes);
-	free(data->can_take_fork_mutexes);
-	free(data->pthread_phi);
+}
+
+void	free_all(t_data *data, t_data *data_arr)
+{
+	destroy_mutexes(data);
 	free_data(data, data_arr);
 }
 

@@ -22,7 +22,6 @@ void	init_mutexes(t_data *data)
 		printf("done mutex init error\n");
 	if (pthread_mutex_init(data->dead_mutex, NULL) != 0)
 		printf("dead mutex init error\n");
-
 	i = 0;
 	while (++i < data->c->p_num + 1)
 	{
@@ -33,10 +32,26 @@ void	init_mutexes(t_data *data)
 	}
 }
 
-void	init_data(t_data *data)
+static int	init_and_check(t_data *data)
 {
 	int	i;
-	
+
+	if (!data->data_arr || !data->phi || !data->pthread_phi
+		|| !data->print_mutex || !data->done_mutex || !data->dead_mutex
+		|| !data->forks_mutexes || !data->can_take_fork_mutexes
+		|| !data->mon || !data->can_take_fork)
+	{
+		free_data(data, data->data_arr);
+		return (0);
+	}
+	i = 0;
+	while (++i < data->c->p_num + 1)
+		data->can_take_fork[i] = AVAILABLE;
+	return (1);
+}
+
+int	init_data(t_data *data)
+{
 	data->phi = (t_phi *)ft_memalloc(sizeof(t_phi) * (data->c->p_num + 1));
 	data->pthread_phi = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(data->c->p_num + 1));
@@ -50,10 +65,8 @@ void	init_data(t_data *data)
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
 	data->can_take_fork_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));
-	i = 0;
 	data->mon = (t_mon *)ft_memalloc(sizeof(t_mon));
 	data->can_take_fork = (int *)ft_memalloc(sizeof(int) * \
 	(data->c->p_num + 1));
-	while (++i < data->c->p_num + 1)
-		data->can_take_fork[i] = AVAILABLE;
+	return (init_and_check(data));
 }

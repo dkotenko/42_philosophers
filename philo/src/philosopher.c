@@ -63,47 +63,28 @@ void	set_final_status(t_data *data, t_phi *me)
 int	do_take(t_data *data, int left_fork, int right_fork, int p_id)
 {
 	if (is_fork_available(data, left_fork))
-		{
-			occupy_fork(data, left_fork);
-			pthread_mutex_lock(&data->can_take_fork_mutexes[left_fork]);
-			
-			if (is_fork_available(data, right_fork))
-			{
-				occupy_fork(data, right_fork);
-				pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
-				print_action(data->print_mutex, p_id, TAKE_FORK, data->mon->is_death);
-				print_action(data->print_mutex, p_id, TAKE_FORK, data->mon->is_death);
-				data->phi[p_id].must_eat_times--;
-				data->phi[p_id].last_meal = get_current_time_us();
-				return (1);
-			}
-			else
-			{
-				pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);
-				release_fork(data, left_fork);
-			}
-				
-		}
-	return (0);
-}
-
-int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
-{
-	while (1)
 	{
-		if (do_take(data, left_fork, right_fork, p_id))
-			return (1);
-		if (is_dead(data, &data->phi[data->my_id]))
-			data->mon->is_death = 1;
-		if (data->mon->is_death)
+		occupy_fork(data, left_fork);
+		pthread_mutex_lock(&data->can_take_fork_mutexes[left_fork]);
+		if (is_fork_available(data, right_fork))
 		{
-			data->phi[data->my_id].status = DEAD;
-			return (0);
+			occupy_fork(data, right_fork);
+			pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
+			print_action(data->print_mutex, p_id, TAKE_FORK,
+				data->mon->is_death);
+			print_action(data->print_mutex, p_id, TAKE_FORK,
+				data->mon->is_death);
+			data->phi[p_id].must_eat_times--;
+			data->phi[p_id].last_meal = get_current_time_us();
+			return (1);
 		}
-		usleep(MIN_WAIT);
-		
+		else
+		{
+			pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);
+			release_fork(data, left_fork);
+		}	
 	}
-	return (1);
+	return (0);
 }
 
 void	routine(t_data *data, t_phi *me)

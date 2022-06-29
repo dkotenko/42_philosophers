@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 21:17:42 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/29 19:06:05 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	is_const_valid(t_const *c, int ac, char **av)
 		is_error = printf("ERROR: too many philosophers, \
 		must be less than 201\n");
 	}
-	if (c->times[DIE]  < 60 * 1000)
+	if (c->times[DIE] < 60 * 1000)
 		is_error = printf(MSG, av[2], "\"time to die\"", 60);
 	if (c->times[EAT] < 60 * 1000)
 		is_error = printf(MSG, av[3], "\"time to eat\"", 60);
@@ -37,7 +37,7 @@ int	is_const_valid(t_const *c, int ac, char **av)
 	return (is_error == 0);
 }
 
-int		populate_const(t_data *data, char **av, int ac)
+int	populate_const(t_data *data, char **av, int ac)
 {
 	data->c->p_num = ft_atoi(av[1]);
 	data->c->must_eat_times = 0x7FFFFFFF;

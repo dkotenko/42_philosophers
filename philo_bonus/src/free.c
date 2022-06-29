@@ -6,23 +6,17 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/28 21:33:42 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/29 19:27:27 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	free_data(t_data *data)
+int	free_if(void *p)
 {
-	free(data->c);
-	free(data->phi);
-	free(data);
-}
-
-void	free_and_destroy_mutex(pthread_mutex_t *m)
-{
-	pthread_mutex_destroy(m);
-	free(m);
+	if (p)
+		free(p);
+	return (1);
 }
 
 void	free_sem(t_sem *sem)
@@ -40,13 +34,18 @@ void	free_sems(t_data *data)
 	free_sem(data->fork_access_sem);
 }
 
-void	free_all(t_data *data)
+void	free_data(t_data *data)
 {
-	if (data->pthread_routine)
-		free(data->pthread_routine);
-	if (data->pthread_monitor)
-		free(data->pthread_monitor);
-	free(data->processes_phi);
+	free_if(data->pthread_routine);
+	free_if(data->pthread_monitor);
+	free_if(data->processes_phi);
+	free_if(data->c);
+	free_if(data->phi);
+	free_if(data);
+}
+
+void	free_all(t_data *data)
+{	
 	free_sems(data);
 	free_data(data);
 }

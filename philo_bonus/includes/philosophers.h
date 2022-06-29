@@ -6,7 +6,7 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/28 21:30:00 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/29 19:28:06 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 # define GREEN "\033[0;32m"
 # define RESET "\033[0m"
 # define RED "\033[0;31m"
+
+# define ERR_MALLOC "Can't allocate memory"
+# define ERR_MALLOC_SIZE "Invalid malloc size"
 
 enum e_actions {
 	TAKE_FORK,
@@ -131,4 +134,6 @@ void		*monitor(void *p);
 void		set_final_status(t_data *data, t_phi *me);
 void		wait_end(t_data *data);
 void		free_all(t_data *data);
+void		free_data(t_data *data);
+int			free_if(void *p);
 #endif

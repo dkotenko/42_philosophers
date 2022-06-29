@@ -6,14 +6,11 @@
 /*   By: clala <clala@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:43:37 by clala             #+#    #+#             */
-/*   Updated: 2022/06/18 13:09:03 by clala            ###   ########.fr       */
+/*   Updated: 2022/06/29 19:13:39 by clala            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-#define ERR_MALLOC "Can't allocate memory"
-#define ERR_MALLOC_SIZE "Invalid malloc size"
 
 void	*ft_memalloc(size_t size)
 {

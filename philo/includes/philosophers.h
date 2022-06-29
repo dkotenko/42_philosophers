@@ -52,13 +52,7 @@ typedef struct s_const {
 	long long		*times;
 	int				must_eat_times;
 	int				p_num;
-	
 }					t_const;
-
-typedef struct s_order
-{
-	
-}					t_order;
 
 typedef struct s_mon_info
 {
@@ -92,8 +86,16 @@ typedef struct s_data
 	pthread_t		*pthread_phi;
 	int				my_id;
 	int				*can_take_fork;
+	struct s_data	*data_arr;
 }					t_data;
 
+int			do_take(t_data *data, int left_fork, int right_fork, int p_id);
+
+/*
+ * init.c
+ */
+void		init_mutexes(t_data *data);
+int			init_data(t_data *data);
 
 /*
  * forks.c
@@ -121,7 +123,7 @@ int phil_num, int action, int is_death);
 int			handle_error(char *message);
 int			handle_error_int(char *message, int d);
 int			handle_error_str(char *message, char *s);
-void		handle_error_malloc();
+void		handle_error_malloc(void);
 
 /*
  * main.c

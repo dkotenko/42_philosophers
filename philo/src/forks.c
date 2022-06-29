@@ -36,14 +36,14 @@ void	put_forks(int left_fork, int right_fork, t_data *data)
 	release_fork(data, right_fork);
 }
 
-int		is_fork_available(t_data *data, int fork_num)
+int	is_fork_available(t_data *data, int fork_num)
 {
 	int	val;
 
 	pthread_mutex_lock(&data->forks_mutexes[fork_num]);
 	val = data->can_take_fork[fork_num];
 	pthread_mutex_unlock(&data->forks_mutexes[fork_num]);
-	return val;
+	return (val);
 }
 
 void	occupy_fork(t_data *data, int fork_num)
@@ -59,4 +59,3 @@ void	release_fork(t_data *data, int fork_num)
 	data->can_take_fork[fork_num] = AVAILABLE;
 	pthread_mutex_unlock(&data->forks_mutexes[fork_num]);
 }
-

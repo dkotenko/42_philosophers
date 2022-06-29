@@ -37,7 +37,7 @@ void	*ft_memalloc(size_t size)
 	if (!a)
 	{
 		handle_error(ERR_MALLOC);
-		return NULL;
+		return (NULL);
 	}	
 	ft_memset(a, 0, size);
 	return (a);
