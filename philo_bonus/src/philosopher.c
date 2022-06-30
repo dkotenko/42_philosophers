@@ -35,11 +35,6 @@ int	had_a_meal(t_data *data, t_phi *me)
 	sem_wait(data->fork_access_sem->sem);
 	sem_wait(data->forks_common->sem);
 	print_action(data->print_sem->sem, me->id, TAKE_FORK);
-	if (data->c->p_num < 2)
-	{
-		sem_post(data->fork_access_sem->sem);
-		return (data->phi[me->id].status = DEAD);
-	}
 	sem_wait(data->forks_common->sem);
 	sem_post(data->fork_access_sem->sem);
 	print_action(data->print_sem->sem, me->id, TAKE_FORK);
