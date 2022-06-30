@@ -12,36 +12,45 @@
 
 #include "philosophers.h"
 
-void	init_mutexes(t_data *data)
+int	is_mutexes_init(t_data *data)
 {
 	int	i;
+	int	error;
 
-	if (pthread_mutex_init(data->print_mutex, NULL) != 0)
-		printf("print mutex init error\n");
-	if (pthread_mutex_init(data->done_mutex, NULL) != 0)
-		printf("done mutex init error\n");
-	if (pthread_mutex_init(data->dead_mutex, NULL) != 0)
-		printf("dead mutex init error\n");
+	error = 0;
+	error |= pthread_mutex_init(data->print_mutex, NULL);
+	error |= pthread_mutex_init(data->done_mutex, NULL);
+	error |= pthread_mutex_init(data->death_mutex, NULL);
 	i = 0;
 	while (++i < data->c->p_num + 1)
 	{
-		if (pthread_mutex_init(&data->forks_mutexes[i], NULL) != 0)
-			printf("fork mutex init error\n");
-		if (pthread_mutex_init(&data->can_take_fork_mutexes[i], NULL) != 0)
-			printf("fork mutex init error\n");
+		error |= pthread_mutex_init(&data->forks_mutexes[i], NULL);
+		error |= pthread_mutex_init(&data->can_take_fork_mutexes[i], NULL);
 	}
+	if (error)
+	{
+		handle_error("mutex init");
+		return (0);
+	}
+	return (1);
 }
 
 static int	init_and_check(t_data *data)
 {
 	int	i;
 
-	if (!data->data_arr || !data->phi || !data->pthread_phi
-		|| !data->print_mutex || !data->done_mutex || !data->dead_mutex
-		|| !data->forks_mutexes || !data->can_take_fork_mutexes
-		|| !data->mon || !data->can_take_fork)
+	if (!data->data_arr
+		|| !data->phi
+		|| !data->pthread_phi
+		|| !data->print_mutex
+		|| !data->done_mutex
+		|| !data->death_mutex
+		|| !data->forks_mutexes
+		|| !data->can_take_fork_mutexes
+		|| !data->mon
+		|| !data->can_take_fork)
 	{
-		free_data(data, data->data_arr);
+		free_data(data);
 		return (0);
 	}
 	i = 0;
@@ -52,6 +61,7 @@ static int	init_and_check(t_data *data)
 
 int	init_data(t_data *data)
 {
+	data->data_arr = ft_memalloc(sizeof(t_data) * (data->c->p_num + 1));
 	data->phi = (t_phi *)ft_memalloc(sizeof(t_phi) * (data->c->p_num + 1));
 	data->pthread_phi = (pthread_t *)ft_memalloc(sizeof(pthread_t) * \
 			(data->c->p_num + 1));
@@ -59,7 +69,7 @@ int	init_data(t_data *data)
 			sizeof(pthread_mutex_t));
 	data->done_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
-	data->dead_mutex = (pthread_mutex_t *)ft_memalloc(
+	data->death_mutex = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t));
 	data->forks_mutexes = (pthread_mutex_t *)ft_memalloc(
 			sizeof(pthread_mutex_t) * (data->c->p_num + 1));

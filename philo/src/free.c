@@ -12,7 +12,7 @@
 
 #include "philosophers.h"
 
-void	free_data(t_data *data, t_data *data_arr)
+void	free_data(t_data *data)
 {
 	int	i;
 
@@ -29,9 +29,9 @@ void	free_data(t_data *data, t_data *data_arr)
 	free_if(data->mon);
 	free_if(data->phi);
 	free_if(data->can_take_fork);
-	free_if(data_arr);
+	free_if(data->data_arr);
 	free_if(data->done_mutex);
-	free_if(data->dead_mutex);
+	free_if(data->death_mutex);
 	free_if(data->print_mutex);
 	free_if(data->forks_mutexes);
 	free_if(data->can_take_fork_mutexes);
@@ -44,7 +44,7 @@ void	destroy_mutexes(t_data *data)
 	int	i;
 
 	pthread_mutex_destroy(data->done_mutex);
-	pthread_mutex_destroy(data->dead_mutex);
+	pthread_mutex_destroy(data->death_mutex);
 	pthread_mutex_destroy(data->print_mutex);
 	i = 0;
 	while (++i < data->c->p_num + 1)
@@ -54,10 +54,10 @@ void	destroy_mutexes(t_data *data)
 	}
 }
 
-void	free_all(t_data *data, t_data *data_arr)
+void	free_all(t_data *data)
 {
 	destroy_mutexes(data);
-	free_data(data, data_arr);
+	free_data(data);
 }
 
 void	free_if(void *p)

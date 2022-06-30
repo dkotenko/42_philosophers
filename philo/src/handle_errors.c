@@ -16,17 +16,36 @@
 int	handle_error(char *message)
 {
 	printf("%sError: %s%s\n", RED, message, RESET);
-	return (1);
-}
-
-int	handle_error_int(char *message, int d)
-{
-	printf("%sError: %s: %d%s\n", RED, message, d, RESET);
-	return (1);
+	return (0);
 }
 
 int	handle_error_str(char *message, char *s)
 {
 	printf("%sError: %s: %s%s\n", RED, message, s, RESET);
-	return (1);
+	return (0);
+}
+
+int	set_first_death(t_data *data)
+{
+	int	is_first;
+
+	is_first = 0;
+	pthread_mutex_lock(data->death_mutex);
+	if (data->mon->is_first_death == 0)
+	{
+		data->mon->is_first_death = 1;
+		is_first = 1;
+	}
+	pthread_mutex_unlock(data->death_mutex);
+	return (is_first);
+}
+
+int	is_first_death(t_data *data)
+{
+	int	val;
+
+	pthread_mutex_lock(data->death_mutex);
+	val = data->mon->is_first_death;
+	pthread_mutex_unlock(data->death_mutex);
+	return (val);
 }

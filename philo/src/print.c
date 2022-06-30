@@ -39,12 +39,11 @@ void	print_action_more(int phil_num, int action)
 	}
 }
 
-void	print_action(pthread_mutex_t *print_mutex, int phil_num,
-int action, int is_death)
+void	print_action(t_data *data, int phil_num, int action)
 {
-	if (is_death)
+	if (is_first_death(data))
 		return ;
-	pthread_mutex_lock(print_mutex);
+	pthread_mutex_lock(data->print_mutex);
 	if (action == TAKE_FORK)
 	{
 		printf("%lld %d has taken a fork\n",
@@ -59,7 +58,7 @@ int action, int is_death)
 	{
 		print_action_more(phil_num, action);
 	}
-	pthread_mutex_unlock(print_mutex);
+	pthread_mutex_unlock(data->print_mutex);
 }
 
 int	print_usage(void)
@@ -67,5 +66,5 @@ int	print_usage(void)
 	printf("%sUSAGE: ./philo_n number_of_philosophers time_to_die" \
 	" time_to_eat time_to_sleep" \
 	" [number_of_times_each_philosopher_must_eat]\n%s", GREEN, RESET);
-	return (1);
+	return (0);
 }

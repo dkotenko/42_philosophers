@@ -57,7 +57,7 @@ typedef struct s_const {
 typedef struct s_mon_info
 {
 	int				done_num;
-	int				is_death;
+	int				is_first_death;
 }					t_mon;
 
 typedef struct s_phi
@@ -79,7 +79,7 @@ typedef struct s_data
 	t_mon			*mon;
 	t_phi			*phi;
 	pthread_mutex_t	*done_mutex;
-	pthread_mutex_t	*dead_mutex;
+	pthread_mutex_t	*death_mutex;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*forks_mutexes;
 	pthread_mutex_t	*can_take_fork_mutexes;
@@ -94,7 +94,7 @@ int			do_take(t_data *data, int left_fork, int right_fork, int p_id);
 /*
  * init.c
  */
-void		init_mutexes(t_data *data);
+int			is_mutexes_init(t_data *data);
 int			init_data(t_data *data);
 
 /*
@@ -114,16 +114,13 @@ long long	get_current_time_us(void);
  * print.c
  */
 int			print_usage(void);
-void		print_action(pthread_mutex_t *print_mutex, \
-int phil_num, int action, int is_death);
+void		print_action(t_data *data, int phil_num, int action);
 
 /*
  * handle_errors.c
  */
 int			handle_error(char *message);
-int			handle_error_int(char *message, int d);
 int			handle_error_str(char *message, char *s);
-void		handle_error_malloc(void);
 
 /*
  * main.c
@@ -140,7 +137,7 @@ void		set_next_order(t_data *data, t_phi *me);
 /*
  * parse_const.c
  */
-int			parse_const(t_data *data, char **av, int ac);
+int			is_const_parsed(t_data *data, char **av, int ac);
 
 /*
  * forks.c
@@ -167,7 +164,10 @@ int			ft_atoi(const char *s);
 /*
 ** free.c
 */
-void		free_all(t_data *data, t_data *data_arr);
+void		free_all(t_data *data);
 void		free_if(void *p);
-void		free_data(t_data *data, t_data *data_arr);
+void		free_data(t_data *data);
+int			is_first_death(t_data *data);
+int			set_first_death(t_data *data);
+
 #endif

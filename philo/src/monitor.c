@@ -57,9 +57,8 @@ int	take_forks(t_data *data, int left_fork, int right_fork, int p_id)
 	{
 		if (do_take(data, left_fork, right_fork, p_id))
 			return (1);
-		if (is_dead(data, &data->phi[data->my_id]))
-			data->mon->is_death = 1;
-		if (data->mon->is_death)
+		if (is_dead(data, &data->phi[data->my_id])
+			|| is_first_death(data))
 		{
 			data->phi[data->my_id].status = DEAD;
 			return (0);

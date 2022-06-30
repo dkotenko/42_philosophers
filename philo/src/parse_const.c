@@ -57,7 +57,7 @@ int	populate_const(t_data *data, char **av, int ac)
 	return (1);
 }
 
-int	parse_const(t_data *data, char **av, int ac)
+int	is_const_parsed(t_data *data, char **av, int ac)
 {
 	int	i;
 	int	n;
