@@ -31,9 +31,9 @@ int	set_first_death(t_data *data)
 
 	is_first = 0;
 	pthread_mutex_lock(data->death_mutex);
-	if (data->mon->is_first_death == 0)
+	if (data->mon->first_death == 0)
 	{
-		data->mon->is_first_death = 1;
+		data->mon->first_death = 1;
 		is_first = 1;
 	}
 	pthread_mutex_unlock(data->death_mutex);
@@ -45,7 +45,7 @@ int	is_first_death(t_data *data)
 	int	val;
 
 	pthread_mutex_lock(data->death_mutex);
-	val = data->mon->is_first_death;
+	val = data->mon->first_death;
 	pthread_mutex_unlock(data->death_mutex);
 	return (val);
 }

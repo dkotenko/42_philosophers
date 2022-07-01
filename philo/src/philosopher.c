@@ -19,13 +19,11 @@ int	had_an_action(t_data *data, t_phi *me, int action)
 	long long	action_time;
 
 	action_time = data->c->times[action];
-	print_action(data, me->id, action);
+	print_action(data, me->id, action, is_first_death(data));
 	action_end = get_current_time_us() + action_time;
 	while (get_current_time_us() < action_end)
 	{
-		if (is_dead(data, me))
-			data->mon->is_first_death = 1;
-		if (data->mon->is_first_death)
+		if (is_dead(data, me) || is_first_death(data))
 		{
 			if (action == EAT)
 				put_forks(me->left_fork, me->right_fork, data);
@@ -45,14 +43,15 @@ void	set_final_status(t_data *data, t_phi *me)
 {
 	if (is_dead(data, me))
 	{
+		me->first_eat = 1;
+		if (set_first_death(data))
+			print_action(data, me->id, DEAD, 0);
 		me->status = DEAD;
-		print_action(data, me->id, DEAD);
-		data->mon->is_first_death = 1;
 	}
 	else
 	{
 		me->status = DONE;
-		print_action(data, me->id, DONE);
+		print_action(data, me->id, DONE, is_first_death(data));
 	}
 	me->last_meal = LLONG_MAX;
 	pthread_mutex_lock(data->done_mutex);
@@ -70,14 +69,14 @@ int	do_take(t_data *data, int left_fork, int right_fork, int p_id)
 		{
 			occupy_fork(data, right_fork);
 			pthread_mutex_lock(&data->can_take_fork_mutexes[right_fork]);
-			print_action(data, p_id, TAKE_FORK);
-			print_action(data, p_id, TAKE_FORK);
+			print_action(data, p_id, TAKE_FORK, is_first_death(data));
+			print_action(data, p_id, TAKE_FORK, is_first_death(data));
 			data->phi[p_id].must_eat_times--;
 			data->phi[p_id].last_meal = get_current_time_us();
 			return (1);
 		}
 		else if (data->c->p_num == 1)
-			print_action(data, p_id, TAKE_FORK);
+			print_action(data, p_id, TAKE_FORK, 0);
 		else
 		{
 			pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);

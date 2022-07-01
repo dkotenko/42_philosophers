@@ -45,6 +45,7 @@ enum e_actions {
 	DEAD,
 	DONE,
 	DIE,
+	ALIVE,
 	E_ACTIONS_NUM
 };
 
@@ -57,7 +58,7 @@ typedef struct s_const {
 typedef struct s_mon_info
 {
 	int				done_num;
-	int				is_first_death;
+	int				first_death;
 }					t_mon;
 
 typedef struct s_phi
@@ -71,6 +72,7 @@ typedef struct s_phi
 	long long		last_meal;
 	int				order_start;
 	int				*order_arr;
+	int				first_eat;
 }					t_phi;
 
 typedef struct s_data
@@ -114,7 +116,8 @@ long long	get_current_time_us(void);
  * print.c
  */
 int			print_usage(void);
-void		print_action(t_data *data, int phil_num, int action);
+void		print_action(t_data *data, int phil_num,
+				int action, int first_death);
 
 /*
  * handle_errors.c
@@ -133,6 +136,7 @@ void		*philosopher(void *num);
 int			*generate_order_arr(int size);
 int			is_dead(t_data *data, t_phi *me);
 void		set_next_order(t_data *data, t_phi *me);
+void		set_first_eat(t_phi *me);
 
 /*
  * parse_const.c

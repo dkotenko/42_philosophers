@@ -41,6 +41,7 @@ int	init_philosophers(t_data *data)
 		if (!data->phi[i].order_arr && free_order_arrs(data, i))
 			return (0);
 		data->phi[i].order_start = i - 1;
+		set_first_eat(&data->phi[i]);
 		ft_memcpy(&data->data_arr[i], data, sizeof(t_data));
 		data->data_arr[i].my_id = i;
 		data->phi[i].last_meal = get_current_time_ms();
@@ -60,13 +61,14 @@ void	main_routine(t_data *data)
 		pthread_join(data->pthread_phi[i], NULL);
 	while (1)
 	{
-		if (data->mon->is_first_death)
+		if (data->mon->first_death)
 		{
 			usleep_ms(200);
 			break ;
 		}	
 		if (data->mon->done_num == data->c->p_num)
 			break ;
+		usleep(MIN_WAIT);
 	}
 }
 

@@ -39,9 +39,9 @@ void	print_action_more(int phil_num, int action)
 	}
 }
 
-void	print_action(t_data *data, int phil_num, int action)
+void	print_action(t_data *data, int phil_num, int action, int first_death)
 {
-	if (is_first_death(data))
+	if (first_death || !data->phi[phil_num].first_eat)
 		return ;
 	pthread_mutex_lock(data->print_mutex);
 	if (action == TAKE_FORK)

@@ -12,6 +12,12 @@
 
 #include "philosophers.h"
 
+void	set_first_eat(t_phi *me)
+{
+	if (me->order_arr[me->order_start] == EAT)
+		me->first_eat = 1;
+}
+
 int	is_dead(t_data *data, t_phi *me)
 {
 	return (me->last_meal + data->c->times[DIE] <= get_current_time_us() \
@@ -23,6 +29,7 @@ void	set_next_order(t_data *data, t_phi *me)
 	me->order_start--;
 	if (me->order_start < 0)
 		me->order_start = data->c->p_num - 1;
+	set_first_eat(me);
 }
 
 int	*generate_order_arr(int size)
