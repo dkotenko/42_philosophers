@@ -21,22 +21,22 @@ void	free_data(t_data *data)
 		i = 0;
 		while (++i < data->c->p_num + 1)
 		{	
-			free_if(data->phi[i].order_arr);
+			FREE_IF(&data->phi[i].order_arr);
 		}
 	}
-	free_if(data->c->times);
-	free_if(data->c);
-	free_if(data->mon);
-	free_if(data->phi);
-	free_if(data->can_take_fork);
-	free_if(data->data_arr);
-	free_if(data->done_mutex);
-	free_if(data->death_mutex);
-	free_if(data->print_mutex);
-	free_if(data->forks_mutexes);
-	free_if(data->can_take_fork_mutexes);
-	free_if(data->pthread_phi);
-	free_if(data);
+	FREE_IF(&data->c->times);
+	FREE_IF(&data->c);
+	FREE_IF(&data->mon);
+	FREE_IF(&data->phi);
+	FREE_IF(&data->can_take_fork);
+	FREE_IF(&data->data_arr);
+	FREE_IF(&data->done_mutex);
+	FREE_IF(&data->death_mutex);
+	FREE_IF(&data->print_mutex);
+	FREE_IF(&data->forks_mutexes);
+	FREE_IF(&data->can_take_fork_mutexes);
+	FREE_IF(&data->pthread_phi);
+	FREE_IF(&data);
 }
 
 void	destroy_mutexes(t_data *data)

@@ -47,7 +47,6 @@ int	init_philosophers(t_data *data)
 		data->phi[i].last_meal = get_current_time_ms();
 		err |= pthread_create(
 				&data->pthread_phi[i], NULL, philosopher, &data->data_arr[i]);
-		err |= pthread_detach(data->pthread_phi[i]);
 	}
 	return (!err);
 }
@@ -59,15 +58,8 @@ void	main_routine(t_data *data)
 	i = 0;
 	while (++i < data->c->p_num + 1)
 		pthread_join(data->pthread_phi[i], NULL);
-	while (1)
+	while (data->mon->done_num != data->c->p_num)
 	{
-		if (data->mon->first_death)
-		{
-			usleep_ms(200);
-			break ;
-		}	
-		if (data->mon->done_num == data->c->p_num)
-			break ;
 		usleep(MIN_WAIT);
 	}
 }
@@ -79,17 +71,16 @@ int	main(int ac, char **av)
 	data = (t_data *)ft_memalloc(sizeof(t_data));
 	if (!data)
 	{
-		free_data(data);
 		handle_error(ERR_MALLOC);
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	if (!is_const_parsed(data, av, ac)
 		|| !is_const_valid(data->c, ac, av)
 		|| !init_data(data)
-		|| !init_philosophers(data)
-		|| !is_mutexes_init(data))
-		return (1);
+		|| !is_mutexes_init(data)
+		|| !init_philosophers(data))
+		return (EXIT_FAILURE);
 	main_routine(data);
 	free_all(data);
-	return (0);
+	return (EXIT_SUCCESS);
 }

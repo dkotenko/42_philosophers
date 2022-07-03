@@ -30,10 +30,11 @@ int	get_fork_id(int id, int forks_number, int is_left_fork)
 
 void	put_forks(int left_fork, int right_fork, t_data *data)
 {
-	pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);
 	pthread_mutex_unlock(&data->can_take_fork_mutexes[right_fork]);
-	release_fork(data, left_fork);
 	release_fork(data, right_fork);
+	pthread_mutex_unlock(&data->can_take_fork_mutexes[left_fork]);
+	release_fork(data, left_fork);
+	
 }
 
 int	is_fork_available(t_data *data, int fork_num)
