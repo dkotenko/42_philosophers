@@ -31,7 +31,7 @@ INCLUDES_FILES = \
 
 INCLUDES = $(addprefix $(INCLUDES_DIR)/, $(INCLUDES_FILES))
 
-FLAGS =	-Wall -Wextra -Werror # -fsanitize=thread # -std=gnu99
+FLAGS =	-Wall -Wextra -Werror -fsanitize=thread # -std=gnu99
 PROFILER_FLAG =  -pg
 CC = gcc
 PREPROC = '-DFREE_IF(p)=free(*p);*p=NULL;'
